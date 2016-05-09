@@ -123,7 +123,7 @@ return array(
                 <div style="direction:rtl;display:block;overflow:hidden;border:1px solid #dadada;border-radius: 0 0 2px 2px;text-align: center;padding:15px;">{MessageBody}</div>
              </div>
              <div style="font-size: 8pt;color: #bbb;text-align: right;font-family: tahoma;padding: 15px;">
-                <a href="'.Yii::app()->getBaseUrl(true).'/about">درباره</a> | <a href="'.Yii::app()->getBaseUrl(true).'/help">راهنما</a>
+                <a href="'.((strpos($_SERVER['SERVER_PROTOCOL'], 'https'))?'https://':'http://').$_SERVER['HTTP_HOST'].'/about">درباره</a> | <a href="'.((strpos($_SERVER['SERVER_PROTOCOL'], 'https'))?'https://':'http://').$_SERVER['HTTP_HOST'].'/help">راهنما</a>
                 <span style="float: left;"> همهٔ حقوق برای بوکر محفوظ است. ©‏ 1395 </span>
              </div>',
 	),
