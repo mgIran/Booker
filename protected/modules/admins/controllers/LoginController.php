@@ -21,8 +21,8 @@ class LoginController extends Controller
      */
     public function actionIndex()
     {
-        Yii::app()->theme = 'market';
-        $this->layout = '//layouts/backgroundImage';
+        Yii::app()->theme = 'abound';
+        $this->layout = '//layouts/login';
         if(!Yii::app()->user->isGuest && Yii::app()->user->type === 'admin')
             $this->redirect(array('/admins/'));
 

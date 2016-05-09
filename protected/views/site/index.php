@@ -52,10 +52,11 @@
             </form>
         </div>
         <ul class="nav nav-pills">
-            <li role="presentation"><a class="modal-trigger waves-effect waves-light" href="#login-modal">ورود</a></li>
+            <li role="presentation"><a href="<?php echo $this->createUrl('/login');?>">ورود</a href=""></li>
             <li role="presentation"><a href="<?php echo $this->createUrl('/register');?>">ثبت نام</a></li>
-            <li role="presentation"><a href="#">راهنما</a></li>
-            <li role="presentation"><a href="#">تماس با ما</a></li>
+            <li role="presentation"><a href="<?php echo $this->createUrl('/terms');?>">قوانین و مقررات</a></li>
+            <li role="presentation"><a href="<?php echo $this->createUrl('/help');?>">راهنما</a></li>
+            <li role="presentation"><a href="<?php echo $this->createUrl('/contactUs');?>">تماس با ما</a></li>
         </ul>
     </div>
     <div class="slider">
@@ -65,24 +66,5 @@
             <li><span class="slide-item" style="background: url('uploads/s3.jpg') no-repeat center / cover;"></span></li>
             <li><span class="slide-item" style="background: url('uploads/s4.jpg') no-repeat center / cover;"></span></li>
         </ul>
-    </div>
-</div>
-<div id="login-modal" class="modal modal-fixed-footer">
-    <div class="modal-content">
-        <h4 class="yekan-text">ورود</h4>
-        <form>
-            <div class="input-field">
-                <input type="text" id="username">
-                <label for="username">پست الکترونیکی</label>
-            </div>
-            <div class="input-field">
-                <input type="password" id="password">
-                <label for="password">کلمه عبور</label>
-            </div>
-        </form>
-    </div>
-    <div class="modal-footer">
-        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">ورود</a>
-        <a class="modal-action modal-close waves-effect waves-red btn-flat " href="#!">انصراف</a>
     </div>
 </div>

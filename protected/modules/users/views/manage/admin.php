@@ -23,8 +23,8 @@ $this->widget('zii.widgets.grid.CGridView', array(
         'email',
         array(
             'header' => 'نام کامل',
-            'value' => '$data->userDetails->fa_name',
-            'filter' => CHtml::activeTextField($model,'fa_name')
+            'value' => '$data->userDetails->name',
+            'filter' => CHtml::activeTextField($model,'name')
         ),
         array(
             'header' => 'وضعیت',

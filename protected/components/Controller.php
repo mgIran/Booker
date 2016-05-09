@@ -60,37 +60,6 @@ class Controller extends CController
                     'url' => array('/admins/dashboard')
                 ) ,
                 array(
-                    'label' => 'برنامه ها<span class="caret"></span>' ,
-                    'url' => '#' ,
-                    'itemOptions' => array('class' => 'dropdown' ,'tabindex' => "-1") ,
-                    'linkOptions' => array('class' => 'dropdown-toggle' ,'data-toggle' => "dropdown") ,
-                    'items' => array(
-                        array('label' => 'بخش اندروید' ,'url' => Yii::app()->createUrl('/manageApps/android/admin/')) ,
-                        array('label' => 'بخش آی او اس' ,'url' => Yii::app()->createUrl('/manageApps/iOS/admin/')) ,
-                        array('label' => 'بخش ویندوز فون' ,'url' => Yii::app()->createUrl('/manageApps/windowsPhone/admin/')) ,
-                    )
-                ) ,
-                array(
-                    'label' => 'دسته بندی برنامه ها<span class="caret"></span>' ,
-                    'url' => '#' ,
-                    'itemOptions' => array('class' => 'dropdown' ,'tabindex' => "-1") ,
-                    'linkOptions' => array('class' => 'dropdown-toggle' ,'data-toggle' => "dropdown") ,
-                    'items' => array(
-                        array('label' => 'مدیریت' ,'url' => Yii::app()->createUrl('/appCategories/admin/')) ,
-                        array('label' => 'افزودن' ,'url' => Yii::app()->createUrl('/appCategories/create/')) ,
-                    )
-                ) ,
-                array(
-                    'label' => 'امور مالی<span class="caret"></span>' ,
-                    'url' => '#' ,
-                    'itemOptions' => array('class' => 'dropdown' ,'tabindex' => "-1") ,
-                    'linkOptions' => array('class' => 'dropdown-toggle' ,'data-toggle' => "dropdown") ,
-                    'items' => array(
-                        array('label' => 'تسویه حساب','url' => Yii::app()->createUrl('/developers/panel/manageSettlement')) ,
-                        array('label' => 'گزارش فروش' ,'url' => Yii::app()->createUrl('/apps/reportSales')) ,
-                    )
-                ) ,
-                array(
                     'label' => 'صفحات متنی' ,
                     'url' => Yii::app()->createUrl('/pages/manage/admin/?slug=base'),
                 ) ,

@@ -22,19 +22,19 @@
     $cs->registerCssFile($baseUrl.'/css/bootstrap.min.css');
     $cs->registerCssFile($baseUrl.'/css/bootstrap-rtl.min.css');
     $cs->registerCssFile($baseUrl.'/css/materialize.min.css');
-    $cs->registerCssFile($baseUrl.'/css/bootstrap-theme.css');
+    $cs->registerCssFile($baseUrl.'/css/panel.css');
 
     $cs->registerScriptFile($baseUrl.'/js/bootstrap.min.js');
     $cs->registerScriptFile($baseUrl.'/js/materialize.min.js');
     $cs->registerScriptFile($baseUrl.'/js/jquery.script.js');
     ?>
 </head>
-<body class="inner-page">
-    <?php $this->renderPartial('//layouts/_header');?>
-    <div class="title-container <?php echo $this->pageName;?>" id="<?php echo $this->pageName;?>">
-        <div class="mask"></div>
+<body class="inner-page panel-page">
+    <?php $this->renderPartial('//layouts/_panel_header');?>
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-3 hidden-xs right-side">test</div>
+        <div class="col-lg-9 col-md-9 col-sm-9 hidden-xs"><?php echo $content;?></div>
     </div>
-    <?php echo $content;?>
     <?php $this->renderPartial('//layouts/_footer');?>
 </body>
 </html>

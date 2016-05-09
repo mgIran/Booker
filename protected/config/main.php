@@ -30,6 +30,7 @@ return array(
         'users',
         'setting',
         'pages',
+        'map',
 	),
 
 	// application components

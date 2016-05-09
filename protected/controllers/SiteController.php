@@ -84,10 +84,21 @@ class SiteController extends Controller
 
     public function actionContactUs(){
         Yii::import('pages.models.*');
-        Yii::app()->theme = 'market';
-        $this->layout = '//layouts/public';
+        Yii::app()->theme = 'frontend';
+        $this->layout = '//layouts/inner';
+		$this->pageName='contact';
         $model = Pages::model()->findByPk(2);
-        $this->render('//site/pages/page',array('model' => $model));
+		Yii::import('map.models.GoogleMaps');
+		$map_model = GoogleMaps::model()->findByPk(1);
+		$mapLat = $map_model->map_lat;
+		$mapLng = $map_model->map_lng;
+		$mapZoom = 15;
+        $this->render('//site/pages/page',array(
+			'model' => $model,
+			'mapLat'=>$mapLat,
+			'mapLng'=>$mapLng,
+			'mapZoom'=>$mapZoom,
+		));
     }
 
     public function actionHelp(){

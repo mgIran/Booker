@@ -42,7 +42,7 @@ class Users extends CActiveRecord
         'blocked' => 'مسدود',
         'deleted' => 'حذف شده'
     );
-    public $fa_name;
+    public $name;
     public $statusFilter;
     public $repeatPassword;
     public $oldPassword;
@@ -74,7 +74,7 @@ class Users extends CActiveRecord
             array('create_date', 'length', 'max'=>20),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('roleId, create_date, status, verification_token, change_password_request_count ,fa_name ,email ,statusFilter', 'safe', 'on'=>'search'),
+            array('roleId, create_date, status, verification_token, change_password_request_count ,name ,email ,statusFilter', 'safe', 'on'=>'search'),
         );
     }
 
@@ -154,7 +154,7 @@ class Users extends CActiveRecord
         $criteria->compare('verification_token',$this->verification_token,true);
         $criteria->compare('change_password_request_count',$this->change_password_request_count);
         $criteria->addSearchCondition('role.id' , $this->roleId );
-        $criteria->addSearchCondition('userDetails.fa_name' , $this->fa_name );
+        $criteria->addSearchCondition('userDetails.name' , $this->name );
         $criteria->with = array('role','userDetails');
         $criteria->order = 'status ,t.id DESC';
         return new CActiveDataProvider($this, array(

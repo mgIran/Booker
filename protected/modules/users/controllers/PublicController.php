@@ -62,10 +62,9 @@ class PublicController extends Controller
                 $model->updateByPk($model->id, array('verification_token'=>$token));
                 $userDetails=new UserDetails();
                 $userDetails->user_id=$model->id;
-                $userDetails->credit=0;
                 $userDetails->save();
 
-                $message = '<div style="color: #2d2d2d;font-size: 14px;text-align: right;">با سلام<br>برای فعال کردن حساب کاربری خود در هایپر اپس بر روی لینک زیر کلیک کنید:</div>';
+                $message = '<div style="color: #2d2d2d;font-size: 14px;text-align: right;">با سلام<br>برای فعال کردن حساب کاربری خود در بوکر بر روی لینک زیر کلیک کنید:</div>';
                 $message .= '<div style="text-align: right;font-size: 9pt;">';
                 $message .= '<a href="'.Yii::app()->getBaseUrl(true).'/users/public/verify/token/'.$token.'">'.Yii::app()->getBaseUrl(true).'/users/public/verify/token/'.$token.'</a>';
                 $message .= '</div>';
@@ -84,8 +83,9 @@ class PublicController extends Controller
      */
     public function actionLogin()
     {
-        Yii::app()->theme = 'market';
-        $this->layout = '//layouts/backgroundImage';
+        Yii::app()->theme = 'frontend';
+        $this->layout = '//layouts/inner';
+        $this->pageName='signup';
         if(!Yii::app()->user->isGuest && Yii::app()->user->type == 'user')
             $this->redirect($this->createAbsoluteUrl('//'));
 
@@ -101,7 +101,11 @@ class PublicController extends Controller
             $model->attributes = $_POST[ 'UserLoginForm' ];
             // validate user input and redirect to the previous page if valid
             if ( $model->validate() && $model->login())
-                $this->redirect(Yii::app()->baseUrl);
+                $this->redirect($this->createAbsoluteUrl('//'));
+                /*if(Yii::app()->user->returnUrl != Yii::app()->request->baseUrl.'/')
+                    $this->redirect(Yii::app()->user->returnUrl);
+                else
+                    $this->redirect($this->createAbsoluteUrl('//'));*/
         }
         // display the login form
         $this->render( 'login', array( 'model' => $model ) );
@@ -120,7 +124,7 @@ class PublicController extends Controller
      */
     public function actionDashboard()
     {
-        Yii::app()->theme = 'market';
+        Yii::app()->theme = 'frontend';
         $this->layout = '//layouts/panel';
         $model=Users::model()->findByPk(Yii::app()->user->getId());
         $this->render('dashboard', array(
@@ -212,8 +216,9 @@ class PublicController extends Controller
      */
     public function actionForgetPassword()
     {
-        Yii::app()->theme = 'market';
-        $this->layout = '//layouts/backgroundImage';
+        Yii::app()->theme = 'frontend';
+        $this->layout = '//layouts/inner';
+        $this->pageName='signup';
         if(!Yii::app()->user->isGuest and Yii::app()->user->type!='admin')
             $this->redirect($this->createAbsoluteUrl('//'));
         else if(!Yii::app()->user->isGuest and Yii::app()->user->type =='admin')
