@@ -118,12 +118,12 @@ return array(
 		'adminEmail'=>'webmaster@booker.ir',
         'noReplyEmail' => 'no-reply@booker.ir',
         'mailTheme'=>
-            '<h2 style="margin-bottom:0;box-sizing:border-box;display: block;width: 100%;background-color: #77c159;line-height:60px;color:#fff;font-size: 24px;text-align: right;padding-right: 50px">بوکر<span style="font-size: 14px;color:#f0f0f0"> - مرجع انواع نرم افزار تلفن های هوشمند</span></h2>
+            '<h2 style="box-sizing:border-box;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-o-box-sizing:border-box;border-radius:2px 2px 0 0;margin-bottom:0;box-sizing:border-box;display: block;width: 100%;background-color: rgb(239, 83, 80);line-height:60px;color:#fff;font-size: 24px;text-align: right;padding-right: 50px">بوکر<span style="font-size: 14px;color:#f0f0f0"> - مرجع انواع نرم افزار تلفن های هوشمند</span></h2>
              <div style="display: inline-block;width: 100%;font-family:tahoma;line-height: 28px;">
-                <div style="direction:rtl;display:block;overflow:hidden;border:1px solid #efefef;text-align: center;padding:15px;">{MessageBody}</div>
+                <div style="direction:rtl;display:block;overflow:hidden;border:1px solid #dadada;border-radius: 0 0 2px 2px;text-align: center;padding:15px;">{MessageBody}</div>
              </div>
              <div style="font-size: 8pt;color: #bbb;text-align: right;font-family: tahoma;padding: 15px;">
-                <a href="'.((strpos($_SERVER['SERVER_PROTOCOL'], 'https'))?'https://':'http://').$_SERVER['HTTP_HOST'].'/about">درباره</a> | <a href="'.((strpos($_SERVER['SERVER_PROTOCOL'], 'https'))?'https://':'http://').$_SERVER['HTTP_HOST'].'/help">راهنما</a>
+                <a href="'.Yii::app()->getBaseUrl(true).'/about">درباره</a> | <a href="'.Yii::app()->getBaseUrl(true).'/help">راهنما</a>
                 <span style="float: left;"> همهٔ حقوق برای بوکر محفوظ است. ©‏ 1395 </span>
              </div>',
 	),
