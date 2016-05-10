@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50617
 File Encoding         : 65001
 
-Date: 2016-05-08 02:10:08
+Date: 2016-05-09 13:01:10
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -34,7 +34,6 @@ CREATE TABLE `ym_admins` (
 -- Records of ym_admins
 -- ----------------------------
 INSERT INTO `ym_admins` VALUES ('24', 'admin', '$2a$12$92HG95rnUS5MYLFvDjn2cOU4O4p64mpH9QnxFYzVnk9CjQIPrcTBC', 'admin@gmial.com', '1');
-INSERT INTO `ym_admins` VALUES ('27', 'ad', '$2a$12$92HG95rnUS5MYLFvDjn2cOU4O4p64mpH9QnxFYzVnk9CjQIPrcTBC', 'sa@sda.sad', '2');
 
 -- ----------------------------
 -- Table structure for ym_admin_roles
@@ -66,8 +65,8 @@ CREATE TABLE `ym_counter_save` (
 -- ----------------------------
 -- Records of ym_counter_save
 -- ----------------------------
-INSERT INTO `ym_counter_save` VALUES ('counter', '74');
-INSERT INTO `ym_counter_save` VALUES ('day_time', '2457517');
+INSERT INTO `ym_counter_save` VALUES ('counter', '75');
+INSERT INTO `ym_counter_save` VALUES ('day_time', '2457518');
 INSERT INTO `ym_counter_save` VALUES ('max_count', '5');
 INSERT INTO `ym_counter_save` VALUES ('max_time', '1457598600');
 INSERT INTO `ym_counter_save` VALUES ('yesterday', '1');
@@ -85,7 +84,25 @@ CREATE TABLE `ym_counter_users` (
 -- ----------------------------
 -- Records of ym_counter_users
 -- ----------------------------
-INSERT INTO `ym_counter_users` VALUES ('837ec5754f503cfaaee0929fd48974e7', '1462654922');
+INSERT INTO `ym_counter_users` VALUES ('837ec5754f503cfaaee0929fd48974e7', '1462780952');
+
+-- ----------------------------
+-- Table structure for ym_google_maps
+-- ----------------------------
+DROP TABLE IF EXISTS `ym_google_maps`;
+CREATE TABLE `ym_google_maps` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) DEFAULT NULL,
+  `map_lat` varchar(30) NOT NULL DEFAULT '34.6327505',
+  `map_lng` varchar(30) NOT NULL DEFAULT '50.8644157',
+  `map_zoom` varchar(5) NOT NULL DEFAULT '10',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of ym_google_maps
+-- ----------------------------
+INSERT INTO `ym_google_maps` VALUES ('1', '', '35.72781914695719', '51.41998856328428', '19');
 
 -- ----------------------------
 -- Table structure for ym_pages
@@ -108,9 +125,6 @@ INSERT INTO `ym_pages` VALUES ('1', 'درباره ما', 'متن صفحه درب
 INSERT INTO `ym_pages` VALUES ('2', 'تماس با ما', 'متن صفحه تماس با ما', '1');
 INSERT INTO `ym_pages` VALUES ('3', 'راهنما', 'متن صفحه راهنما', '1');
 INSERT INTO `ym_pages` VALUES ('4', 'شرایط استفاده از خدمات', 'متن صفحه شرایط استفاده از خدمات', '1');
-INSERT INTO `ym_pages` VALUES ('5', 'حریم شخصی', 'متن صفحه حریم شخصی', '1');
-INSERT INTO `ym_pages` VALUES ('6', 'متن راهنمای تسویه حساب', 'متن راهنما', '1');
-INSERT INTO `ym_pages` VALUES ('7', 'قرارداد توسعه دهندگان', 'متن قرارداد', '1');
 
 -- ----------------------------
 -- Table structure for ym_page_categories
@@ -144,14 +158,10 @@ CREATE TABLE `ym_site_setting` (
 -- ----------------------------
 -- Records of ym_site_setting
 -- ----------------------------
-INSERT INTO `ym_site_setting` VALUES ('1', 'site_title', 'عنوان سایت', 'نیازمندی های آنلاین ');
-INSERT INTO `ym_site_setting` VALUES ('2', 'default_title', 'عنوان پیش فرض صفحات', 'تابلو ');
-INSERT INTO `ym_site_setting` VALUES ('3', 'keywords', 'کلمات کلیدی سایت', 'خرید، فروش، دست دوم، خودرو، املاک، موبایل، وسایل خانگی، تبلت، پوشاک ، نوزاد و سیسمونی، صوتی و تصویری، دوربین عکاسی فیلمبرداری، کنسول بازی، آرایشی، بهداشتی، زیبایی، جواهر، بدلیجات، ساعت، آنتیک، خدمات، آگهی، نیازمندی، استخدام،');
-INSERT INTO `ym_site_setting` VALUES ('4', 'site_description', 'شرح وبسایت', 'تابلو فضای داد و ستد آنلاین و نیازمندی های خرید و فروش اینترنتی رایگان در بخش های املاک، خودرو، وسایل خانگی، موبایل، پوشاک، آنتیک، آرایشی زیبایی بهداشتی، عکاسی و ...');
-INSERT INTO `ym_site_setting` VALUES ('5', 'buy_credit_options', 'گزینه های خرید اعتبار', '[\"5000\",\"10000\",\"20000\"]');
-INSERT INTO `ym_site_setting` VALUES ('6', 'min_credit', 'حداقل اعتبار جهت تبدیل عضویت', '1000');
-INSERT INTO `ym_site_setting` VALUES ('7', 'tax', 'میزان مالیات (درصد)', '9');
-INSERT INTO `ym_site_setting` VALUES ('8', 'commission', 'حق کمیسیون (درصد)', '15');
+INSERT INTO `ym_site_setting` VALUES ('1', 'site_title', 'عنوان سایت', 'رزرو آنلاین هتل های خارجی');
+INSERT INTO `ym_site_setting` VALUES ('2', 'default_title', 'عنوان پیش فرض صفحات', 'بوکر');
+INSERT INTO `ym_site_setting` VALUES ('3', 'keywords', 'کلمات کلیدی سایت', 'رزرو، هتل، رزرواسیون هتل');
+INSERT INTO `ym_site_setting` VALUES ('4', 'site_description', 'شرح وبسایت', 'رزرو آنلاین هتل های خارجی');
 
 -- ----------------------------
 -- Table structure for ym_users
@@ -170,12 +180,34 @@ CREATE TABLE `ym_users` (
   PRIMARY KEY (`id`),
   KEY `role_id` (`role_id`),
   CONSTRAINT `ym_users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `ym_user_roles` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of ym_users
 -- ----------------------------
-INSERT INTO `ym_users` VALUES ('44', '', '$2a$12$5fdoRxJO3GqQ22QctfaIFugokONMmc7dmyyProX1JtaxM9.9Vuwfe', 'mr.m.gharagozlu@gmail.com', '1', '1462654863', 'pending', '9098c95d8352909a3a37aa79917adb82', '0');
+INSERT INTO `ym_users` VALUES ('45', '', '$2a$12$.jA2p7skErfyCSiHWA5QHOix0Zsks2iogvTYchYFeI3shPm.KKeNO', 'gharagozlu.masoud@gmail.com', '1', '1462680947', 'active', '7f7fe1063bbab5e64dc32115dd9293e0', '0');
+INSERT INTO `ym_users` VALUES ('46', '', '$2a$12$RyLpBw/l8829WDpIwh0Rrut5PgNiqpcWd9Cj.hnsAdtP.CgKNpI3q', 'mr.m.gharagozlu@gmail.com', '1', '1462734385', 'pending', '06a66aecc07a153e28c562b86e4eefdb', '0');
+
+-- ----------------------------
+-- Table structure for ym_user_details
+-- ----------------------------
+DROP TABLE IF EXISTS `ym_user_details`;
+CREATE TABLE `ym_user_details` (
+  `user_id` int(10) unsigned NOT NULL COMMENT 'کاربر',
+  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'نام',
+  `avatar` varchar(20) DEFAULT NULL COMMENT 'تصویر پروفایل',
+  `national_code` varchar(20) DEFAULT NULL COMMENT 'کد ملی',
+  `phone` varchar(11) DEFAULT NULL COMMENT 'شماره تماس',
+  `address` varchar(1000) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'آدرس',
+  PRIMARY KEY (`user_id`),
+  CONSTRAINT `ym_user_details_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `ym_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of ym_user_details
+-- ----------------------------
+INSERT INTO `ym_user_details` VALUES ('45', null, null, null, null, null);
+INSERT INTO `ym_user_details` VALUES ('46', null, null, null, null, null);
 
 -- ----------------------------
 -- Table structure for ym_user_roles
@@ -186,7 +218,7 @@ CREATE TABLE `ym_user_roles` (
   `name` varchar(100) COLLATE utf8_persian_ci NOT NULL,
   `role` varchar(255) COLLATE utf8_persian_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_persian_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_persian_ci;
 
 -- ----------------------------
 -- Records of ym_user_roles

@@ -11,7 +11,7 @@
         <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
             <div class="nav-container">
                 <ul class="nav nav-pills">
-                    <li role="presentation"><a href="<?php echo $this->createUrl('/');?>">صفحه اصلی</a></li>
+                    <li role="presentation"><a href="<?php echo $this->createAbsoluteUrl('//');?>">صفحه اصلی</a></li>
                     <li role="presentation"><a href="<?php echo $this->createUrl('/register');?>">ثبت نام</a></li>
                     <li role="presentation"><a href="<?php echo $this->createUrl('/login');?>">ورود به سیستم</a></li>
                     <li role="presentation"><a href="<?php echo $this->createUrl('/terms');?>">قوانین و مقررات</a></li>

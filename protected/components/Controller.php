@@ -60,6 +60,15 @@ class Controller extends CController
                     'url' => array('/admins/dashboard')
                 ) ,
                 array(
+                    'label' => 'نقشه گوگل<span class="caret"></span>' ,
+                    'url' => '#' ,
+                    'itemOptions' => array('class' => 'dropdown' ,'tabindex' => "-1") ,
+                    'linkOptions' => array('class' => 'dropdown-toggle' ,'data-toggle' => "dropdown") ,
+                    'items' => array(
+                        array('label' => 'مدیریت' ,'url' => Yii::app()->createUrl('/map/manage/update')) ,
+                    )
+                ) ,
+                array(
                     'label' => 'صفحات متنی' ,
                     'url' => Yii::app()->createUrl('/pages/manage/admin/?slug=base'),
                 ) ,

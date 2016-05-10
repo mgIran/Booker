@@ -2,7 +2,7 @@
     <div class="container">
         <div class="pull-right">
             <ul class="nav nav-pills">
-                <li role="presentation"><a href="<?php echo $this->createUrl('//');?>">صفحه اصلی</a></li>
+                <li role="presentation"><a href="<?php echo $this->createAbsoluteUrl('//');?>">صفحه اصلی</a></li>
                 <li role="presentation"><a href="<?php echo $this->createUrl('/register');?>">ثبت نام</a></li>
                 <li role="presentation"><a href="<?php echo $this->createUrl('/login');?>">ورود به سیستم</a></li>
                 <li role="presentation"><a href="<?php echo $this->createUrl('/terms');?>">قوانین و مقررات</a></li>

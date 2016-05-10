@@ -32,7 +32,7 @@
     </div>
     <?php $this->endWidget(); ?>
     <p>
-        <a href="<?php echo $this->createUrl('/');?>" class="forget-link">صفحه اصلی سایت</a>
+        <a href="<?php echo $this->createAbsoluteUrl('//');?>" class="forget-link">صفحه اصلی سایت</a>
     </p>
 
     <div class="loading-container">
