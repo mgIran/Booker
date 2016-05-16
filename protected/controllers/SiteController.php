@@ -76,8 +76,9 @@ class SiteController extends Controller
 
     public function actionAbout(){
         Yii::import('pages.models.*');
-        Yii::app()->theme = 'market';
-        $this->layout = '//layouts/public';
+        Yii::app()->theme = 'frontend';
+        $this->layout = '//layouts/inner';
+		$this->pageName='about';
         $model = Pages::model()->findByPk(1);
         $this->render('//site/pages/page',array('model' => $model));
     }

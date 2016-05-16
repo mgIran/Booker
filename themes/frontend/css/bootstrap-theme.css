@@ -227,6 +227,9 @@ form p{
 .inner-page .title-container.help{
     background: url("../images/help-bg.jpg") no-repeat center / cover;
 }
+.inner-page .title-container.about{
+    background: url("../images/about-bg.jpg") no-repeat center / cover;
+}
 .inner-page .content{
     position: relative;
     top: -150px;
@@ -343,6 +346,12 @@ form p{
 
 
 
+.search-box .out-date-container{
+    margin-top: 2.5em;
+}
+
+
+
 .loading-container{
     position: absolute;
     top: 0;
@@ -414,4 +423,176 @@ form p{
     .login-form{
         padding: 30px 30px;
     }
+}
+
+
+
+.datepicker-plot-area{
+    z-index:2;
+    border:none;
+    border-radius: 0;
+    font: 12px "IRANSans";
+    padding: 0;
+}
+.navigator{
+    background: #26a69a;
+    height:100px;
+}
+.datepicker-plot-area .datepicker-header{
+    float: none;
+    width: 100%;
+    padding: 0;
+    height: 100px;
+}
+.datepicker-plot-area .datepicker-header .btn-next,
+.datepicker-plot-area .datepicker-header .btn-prev,
+.datepicker-plot-area .datepicker-header .btn-switch{
+    background: transparent;
+    color: #fff;
+    height:100px;
+    line-height:100px;
+    font-size: 20px;
+}
+.datepicker-plot-area .datepicker-header .btn-next:hover,
+.datepicker-plot-area .datepicker-header .btn-prev:hover,
+.datepicker-plot-area .datepicker-header .btn-switch:hover{
+    background: transparent;
+}
+.datepicker-plot-area .datepicker-day-view,
+.datepicker-plot-area .datepicker-month-view,
+.datepicker-plot-area .datepicker-year-view{
+    float: none;
+    margin:0;
+    width: 100%;
+}
+.datepicker-plot-area .datepicker-day-view .month-grid-box{
+    float: none;
+    margin: 0;
+    height:auto;
+}
+.datepicker-plot-area .header{
+    border-bottom: none;
+    box-shadow: none;
+    height:50px;
+    background: #1f897f;
+    color: #fff;
+}
+.datepicker-plot-area .datepicker-day-view .month-grid-box .header .header-row{
+    float: none;
+    height:50px;
+    width: 95%;
+    margin: 0 auto;
+}
+.datepicker-plot-area .datepicker-day-view .month-grid-box .header .header-row-cell{
+    color: #fff;
+    font: bold 14px "IRANSans";
+    line-height: 50px;
+    height:50px;
+}
+.datepicker-plot-area .datepicker-day-view .table-days{
+    float: none;
+    margin: 2.5% auto;
+    width:95%;
+}
+.date-item-selected,
+.datepicker-plot-area .datepicker-day-view .table-days td span.selected,
+.datepicker-plot-area .datepicker-month-view .month-item.selected,
+.datepicker-plot-area .datepicker-year-view .year-item.selected{
+    text-shadow: none;
+    background: #26a69a !important;
+}
+.datepicker-plot-area .toolbox{
+    float: none;
+    padding: 5px 0;
+    height:50px;
+}
+.datepicker-plot-area .toolbox .btn-today{
+    height:40px;
+    line-height:40px;
+}
+.date-item-today,
+.datepicker-plot-area .datepicker-day-view .table-days td span.today{
+    background: rgba(38, 166, 154, 0.5);
+}
+.tab a:hover,
+.tab a:active,
+.tab a:focus{
+    text-decoration: none;
+}
+.tab-content{
+    min-height:200px;
+    padding-top: 20px;
+}
+label.error{
+    visibility: hidden;
+    opacity:0;
+}
+.datepicker-overlay{
+    position: fixed;
+    z-index: 50;
+    background: rgba(0,0,0,0.85);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+.datepicker-plot-area{
+    z-index:51;
+}
+.out-date-container{
+    margin-top: 30px;
+}
+.search-box .row{
+    margin-bottom: 5px;
+}
+.search-box .row:last-child{
+    margin-bottom: 20px;
+}
+
+
+
+.modal-content{
+    border:none;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+}
+.modal .modal-footer .btn,
+.modal .modal-footer .btn-large,
+.modal .modal-footer .btn-flat{
+    float: left;
+}
+.modal .modal-footer a:hover,
+.modal .modal-footer a:active,
+.modal .modal-footer a:focus{
+    text-decoration: none;
+}
+#rooms-modal .dropdown-content li > a,
+#rooms-modal .dropdown-content li > span{
+    padding: 5px 16px;
+    font-size: 14px;
+    line-height:15px;
+}
+#rooms-modal .dropdown-content li{
+    min-height:auto;
+}
+
+
+.licences{
+    position: fixed;
+    left: 50px;
+    bottom: 50px;
+}
+.licences img{
+    width: 80px;
+    height: auto;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    -ms-transition: all 0.5s;
+    -o-transition: all 0.5s;
+    transition: all 0.5s;
+}
+.licences img{
+    width: 150px;
+    height: auto;
 }

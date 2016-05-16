@@ -9,7 +9,7 @@
 }
 .cb-slideshow:after {
     content: '';
-    background: transparent url('../images/pattern.svg') repeat top left;
+    background: rgba(0,0,0,0.5);
 }
 .cb-slideshow li span {
     width: 100%;

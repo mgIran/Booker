@@ -26,8 +26,7 @@
     $cs->registerCssFile($baseUrl.'/css/bootstrap-theme.css');
 
     $cs->registerScriptFile($baseUrl.'/js/bootstrap.min.js');
-    $cs->registerScriptFile($baseUrl.'/js/materialize.min.js');
-    $cs->registerScriptFile($baseUrl.'/js/modernizr.custom.86080.js');
+    $cs->registerScriptFile($baseUrl.'/js/materialize.js');
     $cs->registerScriptFile($baseUrl.'/js/jquery.script.js');
     ?>
 </head>
