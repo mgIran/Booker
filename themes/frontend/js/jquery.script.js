@@ -3,11 +3,13 @@ $(document).ready(function() {
     $('.modal-trigger').leanModal();
 
     // Validate search form
-    $('#search-form').validate({
-        errorPlacement: function errorPlacement(error, element) {
-            element.addClass('invalid')
-        },
-    });
+    if($('#search-form').length!=0) {
+        $('#search-form').validate({
+            errorPlacement: function errorPlacement(error, element) {
+                element.addClass('invalid')
+            },
+        });
+    }
 
     /**
      * Search box steps
@@ -43,39 +45,47 @@ $(document).ready(function() {
      * Change rooms count dropdown list
      */
     $('#rooms-count').on('change', function () {
-        for (var i = 0; i < parseInt($(this).val()); i++) {
-            var roomsHtml=
-                '<div class="room-info col-md-12">' +
-                    '<h5 class="clear">اتاق '+(i+1)+'</h5>' +
-                    '<div class="col-md-4">' +
-                        '<div class="input-field">' +
-                            '<select>' +
-                                '<option value="" disabled selected>تعداد بزرگسال</option>' +
-                                '<option value="1">1</option>' +
-                                '<option value="2">2</option>' +
-                                '<option value="3">3</option>' +
-                                '<option value="4">4</option>' +
-                            '</select>' +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="col-md-4">' +
-                        '<div class="input-field">' +
-                            '<select class="kids-count-select">' +
-                                '<option value="" disabled selected>تعداد خردسال</option>' +
-                                '<option value="1">1</option>' +
-                                '<option value="2">2</option>' +
-                                '<option value="3">3</option>' +
-                            '</select>' +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="col-md-4 kids-age-container"></div>' +
-                '</div>';
-            $('#rooms-modal .modal-content .row').append(roomsHtml);
-            $('#rooms-modal .modal-content .row select').material_select();
+        var existsRoom=$('.room-info').find('.room-item').length;
+        if(parseInt($(this).val())<existsRoom) {
+            console.log(existsRoom - parseInt($(this).val()));
+            for (var j = 0; j < existsRoom - parseInt($(this).val()); j++)
+                $('.room-info').find('.room-item:nth-child(' + (existsRoom-j) + ')').remove();
         }
-        $('#rooms-modal').openModal();
+        else {
+            for (var i = 0; i < parseInt($(this).val())-existsRoom; i++) {
+                var roomsHtml=
+                    '<div class="room-item clearfix">' +
+                        '<h6 class="col-md-12">اتاق '+((existsRoom+1)+i)+'</h6>' +
+                        '<div class="col-md-3">' +
+                            '<div class="input-field">' +
+                                '<select>' +
+                                    '<option value="" disabled selected>بزرگسال</option>' +
+                                    '<option value="1">1 نفر</option>' +
+                                    '<option value="2">2 نفر</option>' +
+                                    '<option value="3">3 نفر</option>' +
+                                    '<option value="4">4 نفر</option>' +
+                                '</select>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="col-md-3">' +
+                            '<div class="input-field">' +
+                                '<select class="kids-count-select">' +
+                                    '<option value="" disabled selected>خردسال</option>' +
+                                    '<option value="1">1 نفر</option>' +
+                                    '<option value="2">2 نفر</option>' +
+                                    '<option value="3">3 نفر</option>' +
+                                '</select>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="col-md-6 kids-age-container"></div>' +
+                    '</div>';
+                $('.room-info').append(roomsHtml);
+                $('.room-info select').material_select();
+            }
+        }
     });
-    $('body').on('change', '.kids-count-select', function(){
+    $('body').on('change', 'select.kids-count-select', function(){
+        $(this).parents('.room-item').find('.kids-age-container').html('');
         for (var i = 0; i < parseInt($(this).val()); i++) {
             var kidsAgeHtml=
                 '<div class="col-md-4">' +
@@ -88,8 +98,8 @@ $(document).ready(function() {
                         '</select>' +
                     '</div>' +
                 '</div>';
-            $(this).parents('.room-info').find('.kids-age-container').append(kidsAgeHtml);
-            $(this).parents('.room-info').find('.kids-age-container select').material_select();
+            $(this).parents('.room-item').find('.kids-age-container').append(kidsAgeHtml);
+            $(this).parents('.room-item').find('.kids-age-container select').material_select();
         }
     });
 });

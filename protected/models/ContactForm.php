@@ -21,6 +21,7 @@ class ContactForm extends CFormModel
 		return array(
 			// name, email, subject and body are required
 			array('name, email, subject, body', 'required'),
+			array('verifyCode', 'required', 'message'=>'لطفا کد روبرو را وارد کنید.'),
 			// email has to be a valid email address
 			array('email', 'email'),
 			// verifyCode needs to be entered correctly
@@ -36,7 +37,11 @@ class ContactForm extends CFormModel
 	public function attributeLabels()
 	{
 		return array(
-			'verifyCode'=>'Verification Code',
+			'verifyCode'=>'کد روبرو را وارد کنید',
+			'name'=>'نام و نام خانوادگی',
+			'email'=>'پست الکترونیکی',
+			'subject'=>'موضوع',
+			'body'=>'متن پیام	',
 		);
 	}
 }

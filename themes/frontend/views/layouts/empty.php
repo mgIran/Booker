@@ -24,6 +24,7 @@
     $cs->registerCssFile($baseUrl.'/css/materialize.min.css');
     $cs->registerCssFile($baseUrl.'/css/slideshow.css');
     $cs->registerCssFile($baseUrl.'/css/bootstrap-theme.css');
+    $cs->registerCssFile($baseUrl.'/css/responsive-theme.css');
 
     $cs->registerScriptFile($baseUrl.'/js/bootstrap.min.js');
     $cs->registerScriptFile($baseUrl.'/js/materialize.js');

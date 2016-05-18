@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50617
 File Encoding         : 65001
 
-Date: 2016-05-16 15:08:11
+Date: 2016-05-17 13:18:54
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -53,6 +53,24 @@ INSERT INTO `ym_admin_roles` VALUES ('1', 'مدیر', 'admin');
 INSERT INTO `ym_admin_roles` VALUES ('2', 'ناظر', 'validator');
 
 -- ----------------------------
+-- Table structure for ym_contact
+-- ----------------------------
+DROP TABLE IF EXISTS `ym_contact`;
+CREATE TABLE `ym_contact` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'نام و نام خانوادگی',
+  `email` varchar(100) DEFAULT NULL COMMENT 'پست الکترونیکی',
+  `subject` varchar(255) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'موضوع',
+  `body` text CHARACTER SET utf8 COLLATE utf8_persian_ci COMMENT 'متن پیام',
+  `date` varchar(20) DEFAULT NULL COMMENT 'تاریخ ارسال',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of ym_contact
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for ym_counter_save
 -- ----------------------------
 DROP TABLE IF EXISTS `ym_counter_save`;
@@ -65,8 +83,8 @@ CREATE TABLE `ym_counter_save` (
 -- ----------------------------
 -- Records of ym_counter_save
 -- ----------------------------
-INSERT INTO `ym_counter_save` VALUES ('counter', '81');
-INSERT INTO `ym_counter_save` VALUES ('day_time', '2457525');
+INSERT INTO `ym_counter_save` VALUES ('counter', '82');
+INSERT INTO `ym_counter_save` VALUES ('day_time', '2457526');
 INSERT INTO `ym_counter_save` VALUES ('max_count', '5');
 INSERT INTO `ym_counter_save` VALUES ('max_time', '1457598600');
 INSERT INTO `ym_counter_save` VALUES ('yesterday', '1');
@@ -84,7 +102,7 @@ CREATE TABLE `ym_counter_users` (
 -- ----------------------------
 -- Records of ym_counter_users
 -- ----------------------------
-INSERT INTO `ym_counter_users` VALUES ('837ec5754f503cfaaee0929fd48974e7', '1463394841');
+INSERT INTO `ym_counter_users` VALUES ('837ec5754f503cfaaee0929fd48974e7', '1463474456');
 
 -- ----------------------------
 -- Table structure for ym_google_maps

@@ -1,0 +1,12 @@
+@media all and (min-width: 1600px) {
+    .search-box .nav a{
+        font-size: 12px;
+        padding: 10px;
+    }
+}
+@media all and (max-width: 1200px) {
+    .search-box .nav a{
+        font-size: 11px;
+        padding: 10px 5px;
+    }
+}

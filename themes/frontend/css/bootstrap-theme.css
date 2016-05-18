@@ -101,7 +101,7 @@ textarea.materialize-textarea{
     font-family: 'BYekan';
 }
 .mask{
-    background: url("../images/pattern.svg") repeat center;
+    background: rgba(0,0,0,0.5);
     position: absolute;
     width: 100%;
     height:100%;
@@ -130,13 +130,9 @@ form p{
 .search-box{
     position: absolute;
     z-index: 2;
-    top:50%;
+    top:10%;
     right:0;
-    -webkit-transform: translateY(-50%);
-    -moz-transform: translateY(-50%);
-    -ms-transform: translateY(-50%);
-    -o-transform: translateY(-50%);
-    transform: translateY(-50%);
+    height:80%;
 }
 .search-box .logo{
     position: relative;
@@ -202,14 +198,12 @@ form p{
     background: transparent;
     color: #fbc02d;
 }
-.search-box .select-container{
-    margin-bottom: 0.8rem;
-}
 .search-box input[type="text"]{
-    margin-bottom: 10px;
-}
-.search-box .input-field{
-    margin-top: 0.8rem;
+    height: 3rem;
+    padding-right: 0.75rem;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
 
 
@@ -342,12 +336,6 @@ form p{
 .footer .nav-pills > li > a:active{
     color: #fbc02d;
     background: transparent;
-}
-
-
-
-.search-box .out-date-container{
-    margin-top: 2.5em;
 }
 
 
@@ -539,14 +527,23 @@ label.error{
 .datepicker-plot-area{
     z-index:51;
 }
-.out-date-container{
-    margin-top: 30px;
+.kids-age-container{
+    padding-right: 0;
 }
-.search-box .row{
-    margin-bottom: 5px;
+.kids-age-container input[type="text"]{
+    font-size: 11px;
 }
-.search-box .row:last-child{
-    margin-bottom: 20px;
+.room-info .kids-age-container .select-wrapper span.caret{
+    left:10px;
+}
+.kids-age-container > div{
+    padding: 0 5px;
+}
+.room-info .select-wrapper span.caret{
+    left:15px;
+}
+.room-item h6{
+    margin: 20px 0 -10px;
 }
 
 
@@ -595,4 +592,20 @@ label.error{
 .licences img{
     width: 150px;
     height: auto;
+}
+
+
+
+.page-break{
+    border-bottom: 3px solid #d9534f;
+    margin-top: 50px;
+    margin-bottom: 15px;
+}
+#contact-form .captcha{
+    position: absolute;
+    left:10px;
+    top: 2px;
+}
+#contact-form .captcha img{
+    height:35px;
 }

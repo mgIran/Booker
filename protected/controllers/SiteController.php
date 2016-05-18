@@ -11,7 +11,7 @@ class SiteController extends Controller
 			// captcha action renders the CAPTCHA image displayed on the contact page
 			'captcha'=>array(
 				'class'=>'CCaptchaAction',
-				'backColor'=>0xFFFFFF,
+				'backColor'=>0xECF0F1,
 			),
 			// page action renders "static" pages stored under 'protected/views/site/pages'
 			// They can be accessed via: index.php?r=site/page&views=FileName
@@ -94,8 +94,28 @@ class SiteController extends Controller
 		$mapLat = $map_model->map_lat;
 		$mapLng = $map_model->map_lng;
 		$mapZoom = 15;
+
+		$contactModel=new ContactForm;
+		if(isset($_POST['ContactForm']))
+		{
+			$contactModel->attributes=$_POST['ContactForm'];
+			if($contactModel->validate())
+			{
+				$contactTable=new Contact();
+				$contactTable->attributes=$_POST['ContactForm'];
+				$contactTable->date=time();
+				if($contactTable->save()) {
+					Yii::app()->user->setFlash('success', 'پیام شما با موفقیت ثبت شد.');
+					$this->refresh();
+				}
+				else
+					Yii::app()->user->setFlash('success', 'در ثبت اطلاعات خطایی رخ داده است لطفا مجددا تلاش کنید.');
+			}
+		}
+
         $this->render('//site/pages/page',array(
 			'model' => $model,
+			'contactModel' => $contactModel,
 			'mapLat'=>$mapLat,
 			'mapLng'=>$mapLng,
 			'mapZoom'=>$mapZoom,

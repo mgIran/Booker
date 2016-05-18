@@ -23,9 +23,10 @@
     $cs->registerCssFile($baseUrl.'/css/bootstrap-rtl.min.css');
     $cs->registerCssFile($baseUrl.'/css/materialize.min.css');
     $cs->registerCssFile($baseUrl.'/css/bootstrap-theme.css');
+    $cs->registerCssFile($baseUrl.'/css/responsive-theme.css');
 
     $cs->registerScriptFile($baseUrl.'/js/bootstrap.min.js');
-    $cs->registerScriptFile($baseUrl.'/js/materialize.min.js');
+    $cs->registerScriptFile($baseUrl.'/js/materialize.js');
     $cs->registerScriptFile($baseUrl.'/js/jquery.script.js');
     ?>
 </head>
