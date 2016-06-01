@@ -13,42 +13,84 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl.'/js/jqu
             <h3>جستجوی هتل</h3>
             <form id="search-form">
                 <div class="input-field">
-                    <input type="text" id="destination" required>
+                    <input type="text" id="destination" class="hotel-destination" required>
+                    <div class="loading-container auto-complete-loading">
+                        <div class="spinner">
+                            <div class="bounce1"></div>
+                            <div class="bounce2"></div>
+                            <div class="bounce3"></div>
+                        </div>
+                    </div>
                     <label for="destination">شهر مقصد *</label>
                 </div>
-                <div class="input-field">
-                    <?php $this->widget('application.extensions.PDatePicker.PDatePicker', array(
-                        'id'=>'enter-date',
-                        'options'=>array(
-                            'format'=>'DD MMMM YYYY',
-                            'onShow'=>"js:function(){
-                                $('.datepicker-plot-area').width($('#enter-date').width()).
-                                    css('top',(($(window).height()/2)-($('.datepicker-plot-area').height()/2)));
-                                $('.datepicker-overlay').removeClass('hidden');
-                            }",
-                            'onHide'=>"js:function(){
-                                $('.datepicker-overlay').addClass('hidden');
-                            }"
-                        )
-                    ));?>
-                    <label for="enter-date">تاریخ ورود</label>
-                </div>
-                <div class="input-field">
-                    <?php $this->widget('application.extensions.PDatePicker.PDatePicker', array(
-                        'id'=>'out-date',
-                        'options'=>array(
-                            'format'=>'DD MMMM YYYY',
-                            'onShow'=>"js:function(){
-                                $('.datepicker-plot-area').width($('#out-date').width()).
-                                    css('top',(($(window).height()/2)-($('.datepicker-plot-area').height()/2)));
-                                $('.datepicker-overlay').removeClass('hidden');
-                            }",
-                            'onHide'=>"js:function(){
-                                $('.datepicker-overlay').addClass('hidden');
-                            }"
-                        )
-                    ));?>
-                    <label for="out-date">تاریخ خروج</label>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <div class="input-field">
+                            <?php $this->widget('application.extensions.PDatePicker.PDatePicker', array(
+                                'id'=>'enter-date',
+                                'options'=>array(
+                                    'format'=>'DD MMMM YYYY',
+                                    'minDate'=>(time()-(60*60*24))*1000,
+                                    'onShow'=>"js:function(){
+                                        $('.datepicker-plot-area').width($('#enter-date').parents('.row').width()).
+                                            css({
+                                                top:(($(window).height()/2)-($('.datepicker-plot-area').height()/2)),
+                                                left:$('#enter-date').parents('.row').offset().left
+                                            });
+                                        $('.datepicker-overlay').removeClass('hidden');
+                                        $('.btn-submit-date').css({
+                                            top:$('.datepicker-plot-area:eq(0)').offset().top+$('.datepicker-plot-area:eq(0)').height()-46,
+                                            left:$('.datepicker-plot-area:eq(0)').offset().left+15
+                                        }).removeClass('hidden');
+                                    }",
+                                    'onHide'=>"js:function(){
+                                        $('.datepicker-overlay').addClass('hidden');
+                                        $('.btn-submit-date').addClass('hidden');
+                                        var stayTime=Math.floor(($('#out-date_altField').val()-$('#enter-date_altField').val())/(60*60*24));
+                                        if(stayTime < 0)
+                                            stayTime=0;
+                                        $('.stay-time').text(stayTime);
+                                    }"
+                                )
+                            ));?>
+                            <label for="enter-date">تاریخ ورود</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <div class="input-field">
+                            <?php $this->widget('application.extensions.PDatePicker.PDatePicker', array(
+                                'id'=>'out-date',
+                                'options'=>array(
+                                    'format'=>'DD MMMM YYYY',
+                                    'minDate'=>(time()-(60*60*24))*1000,
+                                    'onShow'=>"js:function(){
+                                        $('.datepicker-plot-area').width($('#out-date').parents('.row').width()).
+                                            css({
+                                                top:(($(window).height()/2)-($('.datepicker-plot-area').height()/2)),
+                                                left:$('#enter-date').parents('.row').offset().left
+                                            });
+                                        $('.datepicker-overlay').removeClass('hidden');
+                                        $('.btn-submit-date').css({
+                                            top:$('.datepicker-plot-area:eq(1)').offset().top+$('.datepicker-plot-area:eq(1)').height()-46,
+                                            left:$('.datepicker-plot-area:eq(1)').offset().left+15
+                                        }).removeClass('hidden');
+                                    }",
+                                    'onHide'=>"js:function(){
+                                        $('.datepicker-overlay').addClass('hidden');
+                                        $('.btn-submit-date').addClass('hidden');
+                                        var stayTime=Math.floor(($('#out-date_altField').val()-$('#enter-date_altField').val())/(60*60*24));
+                                        if(stayTime < 0)
+                                            stayTime=0;
+                                        $('.stay-time').text(stayTime);
+                                    }"
+                                )
+                            ));?>
+                            <label for="out-date">تاریخ خروج</label>
+                        </div>
+                    </div>
+                    <div class="container-fluid">
+                        <small><b>مدت اقامت: </b><span class="stay-time">0</span> شب</small>
+                    </div>
                 </div>
                 <div class="input-field">
                     <select id="rooms-count">
@@ -87,3 +129,4 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl.'/js/jqu
     </div>
 </div>
 <div class="datepicker-overlay hidden"></div>
+<button class="btn-submit-date hidden">انتخاب</button>

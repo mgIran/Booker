@@ -28,6 +28,7 @@
 
     $cs->registerScriptFile($baseUrl.'/js/bootstrap.min.js');
     $cs->registerScriptFile($baseUrl.'/js/materialize.js');
+    $cs->registerScriptFile($baseUrl.'/js/typeahead.bundle.min.js');
     $cs->registerScriptFile($baseUrl.'/js/jquery.script.js');
     ?>
 </head>

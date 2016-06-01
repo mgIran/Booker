@@ -1,7 +1,7 @@
 <?php
 return array(
-    'onBeginRequest'=>create_function('$event', 'return ob_start("ob_gzhandler");'),
-    'onEndRequest'=>create_function('$event', 'return ob_end_flush();'),
+//    'onBeginRequest'=>create_function('$event', 'return ob_start("ob_gzhandler");'),
+//    'onEndRequest'=>create_function('$event', 'return ob_end_flush();'),
 	'basePath' => dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 	'name'=>'بوکر',
     'timeZone' => 'Asia/Tehran',
@@ -31,6 +31,7 @@ return array(
         'setting',
         'pages',
         'map',
+        'postman',
 	),
 
 	// application components
@@ -59,6 +60,7 @@ return array(
             'showScriptName'=>false,
             'appendParams'=>true,
 			'rules'=>array(
+				'postman/<action:\w+>/<query:\w+>' => 'postman/default/<action>',
 				'<action:(logout|login|register|dashboard)>' => 'users/public/<action>',
 				'<action:(terms|help|privacy|contactUs|about)>' => 'site/<action>',
                 '<module:\w+>/<controller:\w+>'=>'<module>/<controller>/index',

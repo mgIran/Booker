@@ -2,7 +2,39 @@ $(document).ready(function() {
     $('select').material_select();
     $('.modal-trigger').leanModal();
 
-    // Validate search form
+    /**
+     * Call typeahead plugin for destination input
+     */
+    var destinationSource = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        remote: {
+            url: 'postman/autoComplete/%QUERY',
+            wildcard: '%QUERY'
+        }
+    });
+    $('#destination').typeahead({
+        minLength: 3,
+        limit: 20,
+        hint: false
+    }, {
+        name: 'destination',
+        display: 'name',
+        source: destinationSource
+    }).on('focus', function(){
+        $(this).parents('.input-field').find('label').addClass('active');
+    }).on('blur', function(){
+        if($(this).val()=='')
+            $(this).parents('.input-field').find('label').removeClass('active');
+    }).on('typeahead:asyncrequest', function(){
+        $(this).parents('.input-field').find('.auto-complete-loading').show();
+    }).on('typeahead:asyncreceive', function(){
+        $(this).parents('.input-field').find('.auto-complete-loading').hide();
+    });
+
+    /**
+     *  Validate search form
+     */
     if($('#search-form').length!=0) {
         $('#search-form').validate({
             errorPlacement: function errorPlacement(error, element) {
@@ -10,36 +42,6 @@ $(document).ready(function() {
             },
         });
     }
-
-    /**
-     * Search box steps
-     */
-    $('#active-step').val('destination-container');
-    // Next step
-    $('.search-box #next').on('click', function () {
-        if ($('#search-form').valid())
-            $('#search-form').switchSearchTabs('next');
-    });
-    // Previous step
-    $('.search-box #previous').on('click', function () {
-        $('#search-form').switchSearchTabs('prev');
-    });
-    $('.search-box .tabs .tab a').on('click', function () {
-        $('#active-step').val($(this).attr('id').substr(0, $(this).attr('id').lastIndexOf('-trigger')));
-        if ($(this).attr('id') == 'rooms-trigger') {
-            $('.search-box #next').addClass('hidden');
-            $('.search-box #search').removeClass('hidden');
-        }
-        else {
-            $('.search-box #next').removeClass('hidden');
-            $('.search-box #search').addClass('hidden');
-        }
-
-        if ($(this).attr('id') == 'destination-container-trigger')
-            $('.search-box #previous').addClass('disabled');
-        else
-            $('.search-box #previous').removeClass('disabled');
-    });
 
     /**
      * Change rooms count dropdown list
@@ -71,6 +73,7 @@ $(document).ready(function() {
                             '<div class="input-field">' +
                                 '<select class="kids-count-select">' +
                                     '<option value="" disabled selected>خردسال</option>' +
+                                    '<option value="0">بدون خردسال</option>' +
                                     '<option value="1">1 نفر</option>' +
                                     '<option value="2">2 نفر</option>' +
                                     '<option value="3">3 نفر</option>' +
@@ -103,48 +106,3 @@ $(document).ready(function() {
         }
     });
 });
-
-jQuery.fn.switchSearchTabs=function(destination) {
-    var nextStep,
-        prevStep;
-    switch ($('#active-step').val()) {
-        case 'destination-container':
-            nextStep = 'dates';
-            prevStep = null;
-            break;
-        case 'dates':
-            nextStep = 'rooms';
-            prevStep = 'destination-container';
-            break;
-        case 'rooms':
-            nextStep = null;
-            prevStep = 'dates';
-            break;
-    }
-
-    if(destination=='next') {
-        if (nextStep != null) {
-            $('#' + nextStep + '-trigger').parent('li').removeClass('disabled');
-            $('#' + nextStep + '-trigger').trigger('click');
-            $('.search-box #previous').removeClass('disabled');
-            $('#active-step').val(nextStep);
-            if (nextStep == 'rooms') {
-                $('.search-box #next').addClass('hidden');
-                $('.search-box #search').removeClass('hidden');
-            }
-        }
-    }
-    else {
-        if (prevStep != null) {
-            $('#' + prevStep + '-trigger').trigger('click');
-            $('#active-step').val(prevStep);
-            if (prevStep == 'destination-container')
-                $('.search-box #previous').addClass('disabled');
-            else if(prevStep == 'dates')
-            {
-                $('.search-box #next').removeClass('hidden');
-                $('.search-box #search').addClass('hidden');
-            }
-        }
-    }
-}
