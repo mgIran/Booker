@@ -9,7 +9,7 @@ $(document).ready(function() {
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         remote: {
-            url: 'postman/autoComplete/%QUERY',
+            url: hotelAutoCompleteUrl,
             wildcard: '%QUERY'
         }
     });
@@ -28,20 +28,12 @@ $(document).ready(function() {
             $(this).parents('.input-field').find('label').removeClass('active');
     }).on('typeahead:asyncrequest', function(){
         $(this).parents('.input-field').find('.auto-complete-loading').show();
-    }).on('typeahead:asyncreceive', function(){
+    }).on('typeahead:asyncreceive', function(a,b,c){
+        console.log(a,b,c);
         $(this).parents('.input-field').find('.auto-complete-loading').hide();
+    }).on('typeahead:selected', function (e, datum) {
+        $('#city-key').val(datum.key);
     });
-
-    /**
-     *  Validate search form
-     */
-    if($('#search-form').length!=0) {
-        $('#search-form').validate({
-            errorPlacement: function errorPlacement(error, element) {
-                element.addClass('invalid')
-            },
-        });
-    }
 
     /**
      * Change rooms count dropdown list
@@ -55,33 +47,70 @@ $(document).ready(function() {
         }
         else {
             for (var i = 0; i < parseInt($(this).val())-existsRoom; i++) {
-                var roomsHtml=
-                    '<div class="room-item clearfix">' +
-                        '<h6 class="col-md-12">اتاق '+((existsRoom+1)+i)+'</h6>' +
-                        '<div class="col-md-3">' +
-                            '<div class="input-field">' +
-                                '<select>' +
-                                    '<option value="" disabled selected>بزرگسال</option>' +
-                                    '<option value="1">1 نفر</option>' +
-                                    '<option value="2">2 نفر</option>' +
-                                    '<option value="3">3 نفر</option>' +
-                                    '<option value="4">4 نفر</option>' +
-                                '</select>' +
+                var roomsHtml='',
+                    template=$(this).data('template');
+                if(template == 'normal') {
+                    roomsHtml=
+                        '<div class="room-item clearfix">' +
+                            '<h6 class="col-md-12">اتاق '+((existsRoom+1)+i)+'</h6>' +
+                            '<div class="col-md-3">' +
+                                '<div class="input-field">' +
+                                    '<select class="adults-count" name="rooms['+((existsRoom+1)+i)+'][adults]">' +
+                                        '<option value="" disabled selected>بزرگسال</option>' +
+                                        '<option value="1">1 نفر</option>' +
+                                        '<option value="2">2 نفر</option>' +
+                                        '<option value="3">3 نفر</option>' +
+                                        '<option value="4">4 نفر</option>' +
+                                    '</select>' +
+                                '</div>' +
                             '</div>' +
-                        '</div>' +
-                        '<div class="col-md-3">' +
-                            '<div class="input-field">' +
-                                '<select class="kids-count-select">' +
-                                    '<option value="" disabled selected>خردسال</option>' +
-                                    '<option value="0">بدون خردسال</option>' +
-                                    '<option value="1">1 نفر</option>' +
-                                    '<option value="2">2 نفر</option>' +
-                                    '<option value="3">3 نفر</option>' +
-                                '</select>' +
+                            '<div class="col-md-3">' +
+                                '<div class="input-field">' +
+                                    '<select class="kids-count-select" name="rooms['+((existsRoom+1)+i)+'][kids]">' +
+                                        '<option value="" disabled selected>کودک</option>' +
+                                        '<option value="0">0 نفر</option>' +
+                                        '<option value="1">1 نفر</option>' +
+                                        '<option value="2">2 نفر</option>' +
+                                        '<option value="3">3 نفر</option>' +
+                                    '</select>' +
+                                '</div>' +
                             '</div>' +
-                        '</div>' +
-                        '<div class="col-md-6 kids-age-container"></div>' +
-                    '</div>';
+                            '<div class="col-md-6 kids-age-container"></div>' +
+                            '<input type="hidden" id="room-num" value="'+((existsRoom+1)+i)+'">' +
+                        '</div>';
+                }else if(template=='pretty') {
+                    roomsHtml=
+                        '<div class="room-item clearfix container-fluid">' +
+                            '<h6 class="col-md-1 room-label">اتاق <b>'+((existsRoom+1)+i).toString().toPersianDigit()+'</b></h6>' +
+                            '<div class="col-md-8 rooms-info-container">' +
+                                '<div class="col-md-3">' +
+                                    '<div class="input-field">' +
+                                        '<select class="adults-count" name="rooms['+((existsRoom+1)+i)+'][adults]">' +
+                                            '<option value="" disabled selected>بزرگسال</option>' +
+                                            '<option value="1">1 نفر</option>' +
+                                            '<option value="2">2 نفر</option>' +
+                                            '<option value="3">3 نفر</option>' +
+                                            '<option value="4">4 نفر</option>' +
+                                        '</select>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<div class="col-md-3">' +
+                                    '<div class="input-field">' +
+                                        '<select class="kids-count-select" name="rooms['+((existsRoom+1)+i)+'][kids]">' +
+                                            '<option value="" disabled selected>کودک</option>' +
+                                            '<option value="0">0 نفر</option>' +
+                                            '<option value="1">1 نفر</option>' +
+                                            '<option value="2">2 نفر</option>' +
+                                            '<option value="3">3 نفر</option>' +
+                                        '</select>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<div class="col-md-6 kids-age-container"></div>' +
+                                '<input type="hidden" id="room-num" value="<?php echo ($i+1);?>">' +
+                            '</div>' +
+                        '</div>';
+                }
+
                 $('.room-info').append(roomsHtml);
                 $('.room-info select').material_select();
             }
@@ -89,15 +118,16 @@ $(document).ready(function() {
     });
     $('body').on('change', 'select.kids-count-select', function(){
         $(this).parents('.room-item').find('.kids-age-container').html('');
+        var roomNum=$(this).parents('.room-item').find('#room-num').val();
         for (var i = 0; i < parseInt($(this).val()); i++) {
             var kidsAgeHtml=
                 '<div class="col-md-4">' +
                     '<div class="input-field">' +
-                        '<select>' +
+                        '<select class="kids-age" name="rooms['+roomNum+'][kids_age]['+(i+1)+']">' +
                             '<option value="" disabled selected>سن</option>' +
-                            '<option value="1">0 تا 2</option>' +
-                            '<option value="2">2 تا 7</option>' +
-                            '<option value="3">7 تا 12</option>' +
+                            '<option value="2">0 تا 2</option>' +
+                            '<option value="7">2 تا 7</option>' +
+                            '<option value="12">7 تا 12</option>' +
                         '</select>' +
                     '</div>' +
                 '</div>';

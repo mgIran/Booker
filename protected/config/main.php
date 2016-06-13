@@ -31,7 +31,7 @@ return array(
         'setting',
         'pages',
         'map',
-        'postman',
+        'reservation',
 	),
 
 	// application components
@@ -60,7 +60,6 @@ return array(
             'showScriptName'=>false,
             'appendParams'=>true,
 			'rules'=>array(
-				'postman/<action:\w+>/<query:\w+>' => 'postman/default/<action>',
 				'<action:(logout|login|register|dashboard)>' => 'users/public/<action>',
 				'<action:(terms|help|privacy|contactUs|about)>' => 'site/<action>',
                 '<module:\w+>/<controller:\w+>'=>'<module>/<controller>/index',
@@ -70,7 +69,8 @@ return array(
                 '<controller:\w+>/<id:\d+>'=>'<controller>/view',
                 '<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
                 '<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
-                '<module:\w+>/<controller:\w+>/<action:\w+>/<id:\d+>'=>'<module>/<controller>/<action>/view',
+                '<module:\w+>/<controller:\w+>/<action:\w+>/<id:\d+>'=>'<module>/<controller>/<action>',
+                '<module:\w+>/<controller:\w+>/<action:\w+>/<title:\w+>'=>'<module>/<controller>/<action>',
                 '<module:\w+>/<controller:\w+>/<action:\w+>'=>'<module>/<controller>/<action>',
                 '<module:\w+>/<controller:\w+>/<id:\d+>'=>'<module>/<controller>/view',
             ),

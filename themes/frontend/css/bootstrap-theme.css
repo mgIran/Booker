@@ -45,6 +45,8 @@ input,select,textarea{
 .dropdown-content li > a, .dropdown-content li > span{
     text-align: right;
     color: #ef5350;
+    padding: 0 16px;
+    line-height: 2.5rem;
 }
 input:focus:not([type]):not([readonly]) + label,
 input[type="text"]:focus:not([readonly]) + label,
@@ -195,7 +197,7 @@ form p{
     color: #fff;
 }
 .search-box .nav > li > a:focus,
-.nav > li > a:hover{
+.search-box .nav > li > a:hover{
     background: transparent;
     color: #fbc02d;
 }
@@ -228,6 +230,9 @@ form p{
 }
 .inner-page .title-container.about{
     background: url("../images/about-bg.jpg") no-repeat center / cover;
+}
+.inner-page .title-container.search{
+    background: url("../images/search-bg.jpg") no-repeat center / cover;
 }
 .inner-page .content{
     position: relative;
@@ -306,6 +311,7 @@ form p{
 .header .nav > li > a:active,
 .header .nav > li > a:focus{
     color: #ef5350;
+    background: transparent;
 }
 
 
@@ -426,6 +432,7 @@ form p{
     border-radius: 0;
     font: 12px "IRANSans";
     padding: 0;
+    position: fixed;
 }
 .navigator{
     background: #26a69a;
@@ -678,4 +685,47 @@ label.error{
 }
 .btn-submit-date:hover{
     background-color: #eee;
+}
+.nav-wizard{
+    margin-bottom: 35px;
+}
+.select-wrapper input.select-dropdown{
+    height:2.5rem;
+}
+.dropdown-content li{
+    min-height:2.5rem;
+}
+.room-label{
+    background: #d9534f;
+    border-radius: 0 3px 3px 0;
+    color: #fff;
+    height:36px;
+    line-height: 36px;
+    text-align: center;
+    font-size: 13px;
+    padding:0;
+}
+.room-label:after {
+    width: 0;
+    height: 0;
+    border-top: 18px inset transparent;
+    border-bottom: 18px inset transparent;
+    border-right: 18px solid #d9534f;
+    position: absolute;
+    content: "";
+    top: 0;
+    left: -18px;
+}
+.room-label b{
+    font-size: 20px;
+    margin-right: 5px;
+}
+.room-label + .rooms-info-container{
+    padding: 0 30px;
+}
+.inner-page .room-item .select-wrapper input.select-dropdown{
+    font-size: 0.85rem;
+}
+.inner-page .room-info{
+    margin-bottom: 30px;
 }

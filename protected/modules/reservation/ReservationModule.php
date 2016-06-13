@@ -1,6 +1,6 @@
 <?php
 
-class PostmanModule extends CWebModule
+class ReservationModule extends CWebModule
 {
 	public function init()
 	{
@@ -9,8 +9,8 @@ class PostmanModule extends CWebModule
 
 		// import the module-level models and components
 		$this->setImport(array(
-			'postman.models.*',
-			'postman.components.*',
+			'reservation.models.*',
+			'reservation.components.*',
 		));
 	}
 

@@ -1,6 +1,5 @@
 <?
 /* @var $this SiteController */
-Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl.'/js/jquery.validate.min.js');
 ?>
 <div class="container main-page">
     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 col-lg-offset-3 col-md-offset-3 col-sm-offset-3 search-box">
@@ -11,9 +10,10 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl.'/js/jqu
         </div>
         <div class="box">
             <h3>جستجوی هتل</h3>
-            <form id="search-form">
+            <?php echo CHtml::beginForm('', 'post', array('id'=>'search-form'));?>
                 <div class="input-field">
-                    <input type="text" id="destination" class="hotel-destination" required>
+                    <?php echo CHtml::textField('destination', '', array('id'=>'destination', 'class'=>'hotel-destination'));?>
+                    <?php echo CHtml::hiddenField('city_key', '', array('id'=>'city-key'));?>
                     <div class="loading-container auto-complete-loading">
                         <div class="spinner">
                             <div class="bounce1"></div>
@@ -21,7 +21,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl.'/js/jqu
                             <div class="bounce3"></div>
                         </div>
                     </div>
-                    <label for="destination">شهر مقصد *</label>
+                    <?php echo CHtml::label('شهر مقصد *', 'destination');?>
                 </div>
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -53,7 +53,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl.'/js/jqu
                                     }"
                                 )
                             ));?>
-                            <label for="enter-date">تاریخ ورود</label>
+                            <?php echo CHtml::label('تاریخ ورود', 'enter-date');?>
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -85,7 +85,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl.'/js/jqu
                                     }"
                                 )
                             ));?>
-                            <label for="out-date">تاریخ خروج</label>
+                            <?php echo CHtml::label('تاریخ خروج', 'out-date');?>
                         </div>
                     </div>
                     <div class="container-fluid">
@@ -93,7 +93,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl.'/js/jqu
                     </div>
                 </div>
                 <div class="input-field">
-                    <select id="rooms-count">
+                    <select id="rooms-count" name="rooms-count" data-template="normal">
                         <option value="" disabled selected>تعداد اتاق را انتخاب کنید</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
@@ -103,12 +103,13 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl.'/js/jqu
                 </div>
                 <div class="room-info row"></div>
                 <div class="buttons-block">
-                    <button class="btn waves-effect waves-light green lighten-1 col-md-12" type="submit" id="search">جستجو</button>
+                    <?php echo CHtml::tag('button', array('class'=>'btn waves-effect waves-light green lighten-1 col-md-12', 'id'=>'search', 'type'=>'submit'), 'جستجو');?>
                 </div>
-            </form>
+                <p class="text-center input-field message"></p>
+            <?php echo CHtml::endForm();?>
         </div>
         <ul class="nav nav-pills">
-            <li role="presentation"><a href="<?php echo $this->createUrl('/login');?>">ورود</a href=""></li>
+            <li role="presentation"><a href="<?php echo $this->createUrl('/login');?>">ورود</a></li>
             <li role="presentation"><a href="<?php echo $this->createUrl('/register');?>">ثبت نام</a></li>
             <li role="presentation"><a href="<?php echo $this->createUrl('/terms');?>">قوانین و مقررات</a></li>
             <li role="presentation"><a href="<?php echo $this->createUrl('/help');?>">راهنما</a></li>
@@ -130,3 +131,28 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl.'/js/jqu
 </div>
 <div class="datepicker-overlay hidden"></div>
 <button class="btn-submit-date hidden">انتخاب</button>
+<?php Yii::app()->clientScript->registerScript('general-variables', "var hotelAutoCompleteUrl='".Yii::app()->request->hostInfo.Yii::app()->request->baseUrl."/reservation/hotels/autoComplete/%QUERY';", CClientScript::POS_HEAD);?>
+<?php Yii::app()->clientScript->registerScript('submit-form', "
+    $('#search').click(function(){
+        if($('#destination').val()==''){
+            $('.message').text('مقصد خود را مشخص کنید.');
+            $('#destination').focus();
+            return false;
+        }else if($('#out-date_altField').val()==$('#enter-date_altField').val()){
+            $('.message').text('تاریخ ورود و خروج نمی تواند یکسان باشد.');
+            return false;
+        }else if($('#rooms-count').val()==null){
+            $('.message').text('تعداد اتاق را انتخاب کنید.');
+            return false;
+        }else if($('select.adults-count').val()==null){
+            $('.message').text('تعداد بزرگسال را انتخاب کنید.');
+            return false;
+        }else if($('select.kids-count-select').val()==null){
+            $('.message').text('تعداد کودک را انتخاب کنید.');
+            return false;
+        }else if($('select.kids-age').length!=0 && $('select.kids-age').val()==null){
+            $('.message').text('سن کودک را انتخاب کنید.');
+            return false;
+        }
+    });
+");?>

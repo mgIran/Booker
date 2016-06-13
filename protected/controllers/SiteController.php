@@ -29,6 +29,20 @@ class SiteController extends Controller
 	{
         Yii::app()->theme = 'frontend';
         $this->layout = '//layouts/empty';
+
+		if(isset($_POST['destination']))
+		{
+			Yii::app()->session->clear();
+			Yii::app()->session['cityName']=$_POST['destination'];
+			Yii::app()->session['cityKey']=$_POST['city_key'];
+			Yii::app()->session['inDate']=$_POST['enter-date_altField'];
+			Yii::app()->session['outDate']=$_POST['out-date_altField'];
+			Yii::app()->session['roomsCount']=$_POST['rooms-count'];
+			Yii::app()->session['rooms']=$_POST['rooms'];
+
+			$this->redirect('reservation/hotels/search');
+		}
+
         $this->render('index');
 	}
 
