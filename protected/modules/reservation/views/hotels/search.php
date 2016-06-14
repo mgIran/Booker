@@ -40,7 +40,7 @@
                                 'minDate'=>(time()-(60*60*24))*1000,
                                 'default'=>Yii::app()->session['inDate'],
                                 'onShow'=>"js:function(){
-                                        $('.datepicker-plot-area').width(500).
+                                        $('.datepicker-plot-area').width(400).
                                             css({
                                                 top:(($(window).height()/2)-($('.datepicker-plot-area').height()/2)),
                                                 left:(($(window).width()/2)-($('.datepicker-plot-area').width()/2))
@@ -73,7 +73,7 @@
                                 'minDate'=>(time()-(60*60*24))*1000,
                                 'default'=>Yii::app()->session['outDate'],
                                 'onShow'=>"js:function(){
-                                        $('.datepicker-plot-area').width(500).
+                                        $('.datepicker-plot-area').width(400).
                                             css({
                                                 top:(($(window).height()/2)-($('.datepicker-plot-area').height()/2)),
                                                 left:(($(window).width()/2)-($('.datepicker-plot-area').width()/2))
