@@ -28,10 +28,17 @@ class Postman
         return $result['autoCompleteRs'];
     }
 
-    public function search($destinationCode,$inDate,$outDate,$rooms)
+    public function search($destinationCode, $isCity, $inDate, $outDate, $rooms)
     {
-        $data = '{"searchRq":{"destinationCode":"' . $destinationCode . '","isCity":true,"inDate":"'.$inDate.'","outDate":"'.$outDate.'","rooms":'.$rooms.',"nationality":"IR","domestic":false}}';
+        $data = '{"searchRq":{"destinationCode":"' . $destinationCode . '","isCity":' . (($isCity) ? 'true' : 'false') . ',"inDate":"' . $inDate . '","outDate":"' . $outDate . '","rooms":' . $rooms . ',"nationality":"IR","domestic":false}}';
         $result = $this->getData('search', $data);
         return $result['searchRs'];
+    }
+
+    public function details($traviaID)
+    {
+        $data = '{"detailsRq":{"traviaId":"' . $traviaID . '"}}';
+        $result = $this->getData('details', $data);
+        return $result['detailsRs'];
     }
 }

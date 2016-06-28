@@ -729,3 +729,105 @@ label.error{
 .inner-page .room-info{
     margin-bottom: 30px;
 }
+.inner-page #search-form p.message.error{
+    margin-top: 9px;
+}
+.error{
+    color: #d9534f;
+}
+.search-loading-container{
+    margin: 50px 0;
+}
+.search-loading-container{
+    line-height:30px;
+}
+.overflow-fix{
+    overflow: hidden;
+}
+.search-form-container{
+    padding-bottom: 30px;
+    padding-top: 30px;
+}
+.hotels-container h5{
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 30px;
+    margin-bottom: 15px;
+}
+.hotels-container .items{
+    padding: 15px;
+}
+.hotel-item{
+    padding: 0 5px;
+    margin-bottom: 10px;
+}
+.hotel-item-body{
+    margin:0;
+    padding: 15px;
+    overflow: hidden;
+}
+.hotel-item img{
+    max-width: 100%;
+    max-height:150px;
+    position: relative;
+    top:50%;
+    -webkit-transform: translateY(-50%);
+
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+.hotel-item .img-container{
+    height: 150px;
+    background: #eee;
+    position: relative;
+    text-align: center;
+}
+.hotel-item .img-container a{
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:2;
+}
+.hotel-item .img-container.no-image{
+    background: #eee url("../svg/no-image.svg") no-repeat center / 80px auto;
+}
+.hotel-item h6.name{
+    direction: ltr;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.hotel-item h6.name a{
+    color: #333;
+}
+.hotel-item small{
+    margin-top: 30px;
+    color: #777;
+}
+.hotel-item .stars{
+    margin-bottom: 20px;
+}
+.hotel-item .star{
+    background: url("../svg/star.svg") no-repeat center / 13px auto;
+    width:13px;
+    height:13px;
+    float: left;
+    margin-right: 5px;
+}
+.hotel-item .star.off{
+    background: url("../svg/star-off.svg") no-repeat center / 13px auto;
+}
+.hotel-item a.pull-left{
+    margin-top: 15px;
+}
+.hotel-item a:hover,
+.hotel-item a:active,
+.hotel-item a:focus{
+    text-decoration: none;
+}

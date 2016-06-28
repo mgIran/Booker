@@ -27,23 +27,22 @@ class SiteController extends Controller
 	 */
 	public function actionIndex()
 	{
-        Yii::app()->theme = 'frontend';
-        $this->layout = '//layouts/empty';
+		Yii::app()->theme = 'frontend';
+		$this->layout = '//layouts/empty';
 
-		if(isset($_POST['destination']))
-		{
+		if (isset($_POST['destination'])) {
 			Yii::app()->session->clear();
-			Yii::app()->session['cityName']=$_POST['destination'];
-			Yii::app()->session['cityKey']=$_POST['city_key'];
-			Yii::app()->session['inDate']=$_POST['enter-date_altField'];
-			Yii::app()->session['outDate']=$_POST['out-date_altField'];
-			Yii::app()->session['roomsCount']=$_POST['rooms-count'];
-			Yii::app()->session['rooms']=$_POST['rooms'];
+			Yii::app()->session['cityName'] = $_POST['destination'];
+			Yii::app()->session['cityKey'] = $_POST['city_key'];
+			Yii::app()->session['inDate'] = $_POST['enter-date_altField'];
+			Yii::app()->session['outDate'] = $_POST['out-date_altField'];
+			Yii::app()->session['roomsCount'] = $_POST['rooms-count'];
+			Yii::app()->session['rooms'] = $_POST['rooms'];
 
 			$this->redirect('reservation/hotels/search');
 		}
 
-        $this->render('index');
+		$this->render('index');
 	}
 
 	/**
@@ -51,8 +50,8 @@ class SiteController extends Controller
 	 */
 	public function actionError()
 	{
-        Yii::app()->theme = 'market';
-        $this->layout = '//layouts/error';
+        Yii::app()->theme = 'frontend';
+        $this->layout = '//layouts/inner';
 		if($error=Yii::app()->errorHandler->error)
 		{
 			if(Yii::app()->request->isAjaxRequest)

@@ -29,7 +29,6 @@ $(document).ready(function() {
     }).on('typeahead:asyncrequest', function(){
         $(this).parents('.input-field').find('.auto-complete-loading').show();
     }).on('typeahead:asyncreceive', function(a,b,c){
-        console.log(a,b,c);
         $(this).parents('.input-field').find('.auto-complete-loading').hide();
     }).on('typeahead:selected', function (e, datum) {
         $('#city-key').val(datum.key);
@@ -41,7 +40,6 @@ $(document).ready(function() {
     $('#rooms-count').on('change', function () {
         var existsRoom=$('.room-info').find('.room-item').length;
         if(parseInt($(this).val())<existsRoom) {
-            console.log(existsRoom - parseInt($(this).val()));
             for (var j = 0; j < existsRoom - parseInt($(this).val()); j++)
                 $('.room-info').find('.room-item:nth-child(' + (existsRoom-j) + ')').remove();
         }

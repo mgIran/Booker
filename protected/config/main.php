@@ -60,6 +60,7 @@ return array(
             'showScriptName'=>false,
             'appendParams'=>true,
 			'rules'=>array(
+				'reservation/hotels/view/<country>/<city>/<hotel>/<hotelID>' => 'reservation/hotels/view',
 				'<action:(logout|login|register|dashboard)>' => 'users/public/<action>',
 				'<action:(terms|help|privacy|contactUs|about)>' => 'site/<action>',
                 '<module:\w+>/<controller:\w+>'=>'<module>/<controller>/index',

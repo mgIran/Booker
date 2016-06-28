@@ -1,5 +1,8 @@
 <?php
 /* @var $this HotelsController */
+/* @var $hotelsDataProvider CArrayDataProvider */
+/* @var $country string */
+/* @var $city string */
 ?>
 <?php Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl.'/css/bootstrap-nav-wizard.css');?>
 <div class="container">
@@ -14,8 +17,8 @@
                 <li class="col-lg-2"><a>دریافت واچر</a></li>
             </ul>
         </div>
-        <div class="panel panel-default">
-            <div class="search-tools panel-body">
+        <div class="search-form-container card-panel">
+            <div class="search-tools">
                 <?php echo CHtml::beginForm('', 'post', array('id'=>'search-form'));?>
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                     <div class="input-field">
@@ -119,13 +122,15 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6 kids-age-container">
-                                    <?php foreach(Yii::app()->session['rooms'][$i+1]['kids_age'] as $key=>$kidsAge):?>
-                                        <div class="col-md-4">
-                                            <div class="input-field">
-                                                <?php echo CHtml::dropDownList('rooms['.($i+1).'][kids_age]['.$key.']', $kidsAge, array('2'=>'0 تا 2','7'=>'2 تا 7','12'=>'7 تا 12'), array('class'=>'kids-age', 'prompt'=>'سن'));?>
+                                    <?php if(isset(Yii::app()->session['rooms'][$i+1]['kids_age'])):?>
+                                        <?php foreach(Yii::app()->session['rooms'][$i+1]['kids_age'] as $key=>$kidsAge):?>
+                                            <div class="col-md-4">
+                                                <div class="input-field">
+                                                    <?php echo CHtml::dropDownList('rooms['.($i+1).'][kids_age]['.$key.']', $kidsAge, array('2'=>'0 تا 2','7'=>'2 تا 7','12'=>'7 تا 12'), array('class'=>'kids-age', 'prompt'=>'سن'));?>
+                                                </div>
                                             </div>
-                                        </div>
-                                    <?php endforeach;?>
+                                        <?php endforeach;?>
+                                    <?php endif;?>
                                 </div>
                             </div>
                             <input type="hidden" id="room-num" value="<?php echo ($i+1);?>">
@@ -134,13 +139,65 @@
                 </div>
                 <div class="container-fluid">
                     <?php echo CHtml::tag('button', array('class'=>'btn waves-effect waves-light green lighten-1 col-md-2 pull-left', 'id'=>'search', 'type'=>'submit'), 'جستجو');?>
+                    <p class="message error pull-right"></p>
                 </div>
-                <p class="text-center input-field message"></p>
                 <?php echo CHtml::endForm();?>
             </div>
+        </div>
+        <div class="search-loading-container card-panel">
+            <p class="text-center">سایت در حال جستجوی هتل ها می باشد<br>لطفا شکیبا باشید...</p>
+            <div class="overflow-fix">
+                <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-3 col-xs-offset-0">
+                    <div class="progress">
+                        <div class="indeterminate"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hotels-container">
+            <h5 class="yekan-text red-text text-accent-2">لیست هتل ها</h5>
+            <?php $this->widget('zii.widgets.CListView', array(
+                'id'=>'hotels-list',
+                'dataProvider'=>$hotelsDataProvider,
+                'itemView'=>'_hotel_item',
+                'itemsCssClass'=>'items overflow-fix container-fluid',
+                'template'=>'{items}',
+                'viewData'=>array(
+                    'duration'=>floor(((Yii::app()->session['outDate']-Yii::app()->session['inDate'])/(3600*24))),
+                    'country'=>(isset($country))?$country:null,
+                    'city'=>(isset($city))?$city:null,
+                ),
+            ));?>
         </div>
     </div>
 </div>
 <div class="datepicker-overlay hidden"></div>
 <button class="btn-submit-date hidden">انتخاب</button>
 <?php Yii::app()->clientScript->registerScript('general-variables', "var hotelAutoCompleteUrl='".Yii::app()->request->hostInfo.Yii::app()->request->baseUrl."/reservation/hotels/autoComplete/%QUERY';", CClientScript::POS_HEAD);?>
+<?php Yii::app()->clientScript->registerScript('submit-form', "
+    $('button#search').click(function(){
+        if($('#destination').val()==''){
+            $('.message').text('مقصد خود را مشخص کنید.');
+            $('#destination').focus();
+            return false;
+        }else if($('#out-date_altField').val()==$('#enter-date_altField').val()){
+            $('.message').text('تاریخ ورود و خروج نمی تواند یکسان باشد.');
+            return false;
+        }else if($('#rooms-count').val()==null){
+            $('.message').text('تعداد اتاق را انتخاب کنید.');
+            return false;
+        }else if($('select.adults-count').val()==null){
+            $('.message').text('تعداد بزرگسال را انتخاب کنید.');
+            return false;
+        }else if($('select.kids-count-select').val()==null){
+            $('.message').text('تعداد کودک را انتخاب کنید.');
+            return false;
+        }else if($('select.kids-age').length!=0 && $('select.kids-age').val()==null){
+            $('.message').text('سن کودک را انتخاب کنید.');
+            return false;
+        }
+    });
+");?>
+<?php Yii::app()->clientScript->registerScript('search-hotels',"
+    $.fn.yiiListView.update('hotels-list');
+", CClientScript::POS_LOAD);?>
