@@ -105,9 +105,14 @@ class HotelsController extends Controller
     public function actionView($country,$city,$hotel,$hotelID)
     {
         if (isset(Yii::app()->session['rooms'])) {
+            Yii::app()->theme='frontend';
+            $this->layout = '//layouts/inner';
+            $this->pageName = 'details-view';
             $postman = new Postman();
             $result=$postman->details($hotelID);
-            var_dump($result);exit;
+            $this->render('view', array(
+                'hotel'=>$result,
+            ));
         } else
             $this->redirect(['/']);
     }

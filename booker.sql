@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50617
 File Encoding         : 65001
 
-Date: 2016-06-14 10:25:38
+Date: 2016-06-29 13:54:53
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -84,8 +84,8 @@ CREATE TABLE `ym_counter_save` (
 -- ----------------------------
 -- Records of ym_counter_save
 -- ----------------------------
-INSERT INTO `ym_counter_save` VALUES ('counter', '93');
-INSERT INTO `ym_counter_save` VALUES ('day_time', '2457554');
+INSERT INTO `ym_counter_save` VALUES ('counter', '99');
+INSERT INTO `ym_counter_save` VALUES ('day_time', '2457569');
 INSERT INTO `ym_counter_save` VALUES ('max_count', '5');
 INSERT INTO `ym_counter_save` VALUES ('max_time', '1457598600');
 INSERT INTO `ym_counter_save` VALUES ('yesterday', '1');
@@ -103,7 +103,7 @@ CREATE TABLE `ym_counter_users` (
 -- ----------------------------
 -- Records of ym_counter_users
 -- ----------------------------
-INSERT INTO `ym_counter_users` VALUES ('837ec5754f503cfaaee0929fd48974e7', '1465883413');
+INSERT INTO `ym_counter_users` VALUES ('837ec5754f503cfaaee0929fd48974e7', '1467192045');
 
 -- ----------------------------
 -- Table structure for ym_countries
@@ -440,6 +440,7 @@ INSERT INTO `ym_site_setting` VALUES ('1', 'site_title', 'عنوان سایت', 
 INSERT INTO `ym_site_setting` VALUES ('2', 'default_title', 'عنوان پیش فرض صفحات', 'بوکر');
 INSERT INTO `ym_site_setting` VALUES ('3', 'keywords', 'کلمات کلیدی سایت', 'رزرو، هتل، رزرواسیون هتل');
 INSERT INTO `ym_site_setting` VALUES ('4', 'site_description', 'شرح وبسایت', 'رزرو آنلاین هتل های خارجی');
+INSERT INTO `ym_site_setting` VALUES ('5', 'commission', 'کمیسیون سایت', '5000');
 
 -- ----------------------------
 -- Table structure for ym_users

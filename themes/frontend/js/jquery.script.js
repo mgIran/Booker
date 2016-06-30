@@ -5,34 +5,36 @@ $(document).ready(function() {
     /**
      * Call typeahead plugin for destination input
      */
-    var destinationSource = new Bloodhound({
-        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-        queryTokenizer: Bloodhound.tokenizers.whitespace,
-        remote: {
-            url: hotelAutoCompleteUrl,
-            wildcard: '%QUERY'
-        }
-    });
-    $('#destination').typeahead({
-        minLength: 3,
-        limit: 20,
-        hint: false
-    }, {
-        name: 'destination',
-        display: 'name',
-        source: destinationSource
-    }).on('focus', function(){
-        $(this).parents('.input-field').find('label').addClass('active');
-    }).on('blur', function(){
-        if($(this).val()=='')
-            $(this).parents('.input-field').find('label').removeClass('active');
-    }).on('typeahead:asyncrequest', function(){
-        $(this).parents('.input-field').find('.auto-complete-loading').show();
-    }).on('typeahead:asyncreceive', function(a,b,c){
-        $(this).parents('.input-field').find('.auto-complete-loading').hide();
-    }).on('typeahead:selected', function (e, datum) {
-        $('#city-key').val(datum.key);
-    });
+    if($('#destination').length!=0) {
+        var destinationSource = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            remote: {
+                url: hotelAutoCompleteUrl,
+                wildcard: '%QUERY'
+            }
+        });
+        $('#destination').typeahead({
+            minLength: 3,
+            limit: 20,
+            hint: false
+        }, {
+            name: 'destination',
+            display: 'name',
+            source: destinationSource
+        }).on('focus', function () {
+            $(this).parents('.input-field').find('label').addClass('active');
+        }).on('blur', function () {
+            if ($(this).val() == '')
+                $(this).parents('.input-field').find('label').removeClass('active');
+        }).on('typeahead:asyncrequest', function () {
+            $(this).parents('.input-field').find('.auto-complete-loading').show();
+        }).on('typeahead:asyncreceive', function (a, b, c) {
+            $(this).parents('.input-field').find('.auto-complete-loading').hide();
+        }).on('typeahead:selected', function (e, datum) {
+            $('#city-key').val(datum.key);
+        });
+    }
 
     /**
      * Change rooms count dropdown list

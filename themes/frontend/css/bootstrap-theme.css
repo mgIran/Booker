@@ -234,6 +234,9 @@ form p{
 .inner-page .title-container.search{
     background: url("../images/search-bg.jpg") no-repeat center / cover;
 }
+.inner-page .title-container.details-view{
+    background: url("../images/details-view-bg.jpg") no-repeat center / cover;
+}
 .inner-page .content{
     position: relative;
     top: -150px;
@@ -748,6 +751,9 @@ label.error{
     padding-bottom: 30px;
     padding-top: 30px;
 }
+.hotels-container{
+    margin-top: 50px;
+}
 .hotels-container h5{
     border-bottom: 1px solid #ccc;
     padding-bottom: 30px;
@@ -758,7 +764,7 @@ label.error{
 }
 .hotel-item{
     padding: 0 5px;
-    margin-bottom: 10px;
+    margin-bottom: 60px;
 }
 .hotel-item-body{
     margin:0;
@@ -810,17 +816,17 @@ label.error{
     margin-top: 30px;
     color: #777;
 }
-.hotel-item .stars{
+.stars{
     margin-bottom: 20px;
 }
-.hotel-item .star{
+.star{
     background: url("../svg/star.svg") no-repeat center / 13px auto;
     width:13px;
     height:13px;
     float: left;
     margin-right: 5px;
 }
-.hotel-item .star.off{
+.star.off{
     background: url("../svg/star-off.svg") no-repeat center / 13px auto;
 }
 .hotel-item a.pull-left{
@@ -830,4 +836,74 @@ label.error{
 .hotel-item a:active,
 .hotel-item a:focus{
     text-decoration: none;
+}
+.hotel-details .stars{
+    float: left;
+    margin: 7px 0 0 0;
+}
+.hotel-details .star{
+    width: 25px;
+    height:25px;
+    background-size: 25px auto;
+}
+.feature-item{
+    margin-bottom: 70px;
+}
+.feature-item .title{
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+.feature-item h5.yekan-text{
+    color: #d9534f;
+    margin-top:0;
+    float: right;
+    margin-bottom: 0;
+    background: #ecf0f1;
+    padding-left: 30px;
+    position: relative;
+    z-index:2;
+}
+.feature-item .divider{
+     width: 100%;
+     background: #d9534f;
+    float: right;
+    margin-top: -10px;
+    position: relative;
+    z-index:1;
+    height:2px;
+ }
+.feature-item ul.facilities{
+    overflow: hidden;
+    padding: 0 50px;
+    margin-top: 30px;
+}
+.feature-item ul.facilities li{
+    list-style:disc;
+    float: right;
+    width: 33.333333%;
+    height:40px;
+}
+.hotel-details .image-item{
+    height:300px;
+}
+.hotel-details .image-item img{
+    height:300px;
+    width:auto;
+}
+.mfp-arrow:focus{
+    background: transparent;
+}
+#map-point{
+    height:400px;
+    box-shadow: 0 0 7px #aaa;
+    margin-bottom: 15px;
+}
+.ltr{
+    direction: ltr;
+}
+.feature-item .text-left.ltr{
+    margin-top: 30px;
+}
+.feature-item.card-panel > h5{
+    font-size: 20px;
 }

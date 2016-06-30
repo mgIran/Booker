@@ -154,7 +154,7 @@
                 </div>
             </div>
         </div>
-        <div class="hotels-container">
+        <div class="hotels-container hidden">
             <h5 class="yekan-text red-text text-accent-2">لیست هتل ها</h5>
             <?php $this->widget('zii.widgets.CListView', array(
                 'id'=>'hotels-list',
@@ -167,6 +167,10 @@
                     'country'=>(isset($country))?$country:null,
                     'city'=>(isset($city))?$city:null,
                 ),
+                'afterAjaxUpdate'=>"function(){
+                    $('.search-loading-container').addClass('hidden');
+                    $('.hotels-container').removeClass('hidden');
+                }"
             ));?>
         </div>
     </div>

@@ -78,13 +78,11 @@
     background: #4caf50;
 }
 .nav-wizard > li.done > a:before {
-  border-right-color: #4caf50;
+  /*border-right-color: #4caf50;*/
 }
 .nav-wizard > li.done > a:after {
   border-right-color: #4caf50;
 }
-.nav-wizard.nav > li.done:hover > a:before,
-.nav-wizard.nav > li.done:focus > a:before,
 .nav-wizard.nav > li.done:hover > a:after,
 .nav-wizard.nav > li.done:focus > a:after {
     border-right-color: #4caf50;
