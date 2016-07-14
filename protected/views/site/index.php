@@ -2,7 +2,7 @@
 /* @var $this SiteController */
 ?>
 <div class="container main-page">
-    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 col-lg-offset-3 col-md-offset-3 col-sm-offset-3 search-box">
+    <div class="col-lg-6 col-md-8 col-sm-8 col-xs-12 col-lg-offset-3 col-md-offset-2 col-sm-offset-2 search-box">
         <div class="logo">
             <div class="icon"></div>
             <h1>بوکر</h1>
@@ -108,7 +108,7 @@
                 <p class="text-center input-field message"></p>
             <?php echo CHtml::endForm();?>
         </div>
-        <ul class="nav nav-pills">
+        <ul class="nav nav-justified">
             <li role="presentation"><a href="<?php echo $this->createUrl('/login');?>">ورود</a></li>
             <li role="presentation"><a href="<?php echo $this->createUrl('/register');?>">ثبت نام</a></li>
             <li role="presentation"><a href="<?php echo $this->createUrl('/terms');?>">قوانین و مقررات</a></li>

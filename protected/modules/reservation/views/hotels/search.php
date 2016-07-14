@@ -5,7 +5,7 @@
 /* @var $city string */
 ?>
 <?php Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl.'/css/bootstrap-nav-wizard.css');?>
-<div class="container">
+<div class="container" id="scroll-destination">
     <div class="content page-box">
         <div class="steps">
             <ul class="nav nav-wizard">
@@ -17,32 +17,40 @@
                 <li class="col-lg-2"><a>دریافت واچر</a></li>
             </ul>
         </div>
-        <div class="search-form-container card-panel">
-            <div class="search-tools">
-                <?php echo CHtml::beginForm('', 'post', array('id'=>'search-form'));?>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <div class="input-field">
-                        <?php echo CHtml::textField('destination', CHtml::encode(Yii::app()->session['cityName']), array('id'=>'destination', 'class'=>'hotel-destination'));?>
-                        <?php echo CHtml::hiddenField('city_key', Yii::app()->session['cityKey'], array('id'=>'city-key'));?>
-                        <div class="loading-container auto-complete-loading">
-                            <div class="spinner">
-                                <div class="bounce1"></div>
-                                <div class="bounce2"></div>
-                                <div class="bounce3"></div>
+        <ul class="collapsible" data-collapsible="accordion">
+            <li>
+                <div class="collapsible-header search-info">
+                    <b class="red-text">شهر مقصد: </b><small><?php echo CHtml::encode(Yii::app()->session['cityName']);?></small>
+                    <b class="red-text">مدت اقامت: </b><small><?php echo $this->getStayingTime(Yii::app()->session['inDate'], Yii::app()->session['outDate']).' شب | از '.JalaliDate::date('d F', Yii::app()->session['inDate']).' تا '.JalaliDate::date('d F', Yii::app()->session['outDate']);?></small>
+                    <b class="red-text">تعداد اتاق: </b><small><?php echo Yii::app()->session['roomsCount'].' اتاق';?></small>
+                    <button class="btn btn-sm waves-effect waves-light red lighten-1 pull-left">تغییر جستجو</button>
+                </div>
+                <div class="search-form-container collapsible-body">
+                    <div class="search-tools">
+                        <?php echo CHtml::beginForm('', 'post', array('id'=>'search-form'));?>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="input-field">
+                                <?php echo CHtml::textField('destination', CHtml::encode(Yii::app()->session['cityName']), array('id'=>'destination', 'class'=>'hotel-destination'));?>
+                                <?php echo CHtml::hiddenField('city_key', Yii::app()->session['cityKey'], array('id'=>'city-key'));?>
+                                <div class="loading-container auto-complete-loading">
+                                    <div class="spinner">
+                                        <div class="bounce1"></div>
+                                        <div class="bounce2"></div>
+                                        <div class="bounce3"></div>
+                                    </div>
+                                </div>
+                                <?php echo CHtml::label('شهر مقصد *', 'destination', array('class'=>'active'));?>
                             </div>
                         </div>
-                        <?php echo CHtml::label('شهر مقصد *', 'destination', array('class'=>'active'));?>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <div class="input-field">
-                        <?php $this->widget('application.extensions.PDatePicker.PDatePicker', array(
-                            'id'=>'enter-date',
-                            'options'=>array(
-                                'format'=>'DD MMMM YYYY',
-                                'minDate'=>(time()-(60*60*24))*1000,
-                                'default'=>Yii::app()->session['inDate'],
-                                'onShow'=>"js:function(){
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="input-field">
+                                <?php $this->widget('application.extensions.PDatePicker.PDatePicker', array(
+                                    'id'=>'enter-date',
+                                    'options'=>array(
+                                        'format'=>'DD MMMM YYYY',
+                                        'minDate'=>(time()-(60*60*24))*1000,
+                                        'default'=>Yii::app()->session['inDate'],
+                                        'onShow'=>"js:function(){
                                         $('.datepicker-plot-area').width(400).
                                             css({
                                                 top:(($(window).height()/2)-($('.datepicker-plot-area').height()/2)),
@@ -54,7 +62,7 @@
                                             left:$('.datepicker-plot-area:eq(0)').offset().left+15
                                         }).removeClass('hidden');
                                     }",
-                                'onHide'=>"js:function(){
+                                    'onHide'=>"js:function(){
                                         $('.datepicker-overlay').addClass('hidden');
                                         $('.btn-submit-date').addClass('hidden');
                                         var stayTime=Math.floor(($('#out-date_altField').val()-$('#enter-date_altField').val())/(60*60*24));
@@ -62,20 +70,20 @@
                                             stayTime=0;
                                         $('.stay-time').text(stayTime);
                                     }"
-                            )
-                        ));?>
-                        <?php echo CHtml::label('تاریخ ورود', 'enter-date');?>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <div class="input-field">
-                        <?php $this->widget('application.extensions.PDatePicker.PDatePicker', array(
-                            'id'=>'out-date',
-                            'options'=>array(
-                                'format'=>'DD MMMM YYYY',
-                                'minDate'=>(time()-(60*60*24))*1000,
-                                'default'=>Yii::app()->session['outDate'],
-                                'onShow'=>"js:function(){
+                                    )
+                                ));?>
+                                <?php echo CHtml::label('تاریخ ورود', 'enter-date');?>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="input-field">
+                                <?php $this->widget('application.extensions.PDatePicker.PDatePicker', array(
+                                    'id'=>'out-date',
+                                    'options'=>array(
+                                        'format'=>'DD MMMM YYYY',
+                                        'minDate'=>(time()-(60*60*24))*1000,
+                                        'default'=>Yii::app()->session['outDate'],
+                                        'onShow'=>"js:function(){
                                         $('.datepicker-plot-area').width(400).
                                             css({
                                                 top:(($(window).height()/2)-($('.datepicker-plot-area').height()/2)),
@@ -87,7 +95,7 @@
                                             left:$('.datepicker-plot-area:eq(1)').offset().left+15
                                         }).removeClass('hidden');
                                     }",
-                                'onHide'=>"js:function(){
+                                    'onHide'=>"js:function(){
                                         $('.datepicker-overlay').addClass('hidden');
                                         $('.btn-submit-date').addClass('hidden');
                                         var stayTime=Math.floor(($('#out-date_altField').val()-$('#enter-date_altField').val())/(60*60*24));
@@ -95,55 +103,57 @@
                                             stayTime=0;
                                         $('.stay-time').text(stayTime);
                                     }"
-                            )
-                        ));?>
-                        <?php echo CHtml::label('تاریخ خروج', 'out-date');?>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <div class="input-field">
-                        <?php echo CHtml::label('تعداد اتاق', 'rooms-count', array('class'=>'active'));?>
-                        <?php echo CHtml::dropDownList('rooms-count', Yii::app()->session['roomsCount'], array('1'=>'1','2'=>'2','3'=>'3','4'=>'4'), array('id'=>'rooms-count', 'data-template'=>'pretty'));?>
-                    </div>
-                </div>
-                <div class="room-info clearfix">
-                    <?php for($i=0;$i<Yii::app()->session['roomsCount'];$i++):?>
-                        <div class="room-item clearfix container-fluid">
-                            <h6 class="col-md-1 room-label">اتاق <b><?php echo $this->parseNumbers(($i+1));?></b></h6>
-                            <div class="col-md-8 rooms-info-container">
-                                <div class="col-md-3">
-                                    <div class="input-field">
-                                        <?php echo CHtml::dropDownList('rooms['.($i+1).'][adults]', Yii::app()->session['rooms'][$i+1]['adults'], array('1'=>'1 نفر','2'=>'2 نفر','3'=>'3 نفر','4'=>'4 نفر'), array('class'=>'adults-count', 'prompt'=>'بزرگسال'));?>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="input-field">
-                                        <?php echo CHtml::dropDownList('rooms['.($i+1).'][kids]', Yii::app()->session['rooms'][$i+1]['kids'], array('0'=>'0 نفر','1'=>'1 نفر','2'=>'2 نفر','3'=>'3 نفر'), array('class'=>'kids-count-select', 'prompt'=>'کودک'));?>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 kids-age-container">
-                                    <?php if(isset(Yii::app()->session['rooms'][$i+1]['kids_age'])):?>
-                                        <?php foreach(Yii::app()->session['rooms'][$i+1]['kids_age'] as $key=>$kidsAge):?>
-                                            <div class="col-md-4">
-                                                <div class="input-field">
-                                                    <?php echo CHtml::dropDownList('rooms['.($i+1).'][kids_age]['.$key.']', $kidsAge, array('2'=>'0 تا 2','7'=>'2 تا 7','12'=>'7 تا 12'), array('class'=>'kids-age', 'prompt'=>'سن'));?>
-                                                </div>
-                                            </div>
-                                        <?php endforeach;?>
-                                    <?php endif;?>
-                                </div>
+                                    )
+                                ));?>
+                                <?php echo CHtml::label('تاریخ خروج', 'out-date');?>
                             </div>
-                            <input type="hidden" id="room-num" value="<?php echo ($i+1);?>">
                         </div>
-                    <?php endfor;?>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="input-field">
+                                <?php echo CHtml::label('تعداد اتاق', 'rooms-count', array('class'=>'active'));?>
+                                <?php echo CHtml::dropDownList('rooms-count', Yii::app()->session['roomsCount'], array('1'=>'1','2'=>'2','3'=>'3','4'=>'4'), array('id'=>'rooms-count', 'data-template'=>'pretty'));?>
+                            </div>
+                        </div>
+                        <div class="room-info clearfix">
+                            <?php for($i=0;$i<Yii::app()->session['roomsCount'];$i++):?>
+                                <div class="room-item clearfix container-fluid">
+                                    <h6 class="col-md-1 room-label">اتاق <b><?php echo $this->parseNumbers(($i+1));?></b></h6>
+                                    <div class="col-md-8 rooms-info-container">
+                                        <div class="col-md-3">
+                                            <div class="input-field">
+                                                <?php echo CHtml::dropDownList('rooms['.($i+1).'][adults]', Yii::app()->session['rooms'][$i+1]['adults'], array('1'=>'1 نفر','2'=>'2 نفر','3'=>'3 نفر','4'=>'4 نفر'), array('class'=>'adults-count', 'prompt'=>'بزرگسال'));?>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="input-field">
+                                                <?php echo CHtml::dropDownList('rooms['.($i+1).'][kids]', Yii::app()->session['rooms'][$i+1]['kids'], array('0'=>'0 نفر','1'=>'1 نفر','2'=>'2 نفر','3'=>'3 نفر'), array('class'=>'kids-count-select', 'prompt'=>'کودک'));?>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 kids-age-container">
+                                            <?php if(isset(Yii::app()->session['rooms'][$i+1]['kids_age'])):?>
+                                                <?php foreach(Yii::app()->session['rooms'][$i+1]['kids_age'] as $key=>$kidsAge):?>
+                                                    <div class="col-md-4">
+                                                        <div class="input-field">
+                                                            <?php echo CHtml::dropDownList('rooms['.($i+1).'][kids_age]['.$key.']', $kidsAge, array('2'=>'0 تا 2','7'=>'2 تا 7','12'=>'7 تا 12'), array('class'=>'kids-age', 'prompt'=>'سن'));?>
+                                                        </div>
+                                                    </div>
+                                                <?php endforeach;?>
+                                            <?php endif;?>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="room-num" value="<?php echo ($i+1);?>">
+                                </div>
+                            <?php endfor;?>
+                        </div>
+                        <div class="container-fluid">
+                            <?php echo CHtml::tag('button', array('class'=>'btn waves-effect waves-light green lighten-1 col-md-2 pull-left', 'id'=>'search', 'type'=>'submit'), 'جستجو');?>
+                            <p class="message error pull-right"></p>
+                        </div>
+                        <?php echo CHtml::endForm();?>
+                    </div>
                 </div>
-                <div class="container-fluid">
-                    <?php echo CHtml::tag('button', array('class'=>'btn waves-effect waves-light green lighten-1 col-md-2 pull-left', 'id'=>'search', 'type'=>'submit'), 'جستجو');?>
-                    <p class="message error pull-right"></p>
-                </div>
-                <?php echo CHtml::endForm();?>
-            </div>
-        </div>
+            </li>
+        </ul>
         <div class="search-loading-container card-panel">
             <p class="text-center">سایت در حال جستجوی هتل ها می باشد<br>لطفا شکیبا باشید...</p>
             <div class="overflow-fix">
@@ -153,8 +163,62 @@
                     </div>
                 </div>
             </div>
+            <div class="wait-animate doing">
+                <div class="wa-circle"></div>
+                <div class="wa-v-line"></div>
+                <div class="wa-feature-item f1 right">
+                    <div class="wa-disc"></div>
+                    <div class="wa-h-line"></div>
+                    <div class="wa-content"><div><i class="material-icons pull-right medium">hotel</i>جستجو در بین بیش از 250 هزار هتل</div></div>
+                </div>
+                <div class="wa-feature-item f2 left">
+                    <div class="wa-disc"></div>
+                    <div class="wa-h-line"></div>
+                    <div class="wa-content"><div><i class="material-icons pull-right medium">payment</i>پرداخت ریالی از درگاه بانک‌های معتبر</div></div>
+                </div>
+                <div class="wa-feature-item f3 right">
+                    <div class="wa-disc"></div>
+                    <div class="wa-h-line"></div>
+                    <div class="wa-content"><div><i class="material-icons pull-right medium">check</i>دریافت واچر هتل در لحظه</div></div>
+                </div>
+                <div class="wa-feature-item f4 left">
+                    <div class="wa-disc"></div>
+                    <div class="wa-h-line"></div>
+                    <div class="wa-content"><div><i class="material-icons pull-right medium">schedule</i>پشتیبانی ۲۴ ساعته</div></div>
+                </div>
+                <div class="wa-finish-disc"></div>
+            </div>
         </div>
-        <div class="hotels-container hidden">
+        <div id="hotels-container" class="hotels-container hidden">
+            <div class="card-panel filter-hotel fixable">
+                <div class="row">
+                    <div class="title red-text yekan-text container-fluid">هتل مورد نظر خود را بیابید...</div>
+                    <div class="col-lg-4">
+                        <select id="stars-count" name="stars-count" data-template="normal">
+                            <option value="" disabled selected>ستاره</option>
+                            <option value="-1">همه</option>
+                            <option value="0">رتبه بندی نشده</option>
+                            <option value="1">یک ستاره</option>
+                            <option value="2">دو ستاره</option>
+                            <option value="3">سه ستاره</option>
+                            <option value="4">چهار ستاره</option>
+                            <option value="5">پنج ستاره</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="input-field">
+                            <?php echo CHtml::textField('hotel_name', '', array('id'=>'filter-hotel-name'));?>
+                            <?php echo CHtml::label('نام هتل', 'filter-hotel-name');?>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <label>قیمت</label>
+                        <div id="price-range"></div>
+                        <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl.'/js/nouislider.js');?>
+                        <?php Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl.'/css/nouislider.css');?>
+                    </div>
+                </div>
+            </div>
             <h5 class="yekan-text red-text text-accent-2">لیست هتل ها</h5>
             <?php $this->widget('zii.widgets.CListView', array(
                 'id'=>'hotels-list',
@@ -167,10 +231,58 @@
                     'country'=>(isset($country))?$country:null,
                     'city'=>(isset($city))?$city:null,
                 ),
-                'afterAjaxUpdate'=>"function(){
-                    $('.search-loading-container').addClass('hidden');
-                    $('.hotels-container').removeClass('hidden');
-                }"
+                'beforeAjaxUpdate'=>"function(){
+                    $('html, body').animate({ scrollTop: $('#scroll-destination').offset().top }, 500, function(){
+                        waitAnimate();
+                    });
+                }",
+                'afterAjaxUpdate'=>'function(id, data){
+                    var prices=null;
+                    $.ajax({
+                        url: "'.Yii::app()->createUrl('/reservation/hotels/getMinMaxPrice').'",
+                        type: "POST",
+                        dataType: "JSON",
+                        success: function(data){
+                            prices=data.prices;
+                            $(".search-loading-container").addClass("hidden");
+                            $(".hotels-container").removeClass("hidden");
+                            var slider = document.getElementById("price-range");
+                            noUiSlider.create(slider, {
+                                start: [prices["minPrice"], prices["maxPrice"]],
+                                connect: true,
+                                step: 1,
+                                range: {
+                                    "min": prices["minPrice"],
+                                    "max": prices["maxPrice"]
+                                },
+                                format:wNumb({
+                                    thousand: ",",
+                                    encoder: function(value){
+                                        return Math.round(value);
+                                    },
+                                    decoder: function(value){
+                                        return Math.round(value);
+                                    }
+                                })
+                            });
+                            slider.noUiSlider.on("change", function(values, handle) {
+                                $(".hotel-item").each(function(){
+                                    price=$(this).data("price");
+                                    minPrice=values[0].replace(new RegExp(",", "g"), "");
+                                    maxPrice=values[1].replace(new RegExp(",", "g"), "");
+                                    minPrice=parseInt(minPrice)*1000;
+                                    maxPrice=(parseInt(maxPrice)+1)*1000;
+                                    if(price < minPrice)
+                                        $(this).addClass("hidden");
+                                    else if(price > maxPrice)
+                                        $(this).addClass("hidden");
+                                    else
+                                        $(this).removeClass("hidden");
+                                });
+                            });
+                        }
+                    });
+                }'
             ));?>
         </div>
     </div>
@@ -204,4 +316,39 @@
 ");?>
 <?php Yii::app()->clientScript->registerScript('search-hotels',"
     $.fn.yiiListView.update('hotels-list');
+", CClientScript::POS_LOAD);?>
+<?php Yii::app()->clientScript->registerScript('filter-hotels',"
+    $('select#stars-count').on('change', function(){
+        stars=$(this).val();
+        $('.hotel-item').each(function(){
+            if(stars==-1)
+                $(this).removeClass('hidden');
+            else{
+                if($(this).data('stars')!=stars)
+                    $(this).addClass('hidden');
+                else
+                    $(this).removeClass('hidden');
+            }
+        });
+    });
+    var timeout;
+    $('#filter-hotel-name').on('keyup', function(){
+        var input=$(this);
+        clearTimeout(timeout);
+        timeout=setTimeout(function(){
+            $('.hotel-item').each(function(){
+                val=input.val();
+                if(val=='')
+                    $(this).removeClass('hidden');
+                else{
+                    name=$(this).data('name');
+                    var re = new RegExp(val, 'i');
+                    if(re.test(name))
+                        $(this).removeClass('hidden');
+                    else
+                        $(this).addClass('hidden');
+                }
+            });
+        }, 1000);
+    });
 ", CClientScript::POS_LOAD);?>

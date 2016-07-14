@@ -24,6 +24,7 @@
     $cs->registerCssFile($baseUrl.'/css/materialize.min.css');
     $cs->registerCssFile($baseUrl.'/css/bootstrap-theme.css');
     $cs->registerCssFile($baseUrl.'/css/responsive-theme.css');
+    $cs->registerCssFile('https://fonts.googleapis.com/icon?family=Material+Icons');
 
     $cs->registerScriptFile($baseUrl.'/js/bootstrap.min.js');
     $cs->registerScriptFile($baseUrl.'/js/materialize.js');

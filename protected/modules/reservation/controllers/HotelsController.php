@@ -6,6 +6,7 @@ class HotelsController extends Controller
     {
         return array(
             'accessControl', // perform access control for CRUD operations
+            'postOnly + getMinMaxPrice'
         );
     }
 
@@ -18,7 +19,7 @@ class HotelsController extends Controller
     {
         return array(
             array('allow',  // allow all users to perform 'index' and 'views' actions
-                'actions' => array('autoComplete', 'search', 'view'),
+                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice'),
                 'users' => array('*'),
             ),
             array('deny',  // deny all users
@@ -44,6 +45,8 @@ class HotelsController extends Controller
 
     public function actionSearch()
     {
+        Yii::app()->session['minPrice']=null;
+        Yii::app()->session['maxPrice']=null;
         if (isset($_GET['ajax']) and $_GET['ajax'] == 'hotels-list') {
             $rooms = $this->getRoomsInfo(Yii::app()->session['rooms']);
             $postman = new Postman();
@@ -53,7 +56,7 @@ class HotelsController extends Controller
             $commission = SiteSetting::model()->findByAttributes(array('name' => 'commission'));
             foreach ($result['results'] as $hotel) {
                 $price = null;
-                $traviaID='';
+                $traviaID = '';
                 foreach ($hotel['services'] as $service) {
                     if (is_null($price)) {
                         $price = $service['price'];
@@ -102,16 +105,16 @@ class HotelsController extends Controller
             $this->redirect('/');
     }
 
-    public function actionView($country,$city,$hotel,$hotelID)
+    public function actionView($country, $city, $hotel, $hotelID)
     {
         if (isset(Yii::app()->session['rooms'])) {
-            Yii::app()->theme='frontend';
+            Yii::app()->theme = 'frontend';
             $this->layout = '//layouts/inner';
             $this->pageName = 'details-view';
             $postman = new Postman();
-            $result=$postman->details($hotelID);
+            $result = $postman->details($hotelID);
             $this->render('view', array(
-                'hotel'=>$result,
+                'hotel' => $result,
             ));
         } else
             $this->redirect(['/']);
@@ -133,5 +136,21 @@ class HotelsController extends Controller
                 );
         }
         return $rooms;
+    }
+
+    public function getStayingTime($in, $out)
+    {
+        $diff = $out - $in;
+        return floor($diff / (60 * 60 * 24));
+    }
+
+    public function actionGetMinMaxPrice()
+    {
+        echo CJSON::encode(array(
+            'prices' => array(
+                'minPrice' => Yii::app()->session['minPrice'],
+                'maxPrice' => Yii::app()->session['maxPrice'],
+            )
+        ));
     }
 }
