@@ -41,4 +41,11 @@ class Postman
         $result = $this->getData('details', $data);
         return $result['detailsRs'];
     }
+
+    public function priceDetails($traviaID)
+    {
+        $data = '{"priceDetailsRq":{"traviaId":"' . $traviaID . '"}}';
+        $result = $this->getData('pricedetails', $data);
+        return $result['priceDetailsRs'];
+    }
 }

@@ -852,7 +852,7 @@ label.error{
     background-size: 25px auto;
 }
 .feature-item{
-    margin-bottom: 70px;
+    margin-bottom: 50px;
 }
 .feature-item .title{
     overflow: hidden;
@@ -882,18 +882,49 @@ label.error{
     padding: 0 50px;
     margin-top: 30px;
 }
+.feature-item ul.facilities.first{
+    margin-bottom: 0;
+}
+.feature-item ul.facilities.second{
+    margin-top: 0;
+}
 .feature-item ul.facilities li{
-    list-style:disc;
+    list-style:inside none disc;
+    margin-bottom: 15px;
     float: right;
     width: 33.333333%;
     height:40px;
 }
+.feature-item a.more.center-block{
+    width: 140px;
+    padding: 13px 0;
+    text-align: center;
+    background: #fbfbfb;
+    box-shadow: 0 0 3px #cfcfcf;
+    margin-top: 25px;
+}
+.feature-item a.more.center-block:hover,
+.feature-item a.more.center-block:active,
+.feature-item a.more.center-block:focus{
+    text-decoration: none;
+}
 .hotel-details .image-item{
     height:300px;
+    width:300px;
+    background: #f5f5f5 url("../svg/image.svg") no-repeat center;
+    background-size: 100px;
+    text-align: center;
 }
 .hotel-details .image-item img{
-    height:300px;
-    width:auto;
+    max-height:300px;
+    max-width:300px;
+    position: relative;
+    top:50%;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
 }
 .mfp-arrow:focus{
     background: transparent;

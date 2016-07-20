@@ -19,7 +19,7 @@ class HotelsController extends Controller
     {
         return array(
             array('allow',  // allow all users to perform 'index' and 'views' actions
-                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice'),
+                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel'),
                 'users' => array('*'),
             ),
             array('deny',  // deny all users
@@ -45,8 +45,8 @@ class HotelsController extends Controller
 
     public function actionSearch()
     {
-        Yii::app()->session['minPrice']=null;
-        Yii::app()->session['maxPrice']=null;
+        Yii::app()->session['minPrice'] = null;
+        Yii::app()->session['maxPrice'] = null;
         if (isset($_GET['ajax']) and $_GET['ajax'] == 'hotels-list') {
             $rooms = $this->getRoomsInfo(Yii::app()->session['rooms']);
             $postman = new Postman();
@@ -107,16 +107,14 @@ class HotelsController extends Controller
 
     public function actionView($country, $city, $hotel, $hotelID)
     {
-        if (isset(Yii::app()->session['rooms'])) {
-            Yii::app()->theme = 'frontend';
-            $this->layout = '//layouts/inner';
-            $this->pageName = 'details-view';
-            $postman = new Postman();
-            $result = $postman->details($hotelID);
+        Yii::app()->theme = 'frontend';
+        $this->layout = '//layouts/inner';
+        $this->pageName = 'details-view';
+        if (isset(Yii::app()->session['rooms']))
             $this->render('view', array(
-                'hotel' => $result,
+                'id' => $hotelID
             ));
-        } else
+        else
             $this->redirect(['/']);
     }
 
@@ -138,6 +136,18 @@ class HotelsController extends Controller
         return $rooms;
     }
 
+    public function actionGetHotelInfo()
+    {
+        $postman = new Postman();
+        $hotel = $postman->details(Yii::app()->getRequest()->getQuery('hotel_id'));
+        $rooms = $postman->priceDetails(Yii::app()->getRequest()->getQuery('hotel_id'));
+        $hotel['facilities']=$this->translateFacilities($hotel['facilities']);
+        $this->renderPartial('_view', array(
+            'hotel' => $hotel,
+            'rooms' => $rooms,
+        ));
+    }
+
     public function getStayingTime($in, $out)
     {
         $diff = $out - $in;
@@ -152,5 +162,72 @@ class HotelsController extends Controller
                 'maxPrice' => Yii::app()->session['maxPrice'],
             )
         ));
+    }
+
+    public function translateFacilities($facilities)
+    {
+        $translates = array(
+            'Business Centre' => 'اتاق جلسات تجاري',
+            'Elevator / Lift' => 'آسانسور',
+            'Car Rental' => 'اجاره ماشين',
+            'Express Check In / Check Out' => 'پذيرش و خروج سريع مسافر',
+            'Lounge' => 'سالن اجتماعات',
+            'Shop(s)' => 'فروشگاه ها',
+            'Bar' => 'خدمات نوشيدني',
+            'Wireless Internet Access' => 'دسترسي به اينترنت بيسيم',
+            'Laundry Service' => 'خدمات خشكشويي',
+            '24 Hour Front Desk' => 'خدمات 24 ساعته پذيرش',
+            '24 Hour Room Service' => 'خدمات 24 ساعته به اتاق',
+            'Disco / Night Clubs' => 'كلوپ',
+            'Hairdresser' => 'آريشگاه',
+            'Pay Parking' => 'پاركينگ',
+            'Private beach (chargeable)' => 'ساحل اختصاصي ( شارژ)',
+            'Cable / Satellite Television' => 'گيرنده تلوزيون',
+            'Free Wireless Internet access' => 'اينترنت بيسيم رايگان',
+            'Sauna' => 'سونا',
+            'Internet Access' => 'دسترسي اينترنت',
+            'Safety Deposit Box' => 'صندوق امانات',
+            'Restaurant' => 'رستوران',
+            'Air Conditioned' => 'سيستم سرمايشي و گرمايشي اتاق',
+            'Private balcony / terrace' => 'بالكن و تراس خصوصي',
+            'Massage' => 'ماساژ',
+            'Solarium' => 'حمام آفتاب',
+            'Pool' => 'استخر',
+            'Spa' => 'آب درماني',
+            'Tv' => 'تلويزون',
+            'Outdoor pool' => 'استخر عمومي',
+            'Airport shuttle' => 'سرويس فرودگاه',
+            'Family rooms' => 'اتاق خانوادگي',
+            'Fitness centre' => 'سالن بدنسازي',
+            'Non-smoking rooms' => 'اتاق غير سيگاري ها',
+            'Daily maid service' => 'خدمات روزانه  خدمتكاري',
+            'Golf course' => 'زمين گلف',
+            'Tennis court' => 'زمين تنيس',
+            'Spa and wellness centre' => 'مركز آبگرم و آب درماني',
+            'Facilities for disabled guests' => 'امكانات براي مهمانان معلول',
+            'Garden' => 'باغ',
+            "Children's playground" => 'زمين بازي كودكان',
+            'Pets are not allowed' => 'عدم پذيرش حيوان خانگي',
+            'Languages spoken' => 'زبان مكالمه اي',
+            'Pets allowed' => 'پذيرش حيوان خانگي',
+            'Ironing service' => 'خدمات اتو',
+            'Wake-up service' => 'خدمات بيدار كردن',
+            'Exchange' => 'صرافي',
+        );
+
+        $output=array();
+        foreach($facilities as $facility) {
+            $addedToOutput=false;
+            foreach ($translates as $key => $translate) {
+                if (strtolower($facility) == strtolower($key)) {
+                    $output[] = $translate;
+                    $addedToOutput=true;
+                }
+            }
+            if(!$addedToOutput)
+                $output[] = $facility;
+        }
+        rsort($output);
+        return $output;
     }
 }
