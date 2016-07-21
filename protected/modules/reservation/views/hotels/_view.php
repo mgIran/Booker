@@ -2,7 +2,6 @@
 /* @var $this HotelsController */
 /* @var $hotel array */
 /* @var $rooms array */
-var_dump($rooms['services']['rooms']);
 ?>
 <h2 class="yekan-text" style="margin-top: 100px;">
     <?php echo CHtml::encode($hotel['name'])?>
@@ -17,6 +16,36 @@ var_dump($rooms['services']['rooms']);
             </span>
 </h2>
 <div class="container-fluid">
+    <div class="feature-item">
+        <div class="title">
+            <h5 class="yekan-text">اتاق ها</h5>
+            <div class="divider"></div>
+        </div>
+        <div class="rooms overflow-fix">
+            <?php foreach($rooms as $room):?>
+                <?php var_dump($room);?>
+                <?php foreach($room['rooms'] as $roomInfo):?>
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 room-item">
+                        <div class="thumbnail">
+                            <div class="caption">
+                                <div class="ltr text-left">
+                                    <b><?php echo CHtml::encode($roomInfo['type'].' '.$roomInfo['category']);?></b>
+                                    <small><?php echo CHtml::encode($room['meal']);?></small>
+                                </div>
+                                <div class="price col-lg-6">
+                                    <p><b>قیمت برای <?php echo floor(((Yii::app()->session['outDate']-Yii::app()->session['inDate'])/(3600*24)));?> شب: </b><?php echo number_format($room['price']*5000, 0).' تومان';?></p>
+                                </div>
+                                <div class="capacity col-lg-6">
+                                    <p><b>ظرفیت: </b><?php echo CHtml::encode($roomInfo['adult']);?> بزرگسال <?php echo (is_null($roomInfo['child']))?0:CHtml::encode($roomInfo['child']);?> کودک</p>
+                                </div>
+                                <p><a href="#" class="btn btn-primary" role="button">رزرو</a></p>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach;?>
+            <?php endforeach;?>
+        </div>
+    </div>
     <div class="feature-item">
         <div class="title">
             <h5 class="yekan-text">امکانات</h5>
@@ -36,7 +65,7 @@ var_dump($rooms['services']['rooms']);
             <?php endforeach;?>
         </ul>
         <?php if(count($hotel['facilities']) > 6):?>
-            <a class="center-block more" href="#facilities" data-toggle="collapse">امکانات بیشتر...</a>
+            <a class="center-block more" href="#facilities" data-toggle="collapse">همه ی امکانات</a>
         <?php endif;?>
     </div>
     <?php if(isset($hotel['images']) and !empty($hotel['images'])):?>
@@ -64,6 +93,6 @@ var_dump($rooms['services']['rooms']);
     </div>
     <div class="feature-item card-panel">
         <h5>درباره هتل</h5>
-        <div class="text-left ltr"><?php echo CHtml::encode($hotel['description'])?></div>
+        <div class="text-left ltr text-justify"><?php echo CHtml::encode($hotel['description'])?></div>
     </div>
 </div>

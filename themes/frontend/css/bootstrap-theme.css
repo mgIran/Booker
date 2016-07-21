@@ -1155,3 +1155,21 @@ label.error{
 .hotels-container.fixed-container{
     padding-top: 151px;
 }
+.rooms .room-item p{
+    font-size: 13px;
+}
+.rooms .room-item .ltr.text-left{
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+.rooms .room-item small{
+    color: #999;
+}
+.rooms .room-item .capacity,
+.rooms .room-item .price{
+    padding: 0;
+}
+.rooms .room-item .capacity{
+    padding-right: 15px;
+}

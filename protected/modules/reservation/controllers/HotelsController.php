@@ -51,6 +51,7 @@ class HotelsController extends Controller
             $rooms = $this->getRoomsInfo(Yii::app()->session['rooms']);
             $postman = new Postman();
             $result = $postman->search(Yii::app()->session['cityKey'], true, date('Y-m-d', Yii::app()->session['inDate']), date('Y-m-d', Yii::app()->session['outDate']), CJSON::encode($rooms));
+            var_dump($result);
             $hotels = array();
             Yii::app()->getModule('setting');
             $commission = SiteSetting::model()->findByAttributes(array('name' => 'commission'));
@@ -140,11 +141,12 @@ class HotelsController extends Controller
     {
         $postman = new Postman();
         $hotel = $postman->details(Yii::app()->getRequest()->getQuery('hotel_id'));
-        $rooms = $postman->priceDetails(Yii::app()->getRequest()->getQuery('hotel_id'));
+        $requestedRooms = $this->getRoomsInfo(Yii::app()->session['rooms']);
+        $rooms = $postman->search($hotel['id'], false, date('Y-m-d', Yii::app()->session['inDate']), date('Y-m-d', Yii::app()->session['outDate']), CJSON::encode($requestedRooms));
         $hotel['facilities']=$this->translateFacilities($hotel['facilities']);
         $this->renderPartial('_view', array(
             'hotel' => $hotel,
-            'rooms' => $rooms,
+            'rooms' => $rooms['results'][0]['services'],
         ));
     }
 

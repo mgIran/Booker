@@ -39,7 +39,7 @@ Yii::app()->clientScript->registerScriptFile('http://maps.googleapis.com/maps/ap
 Yii::app()->clientScript->registerScript('inline-scripts-ready',"
     $(document).on('click', '.feature-item a.more', function(){
         if($(this).attr('aria-expanded')=='false')
-            $(this).text('امکانات بیشتر...');
+            $(this).text('همه ی امکانات');
         else
             $(this).text('بستن');
     });
