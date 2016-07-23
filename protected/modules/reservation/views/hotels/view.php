@@ -51,6 +51,8 @@ Yii::app()->clientScript->registerScript('inline-scripts-load',"
         success: function(data){
             $('#hotel-view').replaceWith(data);
 
+            $('[data-toggle=\"popover\"]').popover();
+
             if($('.images-carousel .image-item').length > 1){
                 $('.images-carousel').owlCarousel({
                     autoWidth:true,

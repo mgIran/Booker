@@ -149,6 +149,11 @@ $(document).ready(function() {
             }
         }
     });
+
+    /**
+     * Call popover
+     */
+    $('[data-toggle="popover"]').popover();
 });
 
 function waitAnimate() {

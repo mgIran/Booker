@@ -1160,16 +1160,53 @@ label.error{
 }
 .rooms .room-item .ltr.text-left{
     margin-top: 0;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     font-size: 14px;
 }
 .rooms .room-item small{
     color: #999;
 }
-.rooms .room-item .capacity,
 .rooms .room-item .price{
     padding: 0;
+    margin-top: 9px;
+}
+.rooms .room-item .capacity i{
+    width: 17px;
+    height:17px;
+    display: inline-block;
+}
+.rooms .room-item .capacity i.adult{
+    background: url("../svg/adult.svg") no-repeat center / 17px auto;
+}
+.rooms .room-item .capacity i.child{
+    background: url("../svg/child.svg") no-repeat center bottom / 15px auto;
+}
+.rooms .room-item .description{
+    width: 25px;
+    height:20px;
+    display: inline-block;
+    margin-bottom: -7px;
+    margin-left: 5px;
+    cursor: pointer;
+    opacity:0.45;
+    border:none;
+    background: url("../svg/more.svg") no-repeat center / 15px auto;
+}
+.rooms .room-item .popover-title{
+    font-family: IRANSans;
+    font-size: 12px;
+}
+.rooms .room-item .popover-content{
+    direction: ltr;
+    text-align: left;
+    font-size: 12px;
+}
+.rooms .room-item .features{
+    margin: 40px 0;
+}
+.rooms .room-item .thumbnail .caption{
+    padding: 15px;
 }
 .rooms .room-item .capacity{
-    padding-right: 15px;
+    font-size: 12px;
 }
