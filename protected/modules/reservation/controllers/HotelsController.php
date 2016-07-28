@@ -19,7 +19,7 @@ class HotelsController extends Controller
     {
         return array(
             array('allow',  // allow all users to perform 'index' and 'views' actions
-                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel'),
+                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout'),
                 'users' => array('*'),
             ),
             array('deny',  // deny all users
@@ -150,6 +150,22 @@ class HotelsController extends Controller
         ));
     }
 
+    public function actionCheckout()
+    {
+        $traviaID = Yii::app()->getRequest()->getQuery('tid');
+        if ($traviaID) {
+            $postman = new Postman();
+            $details = $postman->priceDetails($traviaID);
+            Yii::app()->theme = 'frontend';
+            $this->layout = '//layouts/inner';
+            $this->pageName = 'checkout';
+            $this->render('checkout', array(
+                'details'=>$details
+            ));
+        } else
+            $this->redirect(['/']);
+    }
+
     public function getStayingTime($in, $out)
     {
         $diff = $out - $in;
@@ -164,6 +180,58 @@ class HotelsController extends Controller
                 'maxPrice' => Yii::app()->session['maxPrice'],
             )
         ));
+    }
+
+    public function actionGetCancelRule()
+    {
+        $traviaId = Yii::app()->request->getQuery('tid');
+        $price = Yii::app()->request->getQuery('price');
+        $postman = new Postman();
+        $details = $postman->priceDetails($traviaId);
+        $str = '';
+        foreach ($details['cancelRules'] as $cancelRule) {
+            $str .= 'از امروز تا تاریخ ';
+            $date = strtotime($details['checkIn']);
+            $date = $date - ($cancelRule['remainDays'] * 60 * 60 * 24);
+            $date = JalaliDate::date('d F Y', $date);
+            $str .= $date . ' هزینه کنسل کردن ';
+            $ratio = floatval($cancelRule['ratio']);
+            $price = $price * $ratio;
+            $str .= number_format($price, 0) . ' تومان می باشد.<br>';
+        }
+        echo CJSON::encode(array(
+            'status' => 'success',
+            'rules' => $str
+        ));
+    }
+
+    public function getCancelRuleString($cancelRules, $checkIn, $price)
+    {
+        $str = '';
+        foreach ($cancelRules as $key=>$cancelRule) {
+            if ($str == '') {
+                $str .= 'از امروز تا تاریخ ';
+                $date = strtotime($checkIn);
+                $date = $date - ($cancelRule['remainDays'] * 60 * 60 * 24);
+                $date = JalaliDate::date('d F Y', $date);
+                $str .= $date . ' هزینه کنسل کردن ';
+                $ratio = floatval($cancelRule['ratio']);
+                $price = $price * $ratio;
+                $str .= number_format($price, 0) . ' تومان می باشد.<br>';
+            } else {
+                $str .= 'از تاریخ ';
+                $date = strtotime($checkIn);
+                $date = $date - ($cancelRule['remainDays'] * 60 * 60 * 24);
+                $prevDate = $date - ($cancelRules[$key - 1]['remainDays'] * 60 * 60 * 24);
+                $date = JalaliDate::date('d F Y', $date);
+                $prevDate = JalaliDate::date('d F Y', $prevDate);
+                $str .= $prevDate.' تا تاریخ '.$date . ' هزینه کنسل کردن ';
+                $ratio = floatval($cancelRule['ratio']);
+                $price = $price * $ratio;
+                $str .= number_format($price, 0) . ' تومان می باشد.<br>';
+            }
+        }
+        return $str;
     }
 
     public function translateFacilities($facilities)
@@ -231,5 +299,22 @@ class HotelsController extends Controller
         }
         rsort($output);
         return $output;
+    }
+
+    public function getChildsCount($rooms)
+    {
+        $childs = 0;
+        foreach ($rooms as $room)
+            if ($room['child'] !== 0)
+                $childs += count(explode(',', $room['child']));
+        return $childs;
+    }
+
+    public function getAdultsCount($rooms)
+    {
+        $adults = 0;
+        foreach ($rooms as $room)
+            $adults += $room['adult'];
+        return $adults;
     }
 }

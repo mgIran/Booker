@@ -29,6 +29,15 @@
         </div>
     </div>
 </div>
+<div id="cancel-rules-modal" class="modal">
+    <div class="modal-content">
+        <h5>شرایط کنسلی</h5>
+        <p></p>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">بستن</a>
+    </div>
+</div>
 <?php
 Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/js/owl.carousel.min.js');
 Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl . '/css/owl.carousel.css');
@@ -37,11 +46,33 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl.'/js/jqu
 Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl.'/css/magnific-popup.css');
 Yii::app()->clientScript->registerScriptFile('http://maps.googleapis.com/maps/api/js?key=AIzaSyBRyQvsBFWct4YvtN547f3ljpovifqgGYQ');
 Yii::app()->clientScript->registerScript('inline-scripts-ready',"
-    $(document).on('click', '.feature-item a.more', function(){
+    $(document).on('click', '.feature-item a.more#facilities-more', function(){
         if($(this).attr('aria-expanded')=='false')
             $(this).text('همه ی امکانات');
         else
             $(this).text('بستن');
+    });
+
+    $(document).on('click', '.feature-item a.more#rooms-more', function(){
+        if($(this).attr('aria-expanded')=='false')
+            $(this).text('همه ی اتاق ها');
+        else
+            $(this).text('بستن');
+    });
+
+    $(document).on('click', '.cancel-rule', function(){
+        $('#cancel-rules-modal').find('.modal-content p').html('در حال بارگذاری اطلاعات...');
+        $.ajax({
+            url:$(this).data('url'),
+            type:'POST',
+            dataType:'JSON',
+            success:function(data){
+                if(data.status=='success')
+                    $('#cancel-rules-modal').find('.modal-content p').html(data.rules);
+                else
+                    $('#cancel-rules-modal').find('.modal-content p').html('در انجام عملیات خطایی رخ داده است. لطفا مجددا تلاش کنید!');
+            }
+        });
     });
 ");
 Yii::app()->clientScript->registerScript('inline-scripts-load',"
@@ -55,13 +86,12 @@ Yii::app()->clientScript->registerScript('inline-scripts-load',"
 
             if($('.images-carousel .image-item').length > 1){
                 $('.images-carousel').owlCarousel({
-                    autoWidth:true,
-                    margin:10,
+                    margin:8,
                     rtl:true,
-                    dots:true,
-                    items:1,
-                    loop:true,
-                    lazyLoad:true
+                    items:3,
+                    dots:false,
+                    nav:true,
+                    navText:['<span class=\"arrow\"></span>','<span class=\"arrow\"></span>']
                 });
             }
 
@@ -107,6 +137,7 @@ Yii::app()->clientScript->registerScript('inline-scripts-load',"
                 });
             }
             initialize();
+            $('.modal-trigger').leanModal();
         },
         error: function(){
             $('#hotel-view').html('در انجام عملیات خطایی رخ داده است. لطفا مجددا تلاش کنید!');

@@ -910,7 +910,6 @@ label.error{
 }
 .hotel-details .image-item{
     height:300px;
-    width:300px;
     background: #f5f5f5 url("../svg/image.svg") no-repeat center;
     background-size: 100px;
     text-align: center;
@@ -1160,8 +1159,10 @@ label.error{
 }
 .rooms .room-item .ltr.text-left{
     margin-top: 0;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
     font-size: 14px;
+    padding: 0 15px 15px 15px;
+    border-bottom: 1px solid #ccc;
 }
 .rooms .room-item small{
     color: #999;
@@ -1202,11 +1203,77 @@ label.error{
     font-size: 12px;
 }
 .rooms .room-item .features{
-    margin: 40px 0;
+    margin-top: 35px;
+    margin-bottom: 20px;
 }
 .rooms .room-item .thumbnail .caption{
     padding: 15px;
 }
 .rooms .room-item .capacity{
     font-size: 12px;
+}
+.popover.bottom > .arrow::after{
+    left: -10px;
+    border-bottom-color: #f7f7f7;
+}
+.owl-theme .owl-controls{
+    margin: 0;
+}
+.owl-theme .owl-controls .owl-nav [class*="owl-"]{
+    position: absolute;
+    top:0;
+    bottom:0;
+    width: 30px;
+    background: #fff;
+    margin: 4px;
+    padding: 0;
+    border:1px solid #ccc;
+}
+.owl-theme .owl-controls .owl-nav [class*="owl-"]:hover{
+    background: #fbfbfb;
+}
+.owl-theme .owl-controls .owl-nav .owl-prev{
+    right:0;
+}
+.owl-theme .owl-controls .owl-nav .owl-next{
+    left:0;
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+.owl-theme .owl-controls .owl-nav .arrow{
+    background: url("../svg/chevron.svg") no-repeat center / 20px auto;
+    width: 20px;
+    height: 50px;
+    margin: 125px auto;
+    display: block;
+    opacity:0.5;
+}
+.owl-theme .owl-controls .owl-nav [class*="owl-"]:hover .arrow{
+    opacity: 1;
+}
+.rooms .room-item .cancel-rule{
+    margin-left: 15px;
+}
+.modal{
+    padding: 0;
+    bottom:auto;
+}
+.modal h1,
+.modal h2,
+.modal h3,
+.modal h4,
+.modal h5{
+    margin:0 0 20px 0;
+}
+.modal-footer{
+    border-top: none;
+}
+.reserve-information{
+    margin-top: 30px;
+}
+.reserve-information .overflow-fix{
+    margin-bottom: 15px;
 }
