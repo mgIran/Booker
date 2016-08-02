@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50617
 File Encoding         : 65001
 
-Date: 2016-06-29 13:54:53
+Date: 2016-08-02 14:20:00
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -84,8 +84,8 @@ CREATE TABLE `ym_counter_save` (
 -- ----------------------------
 -- Records of ym_counter_save
 -- ----------------------------
-INSERT INTO `ym_counter_save` VALUES ('counter', '99');
-INSERT INTO `ym_counter_save` VALUES ('day_time', '2457569');
+INSERT INTO `ym_counter_save` VALUES ('counter', '121');
+INSERT INTO `ym_counter_save` VALUES ('day_time', '2457603');
 INSERT INTO `ym_counter_save` VALUES ('max_count', '5');
 INSERT INTO `ym_counter_save` VALUES ('max_time', '1457598600');
 INSERT INTO `ym_counter_save` VALUES ('yesterday', '1');
@@ -103,7 +103,7 @@ CREATE TABLE `ym_counter_users` (
 -- ----------------------------
 -- Records of ym_counter_users
 -- ----------------------------
-INSERT INTO `ym_counter_users` VALUES ('837ec5754f503cfaaee0929fd48974e7', '1467192045');
+INSERT INTO `ym_counter_users` VALUES ('837ec5754f503cfaaee0929fd48974e7', '1470131368');
 
 -- ----------------------------
 -- Table structure for ym_countries
@@ -383,6 +383,25 @@ CREATE TABLE `ym_google_maps` (
 INSERT INTO `ym_google_maps` VALUES ('1', '', '35.72781914695719', '51.41998856328428', '19');
 
 -- ----------------------------
+-- Table structure for ym_order
+-- ----------------------------
+DROP TABLE IF EXISTS `ym_order`;
+CREATE TABLE `ym_order` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'شناسه',
+  `buyer_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'نام',
+  `buyer_family` varchar(50) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'نام خانوادگی',
+  `buyer_mobile` varchar(11) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'تلفن همراه',
+  `buyer_email` varchar(255) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'پست الکترونیکی',
+  `date` varchar(20) CHARACTER SET utf8 DEFAULT NULL COMMENT 'تاریخ رزرو',
+  `order_id` varchar(20) CHARACTER SET utf8 DEFAULT NULL COMMENT 'شماره سفارش',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of ym_order
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for ym_pages
 -- ----------------------------
 DROP TABLE IF EXISTS `ym_pages`;
@@ -420,6 +439,28 @@ CREATE TABLE `ym_page_categories` (
 -- Records of ym_page_categories
 -- ----------------------------
 INSERT INTO `ym_page_categories` VALUES ('1', 'صفحات استاتیک', 'base', '1');
+
+-- ----------------------------
+-- Table structure for ym_passengers
+-- ----------------------------
+DROP TABLE IF EXISTS `ym_passengers`;
+CREATE TABLE `ym_passengers` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'شناسه',
+  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'نام',
+  `family` varchar(50) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'نام خانوادگی',
+  `gender` varchar(3) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'جنسیت',
+  `passport_num` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT 'شماره پاسپورت',
+  `type` varchar(10) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'نوع',
+  `age` varchar(3) CHARACTER SET utf8 DEFAULT NULL COMMENT 'سن',
+  `order_id` int(10) unsigned DEFAULT NULL COMMENT 'سفارش',
+  PRIMARY KEY (`id`),
+  KEY `order_id` (`order_id`),
+  CONSTRAINT `ym_passengers_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `ym_order` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of ym_passengers
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for ym_site_setting

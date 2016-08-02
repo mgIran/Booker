@@ -48,4 +48,11 @@ class Postman
         $result = $this->getData('pricedetails', $data);
         return $result['priceDetailsRs'];
     }
+
+    public function checkAvailability($traviaID)
+    {
+        $data = '{"availabilityRq":{"traviaId":"' . $traviaID . '"}}';
+        $result = $this->getData('availability', $data);
+        return $result['availabilityRs'];
+    }
 }

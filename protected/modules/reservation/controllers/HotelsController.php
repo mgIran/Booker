@@ -155,13 +155,31 @@ class HotelsController extends Controller
         $traviaID = Yii::app()->getRequest()->getQuery('tid');
         if ($traviaID) {
             $postman = new Postman();
-            $details = $postman->priceDetails($traviaID);
+            $availability=$postman->checkAvailability($traviaID);
             Yii::app()->theme = 'frontend';
             $this->layout = '//layouts/inner';
             $this->pageName = 'checkout';
-            $this->render('checkout', array(
-                'details'=>$details
-            ));
+            if(isset($availability['price'])) {
+                $details = $postman->priceDetails($traviaID);
+                $hotelDetails = $postman->details($traviaID);
+
+                $model=new Order();
+
+                $this->render('checkout', array(
+                    'model'=>$model,
+                    'availability' => true,
+                    'details' => $details,
+                    'hotelDetails' => array(
+                        'name' => $hotelDetails['name'],
+                        'star' => $hotelDetails['star'],
+                        'city' => $hotelDetails['city'],
+                        'image' => $hotelDetails['images'][0],
+                    ),
+                ));
+            }else
+                $this->render('checkout', array(
+                    'availability' => false,
+                ));
         } else
             $this->redirect(['/']);
     }
@@ -207,19 +225,19 @@ class HotelsController extends Controller
 
     public function getCancelRuleString($cancelRules, $checkIn, $price)
     {
-        $str = '';
+            $str = '<ul>';
         foreach ($cancelRules as $key=>$cancelRule) {
-            if ($str == '') {
-                $str .= 'از امروز تا تاریخ ';
+            if ($str == '<ul>') {
+                $str .= '<li>از امروز تا تاریخ ';
                 $date = strtotime($checkIn);
                 $date = $date - ($cancelRule['remainDays'] * 60 * 60 * 24);
                 $date = JalaliDate::date('d F Y', $date);
                 $str .= $date . ' هزینه کنسل کردن ';
                 $ratio = floatval($cancelRule['ratio']);
                 $price = $price * $ratio;
-                $str .= number_format($price, 0) . ' تومان می باشد.<br>';
+                $str .= number_format($price, 0) . ' تومان می باشد.</li>';
             } else {
-                $str .= 'از تاریخ ';
+                $str .= '<li>از تاریخ ';
                 $date = strtotime($checkIn);
                 $date = $date - ($cancelRule['remainDays'] * 60 * 60 * 24);
                 $prevDate = $date - ($cancelRules[$key - 1]['remainDays'] * 60 * 60 * 24);
@@ -228,7 +246,7 @@ class HotelsController extends Controller
                 $str .= $prevDate.' تا تاریخ '.$date . ' هزینه کنسل کردن ';
                 $ratio = floatval($cancelRule['ratio']);
                 $price = $price * $ratio;
-                $str .= number_format($price, 0) . ' تومان می باشد.<br>';
+                $str .= number_format($price, 0) . ' تومان می باشد.</li>';
             }
         }
         return $str;

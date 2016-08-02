@@ -6,14 +6,14 @@
 <h2 class="yekan-text" style="margin-top: 100px;">
     <?php echo CHtml::encode($hotel['name'])?>
     <span class="stars overflow-fix">
-                <?php for($i=1;$i<=5;$i++):?>
-                    <?php if($i<=$hotel['star']):?>
-                        <div class="star"></div>
-                    <?php else:?>
-                        <div class="star off"></div>
-                    <?php endif;?>
-                <?php endfor;?>
-            </span>
+        <?php for($i=1;$i<=5;$i++):?>
+            <?php if($i<=$hotel['star']):?>
+                <div class="star"></div>
+            <?php else:?>
+                <div class="star off"></div>
+            <?php endif;?>
+        <?php endfor;?>
+    </span>
 </h2>
 <div class="container-fluid">
     <div class="feature-item">
@@ -31,6 +31,7 @@
         <small>- امکانات ذکر شده، توسط هتل معرفی گردیده و سایت بوکر 24 هیچ مسئولیتی در قبال این امکانات ندارد.</small>
         <ul class="facilities first">
             <?php for($i=0;$i<6;$i++):?>
+                <?php if(!isset($hotel['facilities'][$i]))break;?>
                 <li><?php echo CHtml::encode($hotel['facilities'][$i]);?></li>
             <?php endfor;?>
         </ul>

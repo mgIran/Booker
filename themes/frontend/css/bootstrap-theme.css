@@ -1273,7 +1273,50 @@ label.error{
 }
 .reserve-information{
     margin-top: 30px;
+    margin-bottom: 60px;
 }
 .reserve-information .overflow-fix{
     margin-bottom: 15px;
+}
+.reserve-information.cancel-rules ul,
+.passengers-info ul{
+    padding-right: 30px;
+    margin: 0;
+}
+.passengers-info ul{
+    margin-top: 30px;
+}
+.reserve-information.cancel-rules li,
+.passengers-info li{
+    margin-bottom: 15px;
+    list-style-type: square;
+    padding-right: 10px;
+}
+.reserve-information.cancel-rules li:last-child{
+    margin-bottom: 0;
+}
+.reserve-information .hotel-details + div{
+    border-right: 1px solid #e0e0e0;
+}
+.reserve-information .hotel-details img{
+    max-width: 100%;
+}
+.reserve-information .hotel-details .stars{
+    display: block;
+    float: none;
+    margin: 10px 0;
+}
+.reserve-information .hotel-details .star{
+    width: 15px;
+    height:15px;
+    background-size: 15px auto;
+}
+.reserve-information ol{
+    padding-left: 15px;
+}
+.reserve-basic-info{
+    margin-bottom: 0;
+}
+.reserve-basic-info h5.red-text{
+    margin-bottom: 30px;
 }
