@@ -163,10 +163,12 @@ class HotelsController extends Controller
                 $details = $postman->priceDetails($traviaID);
                 $hotelDetails = $postman->details($traviaID);
 
-                $model=new Order();
+                $orderModel=new Order();
+                $passengersModel=new Passengers();
 
                 $this->render('checkout', array(
-                    'model'=>$model,
+                    'orderModel'=>$orderModel,
+                    'passengersModel'=>$passengersModel,
                     'availability' => true,
                     'details' => $details,
                     'hotelDetails' => array(

@@ -241,6 +241,9 @@ form p{
 .inner-page .title-container.details-view{
     background: url("../images/details-view-bg.jpg") no-repeat center / cover;
 }
+.inner-page .title-container.checkout{
+    background: url("../images/checkout-bg.jpg") no-repeat center / cover;
+}
 .inner-page .content{
     position: relative;
     top: -150px;
@@ -1319,4 +1322,106 @@ label.error{
 }
 .reserve-basic-info h5.red-text{
     margin-bottom: 30px;
+}
+.passengers-info .room-passengers{
+    border-top: 1px solid #e0e0e0;
+    margin-top: 50px;
+    padding-top: 20px;
+}
+.passengers-info .room-item .room-type{
+    padding-right: 35px;
+    line-height: 36px;
+    height:36px;
+    background: #f5f5f5;
+    border-radius: 3px 0 0 3px;
+    z-index: 1;
+    position: relative;
+    box-shadow: 0 0 3px #ccc;
+}
+.passengers-info .passenger-item{
+    overflow: hidden;
+    margin-top: 15px;
+}
+.passengers-info .passenger-item .passenger-type{
+    position: relative;
+    padding: 15px 0;
+    font-weight: bold;
+    margin-top: 7px;
+}
+.passengers-info .passenger-item .passenger-type small{
+    font-weight:normal;
+}
+.passengers-info .passenger-item .passenger-type .arrow{
+    background: url("../svg/arrow-green.svg") no-repeat center / 50px;
+    width: 25px;
+    height:50px;
+    position: absolute;
+    top: 10px;
+    left: -18px;
+}
+.passengers-info .room-item h6{
+    margin: 0;
+    position: relative;
+    z-index:2;
+    box-shadow: 0 0 3px #777;
+}
+.passengers-info .passenger-item .fields{
+    padding: 0 30px 0 15px;
+}
+.passengers-info .passenger-item .gender-label{
+    display: block;
+    margin-bottom: 15px;
+}
+.room-passengers .room-item{
+    margin: 50px 0;
+    padding: 5px 0;
+}
+[type="radio"] + label::before,
+[type="radio"] + label::after{
+    left: auto;
+    right:0;
+}
+[type="radio"]:not(:checked) + label,
+[type="radio"]:checked + label{
+    padding-left: 0;
+    padding-right: 35px;
+    margin-left: 20px;
+}
+[type="radio"]:not(:checked),
+[type="radio"]:checked,
+[type="checkbox"]:not(:checked),
+[type="checkbox"]:checked{
+    left:0;
+}
+.filled-in[type="checkbox"]:not(:checked) + label::before{
+    right: 6px;
+    left: auto;
+}
+.filled-in[type="checkbox"] + label::before,
+.filled-in[type="checkbox"] + label::after{
+    right: 0;
+    left: auto;
+}
+[type="checkbox"] + label{
+    padding-left: 0;
+    padding-right: 35px;
+}
+.filled-in[type="checkbox"]:checked + label::before{
+    left: auto;
+    right: 11px;
+}
+.filled-in[type="checkbox"] + label::before,
+.filled-in[type="checkbox"] + label::after{
+    transition: border 0.25s ease 0s,
+        background-color 0.25s ease 0s,
+        width 0.2s ease 0.1s,
+        height 0.2s ease 0.1s,
+        top 0.2s ease 0.1s,
+        right 0.2s ease 0.1s;
+}
+#order-create-form{
+    padding-bottom: 15px;
+}
+#order-create-form .terms-check{
+    margin-top: 24px;
 }
