@@ -11,6 +11,7 @@
  * @property string $passport_num
  * @property string $type
  * @property string $age
+ * @property integer $room_num
  * @property string $order_id
  *
  * The followings are the available model relations:
@@ -34,13 +35,16 @@ class Passengers extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
+			array('name, family, gender, passport_num', 'required'),
+			array('room_num', 'numerical', 'integerOnly'=>true),
 			array('name, family', 'length', 'max'=>50),
-			array('gender, age', 'length', 'max'=>3),
+			array('gender', 'length', 'max'=>6),
 			array('passport_num', 'length', 'max'=>255),
 			array('type, order_id', 'length', 'max'=>10),
+			array('age', 'length', 'max'=>3),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, name, family, gender, passport_num, type, age, order_id', 'safe', 'on'=>'search'),
+			array('id, name, family, gender, passport_num, type, age, room_num, order_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -69,6 +73,7 @@ class Passengers extends CActiveRecord
 			'passport_num' => 'شماره گذرنامه',
 			'type' => 'نوع',
 			'age' => 'سن',
+			'room_num' => 'شماره اتاق',
 			'order_id' => 'سفارش',
 		);
 	}
@@ -98,6 +103,7 @@ class Passengers extends CActiveRecord
 		$criteria->compare('passport_num',$this->passport_num,true);
 		$criteria->compare('type',$this->type,true);
 		$criteria->compare('age',$this->age,true);
+		$criteria->compare('room_num',$this->room_num);
 		$criteria->compare('order_id',$this->order_id,true);
 
 		return new CActiveDataProvider($this, array(

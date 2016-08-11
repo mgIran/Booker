@@ -16,8 +16,6 @@
 	  $cs = Yii::app()->getClientScript();
 	  Yii::app()->clientScript->registerCoreScript('jquery');
 	?>
-    <!-- Fav and Touch and touch icons -->
-    <link rel="shortcut icon" href="<?php echo $baseUrl;?>/img/icons/favicon.ico">
     <link rel="stylesheet" href="<?php echo $baseUrl;?>/css/fontiran.css">
 	<?php
 

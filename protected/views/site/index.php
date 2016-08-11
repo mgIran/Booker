@@ -109,8 +109,8 @@
             <?php echo CHtml::endForm();?>
         </div>
         <ul class="nav nav-justified">
-            <li role="presentation"><a href="<?php echo $this->createUrl('/login');?>">ورود</a></li>
-            <li role="presentation"><a href="<?php echo $this->createUrl('/register');?>">ثبت نام</a></li>
+<!--            <li role="presentation"><a href="--><?php //echo $this->createUrl('/login');?><!--">ورود</a></li>-->
+<!--            <li role="presentation"><a href="--><?php //echo $this->createUrl('/register');?><!--">ثبت نام</a></li>-->
             <li role="presentation"><a href="<?php echo $this->createUrl('/terms');?>">قوانین و مقررات</a></li>
             <li role="presentation"><a href="<?php echo $this->createUrl('/help');?>">راهنما</a></li>
             <li role="presentation"><a href="<?php echo $this->createUrl('/about');?>">درباره ما</a></li>
@@ -132,11 +132,14 @@
 <div class="datepicker-overlay hidden"></div>
 <button class="btn-submit-date hidden">انتخاب</button>
 <?php Yii::app()->clientScript->registerScript('general-variables', "var hotelAutoCompleteUrl='".Yii::app()->request->hostInfo.Yii::app()->request->baseUrl."/reservation/hotels/autoComplete/%QUERY';", CClientScript::POS_HEAD);?>
-<?php Yii::app()->clientScript->registerScript('submit-form', "
+<?php Yii::app()->clientScript->registerScript('inline-script', "
     $('#search').click(function(){
         if($('#destination').val()==''){
             $('.message').text('مقصد خود را مشخص کنید.');
             $('#destination').focus();
+            return false;
+        }else if($('#city-key').val()==''){
+            $('.message').text('امکان رزرو در شهر مورد نظر وجود ندارد');
             return false;
         }else if($('#out-date_altField').val()==$('#enter-date_altField').val()){
             $('.message').text('تاریخ ورود و خروج نمی تواند یکسان باشد.');

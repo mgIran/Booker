@@ -16,7 +16,7 @@
 <!--                    <li role="presentation"><a href="--><?php //echo $this->createUrl('/login');?><!--">ورود به سیستم</a></li>-->
                     <li role="presentation"><a href="<?php echo $this->createUrl('/terms');?>">قوانین و مقررات</a></li>
                     <li role="presentation"><a href="<?php echo $this->createUrl('/help');?>">راهنما</a></li>
-                    <li role="presentation"><a href="<?php echo $this->createUrl('/about');?>">درباره</a></li>
+                    <li role="presentation"><a href="<?php echo $this->createUrl('/about');?>">درباره ما</a></li>
                     <li role="presentation"><a href="<?php echo $this->createUrl('/contactUs');?>">تماس با ما</a></li>
                 </ul>
             </div>

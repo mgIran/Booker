@@ -14,7 +14,7 @@ $this->breadcrumbs=array(
 ?>
 
 <div class="container">
-    <div class="content page-box">
+    <div class="content page-box text-page">
         <h2 class="yekan-text"><?= $model->title; ?></h2>
         <div class="container-fluid">
             <?= $model->summary; ?>

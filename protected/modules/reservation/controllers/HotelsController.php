@@ -19,7 +19,7 @@ class HotelsController extends Controller
     {
         return array(
             array('allow',  // allow all users to perform 'index' and 'views' actions
-                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout'),
+                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout', 'bill'),
                 'users' => array('*'),
             ),
             array('deny',  // deny all users
@@ -30,16 +30,29 @@ class HotelsController extends Controller
 
     public function actionAutoComplete($title)
     {
-        $countries = Countries::model()->findAll();
-        $countries = CHtml::listData($countries, 'lowercaseIso', 'nicename');
-        $postman = new Postman();
-        $result = $postman->autoComplete($title);
+        Yii::app()->getModule('cityNames');
+        $criteria = new CDbCriteria();
+        $criteria->compare('city_name', $title, true);
+        $query = CityNames::model()->findAll($criteria);
         $cities = array();
-        foreach ($result['Cities'] as $city)
-            array_push($cities, array(
-                'name' => $city['name'] . ' , ' . $countries[$city['country']],
-                'key' => $city['key']
-            ));
+        if (empty($query)) {
+            $countries = Countries::model()->findAll();
+            $countries = CHtml::listData($countries, 'lowercaseIso', 'nicename');
+            $postman = new Postman();
+            $result = $postman->autoComplete($title);
+            foreach ($result['Cities'] as $city)
+                array_push($cities, array(
+                    'name' => $city['name'] . ' , ' . $countries[$city['country']],
+                    'key' => $city['key']
+                ));
+        } else {
+            /* @var $city CityNames */
+            foreach ($query as $city)
+                array_push($cities, array(
+                    'name' => $city->city_name . ' , ' . $city->country_name,
+                    'key' => $city->city_key
+                ));
+        }
         echo CJSON::encode($cities);
     }
 
@@ -143,7 +156,7 @@ class HotelsController extends Controller
         $hotel = $postman->details(Yii::app()->getRequest()->getQuery('hotel_id'));
         $requestedRooms = $this->getRoomsInfo(Yii::app()->session['rooms']);
         $rooms = $postman->search($hotel['id'], false, date('Y-m-d', Yii::app()->session['inDate']), date('Y-m-d', Yii::app()->session['outDate']), CJSON::encode($requestedRooms));
-        $hotel['facilities']=$this->translateFacilities($hotel['facilities']);
+        $hotel['facilities'] = $this->translateFacilities($hotel['facilities']);
         $this->renderPartial('_view', array(
             'hotel' => $hotel,
             'rooms' => $rooms['results'][0]['services'],
@@ -154,21 +167,68 @@ class HotelsController extends Controller
     {
         $traviaID = Yii::app()->getRequest()->getQuery('tid');
         if ($traviaID) {
+            Yii::app()->getModule('pages');
+            /* @var $buyTerms Pages */
+            $buyTerms = Pages::model()->findByPk(4);
+            $purifier = new CHtmlPurifier();
+            $buyTerms = $purifier->purify($buyTerms->summary);
+            $orderModel = new Order();
+            $passengersModel = new Passengers();
+
+            $this->performAjaxValidation($orderModel);
+
             $postman = new Postman();
-            $availability=$postman->checkAvailability($traviaID);
+            $availability = $postman->checkAvailability($traviaID);
             Yii::app()->theme = 'frontend';
             $this->layout = '//layouts/inner';
             $this->pageName = 'checkout';
-            if(isset($availability['price'])) {
+
+            if (isset($availability['price'])) {
                 $details = $postman->priceDetails($traviaID);
                 $hotelDetails = $postman->details($traviaID);
 
-                $orderModel=new Order();
-                $passengersModel=new Passengers();
+                if (isset($_POST['Order'])) {
+                    $orderModel->attributes = $_POST['Order'];
+                    $orderModel->date = time();
+                    $orderModel->travia_id = $traviaID;
+                    $orderModel->price = $details['price'];
+                    $hasError = false;
+                    if ($orderModel->save()) {
+                        $roomNum=0;
+                        foreach ($_POST['Passengers'] as $room) {
+                            foreach ($room as $passenger) {
+                                $model = new Passengers();
+                                $model->attributes=$passenger;
+//                                $model->name = $passenger['name'];
+//                                $model->family = $passenger['family'];
+//                                $model->gender = $passenger['gender'];
+//                                $model->passport_num = $passenger['passport_num'];
+//                                $model->type = $passenger['type'];
+//                                $model->age = ($model->type == 'adult') ? null : $passenger['age'];
+                                $model->room_num = $roomNum;
+                                $model->order_id = $orderModel->id;
+                                if (!$model->save()) {
+                                    $hasError = true;
+                                    Yii::app()->user->setFlash('errors', $this->implodeErrors($model));
+                                    $orderModel->delete();
+                                    break;
+                                }
+                            }
+                            $roomNum++;
+                            if ($hasError)
+                                break;
+                        }
+                        if (!$hasError) {
+                            Yii::app()->session['orderID'] = $orderModel->id;
+                            $this->redirect('bill');
+                        }
+                    }
+                }
 
                 $this->render('checkout', array(
-                    'orderModel'=>$orderModel,
-                    'passengersModel'=>$passengersModel,
+                    'buyTerms' => $buyTerms,
+                    'orderModel' => $orderModel,
+                    'passengersModel' => $passengersModel,
                     'availability' => true,
                     'details' => $details,
                     'hotelDetails' => array(
@@ -178,12 +238,17 @@ class HotelsController extends Controller
                         'image' => $hotelDetails['images'][0],
                     ),
                 ));
-            }else
+            } else
                 $this->render('checkout', array(
                     'availability' => false,
                 ));
         } else
             $this->redirect(['/']);
+    }
+
+    public function actionBill()
+    {
+        var_dump(Yii::app()->session['orderID']);
     }
 
     public function getStayingTime($in, $out)
@@ -227,8 +292,8 @@ class HotelsController extends Controller
 
     public function getCancelRuleString($cancelRules, $checkIn, $price)
     {
-            $str = '<ul>';
-        foreach ($cancelRules as $key=>$cancelRule) {
+        $str = '<ul>';
+        foreach ($cancelRules as $key => $cancelRule) {
             if ($str == '<ul>') {
                 $str .= '<li>از امروز تا تاریخ ';
                 $date = strtotime($checkIn);
@@ -245,7 +310,7 @@ class HotelsController extends Controller
                 $prevDate = $date - ($cancelRules[$key - 1]['remainDays'] * 60 * 60 * 24);
                 $date = JalaliDate::date('d F Y', $date);
                 $prevDate = JalaliDate::date('d F Y', $prevDate);
-                $str .= $prevDate.' تا تاریخ '.$date . ' هزینه کنسل کردن ';
+                $str .= $prevDate . ' تا تاریخ ' . $date . ' هزینه کنسل کردن ';
                 $ratio = floatval($cancelRule['ratio']);
                 $price = $price * $ratio;
                 $str .= number_format($price, 0) . ' تومان می باشد.</li>';
@@ -303,18 +368,56 @@ class HotelsController extends Controller
             'Ironing service' => 'خدمات اتو',
             'Wake-up service' => 'خدمات بيدار كردن',
             'Exchange' => 'صرافي',
+            'Wedding Services' => 'خدمات جشن عروسي',
+            'Water Sports' => 'ورزشهاي آبي',
+            'Turkish Bath' => 'حمام تركي',
+            'Tour Desk' => 'قسمت ارائه تورها',
+            'Tennis' => 'زمين تنيس',
+            'Television in lobby' => 'تلويزيون در لابي',
+            'Television' => 'تلويزيون',
+            'Swimming Pool Nearby' => 'استخر داخلي',
+            'Swimming Pool' => 'استخر',
+            'Steam Bath' => 'سوناي بخار',
+            'Souvenirs / Gift Shop' => 'فروشگاه هدايا',
+            'Snack Bar' => 'بوفه خوراكي',
+            'Shop Arcade' => 'قسمت بازي هاي آنلاين',
+            'Self Laundry' => 'خدمات لباس شويي',
+            'Room Service' => 'خدمات پذيرايي به اتاق',
+            'Poolside Bar' => 'نوشيدني كنار استخر',
+            'Parasols' => 'چتر استخر',
+            'Outdoor Swimming Pool' => 'استخر محوطه',
+            'Meeting Rooms' => 'اتاق جلسات',
+            'Market' => 'فروشگاه',
+            'Library' => 'كتابخانه',
+            'Internet Corner' => 'اينرنت',
+            'Indoor Pool' => 'استخر سرپوشيده',
+            'High-Speed Internet' => 'اينترنت پرسرعت',
+            'Health Club' => 'باشگاه تندرستي و سلامتي',
+            'Gym' => 'كنسول بازي',
+            'Fitness Center' => 'باشگاه بدنسازي',
+            'Executive / Club Floor' => 'باشگاه همكف',
+            'Dry cleaning / laundry service' => 'خشكشويي و خدمات لباسشويي',
+            'Concierge Desk' => 'دربان',
+            'Child Care Service' => 'خدمات نگهداي كودك',
+            'Breakfast available (Surcharg)' => 'صبحانه قابل درخواست ( باهزينه )',
+            'Blackout drapes/curtains' => 'پرده',
+            'Bicycle Rentals' => 'كرايه دوچرخه',
+            'Beauty Salon' => 'سالن آرايش و زيبايي',
+            'Bar / Lounge' => 'سالن نوشيدني',
+            '24 Hour business center' => 'خدمات تجاري 24 ساعته',
+            '24 Hour Check-In' => 'پذيرش 24 ساعته'
         );
 
-        $output=array();
-        foreach($facilities as $facility) {
-            $addedToOutput=false;
+        $output = array();
+        foreach ($facilities as $facility) {
+            $addedToOutput = false;
             foreach ($translates as $key => $translate) {
                 if (strtolower($facility) == strtolower($key)) {
                     $output[] = $translate;
-                    $addedToOutput=true;
+                    $addedToOutput = true;
                 }
             }
-            if(!$addedToOutput)
+            if (!$addedToOutput)
                 $output[] = $facility;
         }
         rsort($output);
@@ -336,5 +439,17 @@ class HotelsController extends Controller
         foreach ($rooms as $room)
             $adults += $room['adult'];
         return $adults;
+    }
+
+    /**
+     * Performs the AJAX validation.
+     * @param Order $model the model to be validated
+     */
+    protected function performAjaxValidation($model)
+    {
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'order-form') {
+            echo CActiveForm::validate($model);
+            Yii::app()->end();
+        }
     }
 }

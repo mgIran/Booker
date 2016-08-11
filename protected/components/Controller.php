@@ -121,7 +121,8 @@ class Controller extends CController
     {
         $errors = '';
         foreach($model->getErrors() as $err){
-            $errors .= implode('<br>' ,$err) . '<br>';
+            foreach($err as $error)
+                $errors .= "<li>$error</li>";
         }
         return $errors;
     }

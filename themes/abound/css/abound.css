@@ -600,3 +600,39 @@ footer {
         padding: 30px 30px;
     }
 }
+
+
+
+.tt-menu {
+    width: 100%;
+    margin-top: 3px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    overflow: hidden;
+}
+.tt-suggestion {
+    padding: 10px 20px;
+    font-size: 13px;
+    line-height: 26px;
+    color: #9e9e9e;
+    text-align: left;
+}
+.tt-suggestion:hover {
+    cursor: pointer;
+    color: #fff;
+    background-color: #0097cf;
+}
+.tt-suggestion.tt-cursor {
+    color: #fff;
+    background-color: #0097cf;
+
+}
+.tt-suggestion p {
+    margin: 0;
+}

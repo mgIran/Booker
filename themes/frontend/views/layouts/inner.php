@@ -12,7 +12,8 @@
     <meta name="description" content="<?= $this->description?> ">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title><?= $this->siteName.(!empty($this->pageTitle)?' - '.$this->pageTitle:'') ?></title>
-    <link rel="shortcut icon" href="<?= Yii::app()->createAbsoluteUrl('themes/market/images/favicon.ico'); ?>">
+    <link rel="shortcut icon" href="<?= Yii::app()->createAbsoluteUrl('themes/frontend/images/favicon.ico'); ?>">
+    <link rel="shortcut icon" href="<?= Yii::app()->createAbsoluteUrl('themes/frontend/images/favicon.svg'); ?>">
     <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl;?>/css/fontiran.css">
     <?php
     $baseUrl = Yii::app()->theme->baseUrl;

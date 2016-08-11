@@ -55,4 +55,12 @@ class Postman
         $result = $this->getData('availability', $data);
         return $result['availabilityRs'];
     }
+
+    public function book($traviaID, $roomPeople)
+    {
+        $roomPeople = CJSON::encode($roomPeople);
+        $data = '{"bookRq":{"traviaId":"' . $traviaID . '", "roomPeople":' . $roomPeople . '}}';
+        $result = $this->getData('book', $data);
+        return $result['bookRs'];
+    }
 }

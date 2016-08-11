@@ -28,6 +28,10 @@ $(document).ready(function() {
             if ($(this).val() == '')
                 $(this).parents('.input-field').find('label').removeClass('active');
         }).on('typeahead:asyncrequest', function () {
+            if ($(this).css('direction') == 'rtl')
+                $(this).parents('.input-field').find('.auto-complete-loading').removeClass('right').addClass('left');
+            else if ($(this).css('direction') == 'ltr')
+                $(this).parents('.input-field').find('.auto-complete-loading').removeClass('left').addClass('right');
             $(this).parents('.input-field').find('.auto-complete-loading').show();
         }).on('typeahead:asyncreceive', function (a, b, c) {
             $(this).parents('.input-field').find('.auto-complete-loading').hide();

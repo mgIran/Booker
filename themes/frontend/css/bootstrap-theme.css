@@ -160,7 +160,7 @@ form p{
     right: 100px;
 }
 .search-box .logo .icon{
-    background: url("../svg/logo.svg") no-repeat center;
+    background: url("../svg/logo.svg") no-repeat center / 90px;
     width: 90px;
     height: 90px;
     position: absolute;
@@ -214,7 +214,7 @@ form p{
 }
 .search-box input#destination[type="text"]{
     padding-left: 0.75rem;
-    padding-right: 0;
+    padding-right: 0.75rem;
 }
 
 
@@ -251,6 +251,11 @@ form p{
     z-index:2;
     box-shadow: 0 0 10px rgba(0,0,0,0.3);
     padding: 35px 50px;
+    text-align: justify;
+}
+.inner-page .content.text-page{
+
+    line-height:35px;
 }
 .inner-page .content h2{
     font-size: 2.5em;
@@ -301,7 +306,7 @@ form p{
     right: 100px;
 }
 .header .logo .icon{
-    background: url("../svg/logo-black.svg") no-repeat center;
+    background: url("../svg/logo-black.svg") no-repeat center / 90px;
     width: 90px;
     height: 90px;
     position: absolute;
@@ -668,9 +673,13 @@ label.error{
 .tt-suggestion p {
     margin: 0;
 }
-.loading-container.auto-complete-loading{
+.loading-container.auto-complete-loading.right{
     left: 85%;
     right: 10px;
+}
+.loading-container.auto-complete-loading.left{
+    right: 85%;
+    left: 10px;
 }
 .loading-container.auto-complete-loading .spinner > div{
     width: 8px;
@@ -1286,7 +1295,8 @@ label.error{
     padding-right: 30px;
     margin: 0;
 }
-.passengers-info ul{
+.passengers-info ul,
+#order-form .alert-danger{
     margin-top: 30px;
 }
 .reserve-information.cancel-rules li,
@@ -1385,13 +1395,25 @@ label.error{
 [type="radio"]:checked + label{
     padding-left: 0;
     padding-right: 35px;
-    margin-left: 20px;
+    margin-left: 15px;
+}
+.passenger-type [type="radio"]:not(:checked) + label,
+.passenger-type [type="radio"]:checked + label{
+    margin-left: 15px;
+    min-width:60px;
 }
 [type="radio"]:not(:checked),
 [type="radio"]:checked,
 [type="checkbox"]:not(:checked),
 [type="checkbox"]:checked{
     left:0;
+}
+.with-gap[type="radio"] + label::after{
+    -webkit-transition: transform 0.28s ease 0s;
+    -moz-transition: transform 0.28s ease 0s;
+    -ms-transition: transform 0.28s ease 0s;
+    -o-transition: transform 0.28s ease 0s;
+    transition: transform 0.28s ease 0s;
 }
 .filled-in[type="checkbox"]:not(:checked) + label::before{
     right: 6px;
@@ -1419,9 +1441,16 @@ label.error{
         top 0.2s ease 0.1s,
         right 0.2s ease 0.1s;
 }
-#order-create-form{
+#order-form{
     padding-bottom: 15px;
 }
-#order-create-form .terms-check{
+#order-form .terms-check{
     margin-top: 24px;
+}
+.nav-wizard.nav > li > a{
+    line-height: 20px;
+}
+.modal .modal-content{
+    line-height: 35px;
+    text-align: justify;
 }
