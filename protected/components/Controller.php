@@ -69,6 +69,16 @@ class Controller extends CController
                     )
                 ) ,
                 array(
+                    'label' => 'شهرها<span class="caret"></span>' ,
+                    'url' => '#' ,
+                    'itemOptions' => array('class' => 'dropdown' ,'tabindex' => "-1") ,
+                    'linkOptions' => array('class' => 'dropdown-toggle' ,'data-toggle' => "dropdown") ,
+                    'items' => array(
+                        array('label' => 'مدیریت شهرها' ,'url' => Yii::app()->createUrl('/cityNames/manage/admin')) ,
+                        array('label' => 'افزودن شهر جدید' ,'url' => Yii::app()->createUrl('/cityNames/manage/create')) ,
+                    )
+                ) ,
+                array(
                     'label' => 'صفحات متنی' ,
                     'url' => Yii::app()->createUrl('/pages/manage/admin/?slug=base'),
                 ) ,
