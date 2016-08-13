@@ -199,12 +199,6 @@ class HotelsController extends Controller
                             foreach ($room as $passenger) {
                                 $model = new Passengers();
                                 $model->attributes=$passenger;
-//                                $model->name = $passenger['name'];
-//                                $model->family = $passenger['family'];
-//                                $model->gender = $passenger['gender'];
-//                                $model->passport_num = $passenger['passport_num'];
-//                                $model->type = $passenger['type'];
-//                                $model->age = ($model->type == 'adult') ? null : $passenger['age'];
                                 $model->room_num = $roomNum;
                                 $model->order_id = $orderModel->id;
                                 if (!$model->save()) {
@@ -248,7 +242,39 @@ class HotelsController extends Controller
 
     public function actionBill()
     {
-        var_dump(Yii::app()->session['orderID']);
+        if (isset(Yii::app()->session['orderID'])) {
+            Yii::app()->theme = 'frontend';
+            $this->layout = '//layouts/inner';
+            $this->pageName = 'bill';
+
+            /* @var $order Order */
+            $order = Order::model()->findByPk(Yii::app()->session['orderID']);
+
+            $postman = new Postman();
+            $availability = $postman->checkAvailability($order->travia_id);
+
+            if (isset($availability['price'])) {
+                $details = $postman->priceDetails($order->travia_id);
+                $hotelDetails = $postman->details($order->travia_id);
+
+                $this->render('bill', array(
+                    'order' => $order,
+                    'availability' => true,
+                    'details'=>$details,
+                    'hotelDetails' => array(
+                        'name' => $hotelDetails['name'],
+                        'star' => $hotelDetails['star'],
+                        'city' => $hotelDetails['city'],
+                        'image' => $hotelDetails['images'][0],
+                    ),
+                ));
+            } else
+                $this->render('bill', array(
+                    'availability' => false
+                ));
+
+        } else
+            $this->redirect(array('/site'));
     }
 
     public function getStayingTime($in, $out)

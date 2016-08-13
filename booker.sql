@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50617
 File Encoding         : 65001
 
-Date: 2016-08-02 14:20:00
+Date: 2016-08-13 14:41:15
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -53,6 +53,27 @@ INSERT INTO `ym_admin_roles` VALUES ('1', 'مدیر', 'admin');
 INSERT INTO `ym_admin_roles` VALUES ('2', 'ناظر', 'validator');
 
 -- ----------------------------
+-- Table structure for ym_city_names
+-- ----------------------------
+DROP TABLE IF EXISTS `ym_city_names`;
+CREATE TABLE `ym_city_names` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'شناسه',
+  `city_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'نام شهر (به فارسی)',
+  `country_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'نام کشور (به فارسی)',
+  `city_key` varchar(50) CHARACTER SET utf8 DEFAULT NULL COMMENT 'شهر مورد نظر',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of ym_city_names
+-- ----------------------------
+INSERT INTO `ym_city_names` VALUES ('1', 'دبی', 'امارات متحده عربی', '18edc');
+INSERT INTO `ym_city_names` VALUES ('2', 'استانبول', 'ترکیه', '19064');
+INSERT INTO `ym_city_names` VALUES ('3', 'رم', 'ایتالیا', '1c11e');
+INSERT INTO `ym_city_names` VALUES ('4', 'پاریس', 'فرانسه', '161cf');
+INSERT INTO `ym_city_names` VALUES ('5', 'مسکو', 'روسیه', '10588');
+
+-- ----------------------------
 -- Table structure for ym_contact
 -- ----------------------------
 DROP TABLE IF EXISTS `ym_contact`;
@@ -84,11 +105,11 @@ CREATE TABLE `ym_counter_save` (
 -- ----------------------------
 -- Records of ym_counter_save
 -- ----------------------------
-INSERT INTO `ym_counter_save` VALUES ('counter', '121');
-INSERT INTO `ym_counter_save` VALUES ('day_time', '2457603');
+INSERT INTO `ym_counter_save` VALUES ('counter', '128');
+INSERT INTO `ym_counter_save` VALUES ('day_time', '2457614');
 INSERT INTO `ym_counter_save` VALUES ('max_count', '5');
 INSERT INTO `ym_counter_save` VALUES ('max_time', '1457598600');
-INSERT INTO `ym_counter_save` VALUES ('yesterday', '1');
+INSERT INTO `ym_counter_save` VALUES ('yesterday', '0');
 
 -- ----------------------------
 -- Table structure for ym_counter_users
@@ -103,7 +124,7 @@ CREATE TABLE `ym_counter_users` (
 -- ----------------------------
 -- Records of ym_counter_users
 -- ----------------------------
-INSERT INTO `ym_counter_users` VALUES ('837ec5754f503cfaaee0929fd48974e7', '1470131368');
+INSERT INTO `ym_counter_users` VALUES ('837ec5754f503cfaaee0929fd48974e7', '1471082994');
 
 -- ----------------------------
 -- Table structure for ym_countries
@@ -394,8 +415,10 @@ CREATE TABLE `ym_order` (
   `buyer_email` varchar(255) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'پست الکترونیکی',
   `date` varchar(20) CHARACTER SET utf8 DEFAULT NULL COMMENT 'تاریخ رزرو',
   `order_id` varchar(20) CHARACTER SET utf8 DEFAULT NULL COMMENT 'شماره سفارش',
+  `travia_id` varchar(20) CHARACTER SET utf8 DEFAULT NULL COMMENT 'شناسه تراویا',
+  `price` varchar(20) CHARACTER SET utf8 DEFAULT NULL COMMENT 'مبلغ',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of ym_order
@@ -418,10 +441,10 @@ CREATE TABLE `ym_pages` (
 -- ----------------------------
 -- Records of ym_pages
 -- ----------------------------
-INSERT INTO `ym_pages` VALUES ('1', 'درباره ما', 'متن صفحه درباره ما', '1');
-INSERT INTO `ym_pages` VALUES ('2', 'تماس با ما', 'متن صفحه تماس با ما', '1');
-INSERT INTO `ym_pages` VALUES ('3', 'راهنما', 'متن صفحه راهنما', '1');
-INSERT INTO `ym_pages` VALUES ('4', 'شرایط استفاده از خدمات', 'متن صفحه شرایط استفاده از خدمات', '1');
+INSERT INTO `ym_pages` VALUES ('1', 'درباره ما', '<p>پروژه بوكر24 دات نت كه با صاحب امتيازي آقاي بهنام حدادي به عنوان مدير عامل دفتر خدمات مسافرتي و جهانگردي ميراث سفربا كد فعاليت 2401210139300173 صادر شده از سازمان ميراث فرهنگي ، صنايع دستي و گردشگري است . اين سايت&nbsp; سایت مختص به رزرواسیون آنلاین هتل است که قابلیت رزرو آنی اتاق در بیش از ۱۰۰ هزار هتل و هتل آپارتمان را با قیمتهای باور نکردنی به کاربران می دهد.<br />\r\nگروه ما متشکل از متخصصین ایرانی و بومي كه از فارغ التخصيلان رشته هاي صنعت گردشگري و هتلداري و با همكاري با متخصصان خارجي که سالها تجربه در صنعت وب و گردشگری را برای ایجاد هتل با ما به کار برده اند. برآن هسستيم بتوانيم به صورت كاملا تخصصي رو راحت فرايند رزرو هتل در سراسر جهان را به شما عرضه كنيم</p>\r\n\r\n<h2>&nbsp;خدمات ما</h2>\r\n\r\n<p>شما می توانید در هر ساعتی و از هر کجایی که باشید محل اقامت سفرتان را از بیش از ۱۰۰ هزار هتل وهتل آپارتمان در سر تا سر دنیا انتخاب کنید و کلیه مراحل رزرواسیون هتل را با پرداخت آنلاین کامل کنید.<br />\r\nواچر و مدرک رزرواسیون آنی پس از اتمام مرحله پرداخت به ایمیل شما ارسال می شود. هر جای دنیا که باشد از شمالي ترين نقطه دنيا تا جنوبي ترين نقطه دنيا از شرق تا غرب همه و همهتنها با چند كليك و برای هر سلیقه از هتل های کوچک و ارزان تا هتل های مجلل و پنج ستاره هتل با ما جوابگوی سلیقه ها خواهد بود.</p>\r\n\r\n<h2>&nbsp;اهداف</h2>\r\n\r\n<p>با توجه به افزايش ارتباطات جهاني لزوم توجه فناوري هاي نو در عرصه صنعت گردشگري بوكر دات نت با هدف سهولت و راحتي و سادگي در رزرواسيون را براي شما به ارمغان آورده و با هدف ايجاد بستر نوين در سنعت گردشگري در خدمت گردشگران خواهد بود</p>\r\n\r\n<h2>&nbsp; به ما اعتماد کنید</h2>\r\n\r\n<p>برای اعتماد به یک تجارت آنلاین نکات مختلفی را در نظر بگیرید. مهمتر از همه خود سایت و محتوای آن می باشد. ایجاد یک سایت جدی با کیفیت بالا کم هزینه که نیست هیچ بلکه از بسیاری از تجارت های معمولی دیگر می تواند پرکارتر و هزینه برتر باشد. با کمی گردش و کار کردن در سایت ما می توانید به جدی بودن ما برای ارائه بهترین خدمات رزرو آنلاین هتل پی ببرید. این سایت با سرمایه گذاری بالا و تلاش بسیاری توسط گروهی از بهترین های این صنعت راه اندازی شده و همواره توانسته است که اعتبار کاری خود را برای هزاران کاربر سایت اثبات کند.</p>\r\n\r\n<p>دفتر خدمات مسافرتي ميراث سفر به عنوان مجري اين سايت همواره پاسخگويي نظرات ، انتقادات و شكايات شما مي باشد .</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n', '1');
+INSERT INTO `ym_pages` VALUES ('2', 'تماس با ما', '<p>آدرس : اردبيل -خيابان نايبي نبش كوچه 21 پلاك 305 - دفتر خدمات مسافرتي و جهانگردي ميراث سفر</p>\r\n\r\n<p>تلفن تماس : 04533243543</p>\r\n\r\n<p>پشتيباني رزرواسيون : 09141520633</p>\r\n', '1');
+INSERT INTO `ym_pages` VALUES ('3', 'راهنما', '<p>عملیاتی که در این سایت برای انجام رزرو در نظر گرفته شده است بسیار ساده طراحی شده است و کافیست مراحل سایت را پیگیری نموده و تا در نهایت هتل مورد نظر خود را رزرو و <a href=\"http://www.berimsafar.com/InstantConfirmation.aspx\" id=\"ctl00_ContentPlaceHolder1_HyperLink4\" tabindex=\"-1\">واچر (تاییدیه رزرو) </a> را به زبان انگلیسی دریافت نمایید. مراحل رزرو هتل و دریافت واچر کاملا آنلاین بوده و نیاز به انتظار جهت تایید توسط آژانس و یا پیگیری رزرو از سوی شما کاربر گرامی ندارد.<br />\r\n<br />\r\n<strong>مراحل رزرو هتل در سایت Booker24.Net :</strong></p>\r\n\r\n<p><strong>(قبل از اقدام به رزرو پيشنهاد ميشود در سايت ثبت نام كنيد) </strong></p>\r\n\r\n<p>۱- جستجوی هتل<br />\r\n۲- انتخاب هتل<br />\r\n۳- انتخاب اتاق و وعده غذایی<br />\r\n۴- اطلاعات مسافرها<br />\r\n۵- پرداخت الکترونیک<br />\r\n۶- دریافت <a href=\"http://www.berimsafar.com/InstantConfirmation.aspx\" id=\"ctl00_ContentPlaceHolder1_HyperLink1\" tabindex=\"-1\">واچر (تاییدیه رزرو) </a></p>\r\n\r\n<p>مرحله اول:&nbsp; شهر يا كشور مورد نظر خود جهت رزرو هتل وارد نمائيد</p>\r\n\r\n<p>مرحله دوم : تاريخ ورود و خروج خودتان را مشخص كنيد</p>\r\n\r\n<p>مرحله سوم : تعداد اتاق خود را بر حسب تعداد نفرات بزرگسال و كودك را وارد كنيد</p>\r\n\r\n<p>و در آخر كليد جستجو را كليك نمائيد .</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n', '1');
+INSERT INTO `ym_pages` VALUES ('4', 'شرایط استفاده از خدمات', '<ol dir=\"rtl\">\r\n	<li>وب&zwnj;سایت بوكر24دات نت به نشانی اینترنتی&nbsp; بستری برای رزرو آنلاین هتل&zwnj; هاي خارجي<span dir=\"LTR\"> (</span>و سایر مکان&zwnj;های اقامتی موقت) است. با انجام رزرو در این وب&zwnj;سایت، شما با هتلی که در آن اتاق رزرو کرده&zwnj;اید ؛ قراردادی قانونی می&zwnj;بندید. در این قرارداد، ما تنها نقش واسطه را ایفا می&zwnj;کنیم؛ اطلاعات رزرو شما را برای هتل فرستاده و ایمیل تاییدیه نهایی را از طرف هتل برای شما ارسال می&zwnj;کنیم<span dir=\"LTR\">. </span></li>\r\n	<li>بخش رزرو وب&zwnj;سایت بوكر24دات نت طوری طراحی شده تا به شما در دسترسی به اطلاعات موجود درباره&zwnj;ی هتل&zwnj;ها و همچنین قانونی کردن ثبت این قرارداد کمک کند. تسهیلات رزرو موجود بر روی وب&zwnj;سایت، تنها برای قانونی کردن قرارداد بین شما و هتل طراحی شده و مسئولیت هرگونه سوء استفاده و عواقب ناشی از استفاده&zwnj;ی نادرست از آن، بر عهده&zwnj;ی شخص خواهد بود. در صورت مشاهده&zwnj;ی تخلف، دسترسی کاربر به اطلاعات قطع خواهد شد</li>\r\n	<li>در صورت رعایت نکردن مورد فوق، مسئولیت هرگونه جریمه&zwnj;ی احتمالی، ضرر مالی و یا سوء استفاده&zwnj;های احتمالی اشخاص دیگر، بر عهده&zwnj;ی کاربر خواهد بود<span dir=\"LTR\">.</span></li>\r\n	<li>اطلاعات مربوط به هتل&zwnj;ها که در این وب&zwnj;سایت بوكر24دات نت قرار گرفته، توسط هتل&zwnj;ها تولید می&zwnj;شود. این اطلاعات شامل قیمت&zwnj;های به&zwnj;روز شده، خالی بودن اتاق&zwnj;ها و... است و مسئولیت صحت آن، بر عهده&zwnj;ی هتل می&zwnj;باشد. با وجود ما تلاش خواهيم كرد این اطلاعات را به بهترین شکل ممکن ارائه شود، اما نمی&zwnj;تواند صحت و جامع بودن آن&zwnj;ها را تایید یا رد کند</li>\r\n	<li>قیمت&zwnj;های ارائه شده در این وب&zwnj;سایت بوكر24دات نت، مبلغی است که کاربر باید برای کل مدت اقامت و برای یک اتاق بپردازد؛ مگر در قسمت&zwnj;هایی که خلاف این مطلب ذکر می&zwnj;گردد&nbsp;</li>\r\n	<li>قیمت&zwnj;های نمایش&zwnj;داده شده روی سایت بوكر24دات نت به ارز ايران و مبلغ پرداختی توسط کاربر از طریق بانک به ریال می&zwnj;باشند</li>\r\n	<li>برای انجام رزرو، کاربر با انتخاب مقصد كه در نظر دارد، می&zwnj;تواند به بررسی هتل&zwnj;ها&nbsp; موجود بپردازد و در صورت نیاز؛ اطلاعات تکمیلی را از دفتر بخواهد به کمک مجموعه اطلاعاتی که از طريق دفتر فراهم می&zwnj;شود، کاربران می&zwnj;توانند با توجه به نیازهای سفر، هتل بهتری هم انتخاب کنند. بعد از انتخاب و اقدام برای رزرو هتل ، از کاربر تایید نهایی گرفته می&zwnj;شود&nbsp;رزرو هتل فقط در برگیرنده&zwnj;ی رزرو هتل است و شامل مواردی چون حمل و نقل، پارکینگ، اجاره&zwnj;ی خودرو و...نیست؛ مگر آنکه در قرارداد ذکر شده باشد<span dir=\"LTR\">.</span></li>\r\n	<li>اگر در جریان پرداخت پول، ارتباط با شبکه قطع شود، وظیفه&zwnj;ی حل مشکلات احتمالی بر عهده&zwnj;ی بانک می&zwnj;باشد و هزینه&zwnj;ی کم شده از حساب، طبق قوانین بانکی به حساب مشتری برخواهد گشت. وب&zwnj;سایت بوكر24دات نت&nbsp; در این روند مسؤولیتی ندارد؛ چون این عمل مستقیما توسط بانک انجام می&zwnj;گیرد؛ اما در تسهیل آن تلاش خواهد کرد<span dir=\"LTR\">.</span></li>\r\n	<li>بعد از انجام رزرو و صدور رسید یا واچر، وب&zwnj;سایت بوكر24دات نت&nbsp; تعهد می&zwnj;کند که هتل در آن تاریخ رزرو شده است؛ اما متضمن ارائه&zwnj;ی سرویس مناسب از طرف هتل یا به مسافر نیست<span dir=\"LTR\">.</span></li>\r\n	<li>ارائه&zwnj;ی اطلاعات شخصی صحیح، نظیر نام مطابق با نام مندرج در پاسپورت، تعداد مسافران، سن و... بر عهده&zwnj;ی کاربر می&zwnj;باشد. مشکلات ناشی از ورود اطلاعات نادرست توسط کاربر، بر عهده&zwnj;ی وب&zwnj;سایت زورق&zwnj;دات&zwnj;کام نخواهد بود<span dir=\"LTR\">.</span></li>\r\n	<li>وب&zwnj;سایت بوكر24دات نت تلاش می&zwnj;کند درخواست&zwnj;های ویژه&zwnj;ی مشتریان در زمان انجام رزرو را به هتل&nbsp; منتقل کرده و آن&zwnj;ها را انجام دهد؛ اما چون پاسخ نهایی این درخواست&zwnj;ها از جانب هتل&nbsp; خواهد بود، تعهدی نسبت به آن&zwnj;ها ندارد<span dir=\"LTR\">.</span></li>\r\n	<li>استفاده از امکاناتی نظیر خوراکی و نوشیدنی، سونا، جکوزی، استخر، اینترنت و... که در قرارداد هتل ذکر نشده&zwnj;اند، هزینه&zwnj;ی اضافی در بر دارد. این هزینه&zwnj;ها به عهده&zwnj;ی وب&zwnj;سایت&nbsp; نبوده و مسافر موظف است آن&zwnj;ها را مستقیما به هتل پرداخت کند<span dir=\"LTR\">.</span></li>\r\n	<li>با تایید هتل بابت رزرو اتاق از یک هتل، کاربر با قوانین و مقررات مربوط به فسخ رزرو هم موافقت می&zwnj;کند. این قوانین در بخش اطلاعات هتل، بخش رزرو و ای&zwnj;میل تایید رزرواسیون قابل مشاهده&zwnj;اند. دقت داشته باشید که ممکن است کاربر مجبور شود به خاطر فسخ قرارداد هزینه&zwnj;ای بپردازد. این هزینه&zwnj;ها طبق مقررات هر هتل متفاوت&zwnj;اند؛ به همین دلیل به کاربران محترم توصیه می&zwnj;کنیم که قبل از قطعی کردن هر قرارداد، مفاد آن را به دقت مطالعه فرمایند<span dir=\"LTR\">.</span></li>\r\n	<li>اگر قرارداد توسط مسافر لغو شود، بازپرداخت آن تنها از طریق شماره&zwnj;ی حساب یا کارت بانکی که پیش از این توسط وی اعلام شده، خواهد بود. روند بازپرداخت وجه ممکن است تا یک هفته به طول انجامد<span dir=\"LTR\">.</span></li>\r\n	<li>زمان ورود/خروج مسافر به/از هتل، در بخش اطلاعات هتل، بخش رزرواسیون و ایمیل تایید رزرواسیون ذکر شده و مسافر موظف است طبق آن زمان&zwnj;بندی عمل کند. در غیر این&zwnj;صورت، هزینه&zwnj;ی آن بر عهده&zwnj;ی مشتری بوده و از تعهدات وب&zwnj;سایت بوكر24دات نت نیست</li>\r\n</ol>\r\n', '1');
 
 -- ----------------------------
 -- Table structure for ym_page_categories
@@ -448,15 +471,16 @@ CREATE TABLE `ym_passengers` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'شناسه',
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'نام',
   `family` varchar(50) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'نام خانوادگی',
-  `gender` varchar(3) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'جنسیت',
-  `passport_num` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT 'شماره پاسپورت',
+  `gender` varchar(6) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'جنسیت',
+  `passport_num` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT 'شماره گذرنامه',
   `type` varchar(10) CHARACTER SET utf8 COLLATE utf8_persian_ci DEFAULT NULL COMMENT 'نوع',
   `age` varchar(3) CHARACTER SET utf8 DEFAULT NULL COMMENT 'سن',
+  `room_num` int(11) DEFAULT NULL COMMENT 'شماره اتاق',
   `order_id` int(10) unsigned DEFAULT NULL COMMENT 'سفارش',
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`),
   CONSTRAINT `ym_passengers_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `ym_order` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of ym_passengers

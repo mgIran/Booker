@@ -241,7 +241,8 @@ form p{
 .inner-page .title-container.details-view{
     background: url("../images/details-view-bg.jpg") no-repeat center / cover;
 }
-.inner-page .title-container.checkout{
+.inner-page .title-container.checkout,
+.inner-page .title-container.bill{
     background: url("../images/checkout-bg.jpg") no-repeat center / cover;
 }
 .inner-page .content{
@@ -1333,7 +1334,7 @@ label.error{
 .reserve-basic-info h5.red-text{
     margin-bottom: 30px;
 }
-.passengers-info .room-passengers{
+.passengers-info .room-passengers:not(#bill-page .room-passengers){
     border-top: 1px solid #e0e0e0;
     margin-top: 50px;
     padding-top: 20px;
@@ -1453,4 +1454,18 @@ label.error{
 .modal .modal-content{
     line-height: 35px;
     text-align: justify;
+}
+#bill-page .table{
+    margin: 40px 0;
+}
+#bill-page td,
+#bill-page th{
+    text-align: center;
+    padding: 10px;
+}
+#bill-page .room-passengers .room-item:last-child{
+    margin-bottom: 40px;
+}
+.bill-button{
+    padding: 0;
 }

@@ -264,10 +264,10 @@
                                 hasError=true;
                         }
                     });
-//                    if(hasError){
-//                        Materialize.toast('اطلاعات مسافرین ناقص است.', 5000);
-//                        return false;
-//                    }
+                    if(hasError){
+                        Materialize.toast('اطلاعات مسافرین ناقص است.', 5000);
+                        return false;
+                    }
                 });
             ");?>
         <?php else:?>
