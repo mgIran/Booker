@@ -91,7 +91,25 @@ Yii::app()->clientScript->registerScript('inline-scripts-load',"
                     items:3,
                     dots:false,
                     nav:true,
-                    navText:['<span class=\"arrow\"></span>','<span class=\"arrow\"></span>']
+                    navText:['<span class=\"arrow\"></span>','<span class=\"arrow\"></span>'],
+                    responsive: {
+                        0 : {
+                            items:1,
+                            margin :0
+                        },
+                        500 :{
+                            items:2,
+                            margin :8
+                        },
+                        768 :{
+                            items:2,
+                            margin :8
+                        },
+                        1025 :{
+                            items:3,
+                            margin :8
+                        }
+                    }
                 });
             }
 

@@ -163,7 +163,7 @@
                     </div>
                 </div>
             </div>
-            <div class="wait-animate doing">
+            <div class="wait-animate doing hidden-xs">
                 <div class="wa-circle"></div>
                 <div class="wa-v-line"></div>
                 <div class="wa-feature-item f1 right">
@@ -191,9 +191,12 @@
         </div>
         <div id="hotels-container" class="hotels-container hidden">
             <div class="card-panel filter-hotel fixable">
+                <div class="hidden-lg hidden-md hidden-sm pull-left chevron-down">
+                    <i class="material-icons red-text">keyboard_arrow_down</i>
+                </div>
                 <div class="row">
                     <div class="title red-text yekan-text container-fluid">هتل مورد نظر خود را بیابید...</div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                         <select id="stars-count" name="stars-count" data-template="normal">
                             <option value="" disabled selected>ستاره</option>
                             <option value="-1">همه</option>
@@ -205,13 +208,13 @@
                             <option value="5">پنج ستاره</option>
                         </select>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                         <div class="input-field">
                             <?php echo CHtml::textField('hotel_name', '', array('id'=>'filter-hotel-name'));?>
                             <?php echo CHtml::label('نام هتل', 'filter-hotel-name');?>
                         </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                         <label>قیمت</label>
                         <div id="price-range"></div>
                         <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl.'/js/nouislider.js');?>
@@ -350,5 +353,19 @@
                 }
             });
         }, 1000);
+    });
+
+    $('.filter-hotel .title').click(function(){
+        if($(window).width() < 768){
+            if($('.filter-hotel.fixed').css('height')=='50px'){
+                $('.filter-hotel.fixed').css('height','auto');
+                $('.filter-hotel.fixed').css('overflow','visible');
+                $('.filter-hotel .chevron-down i').text('keyboard_arrow_up');
+            }else{
+                $('.filter-hotel.fixed').css('height',50);
+                $('.filter-hotel.fixed').css('overflow','hidden');
+                $('.filter-hotel .chevron-down i').text('keyboard_arrow_down');
+            }
+        }
     });
 ", CClientScript::POS_LOAD);?>

@@ -185,4 +185,19 @@ class Controller extends CController
         }
         return 0;
     }
+
+    public function getFixedPrice($price)
+    {
+        Yii::app()->getModule('setting');
+        $commission = SiteSetting::model()->findByAttributes(array('name' => 'commission'));
+        $commission = $commission->value;
+        $tax = SiteSetting::model()->findByAttributes(array('name' => 'tax'));
+        $tax = $tax->value;
+
+        $price=$price*5000;
+
+        $commission = ($price * $commission) / 100;
+        $tax = ($price * $tax) / 100;
+        return $price + $commission + $tax;
+    }
 }

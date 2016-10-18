@@ -268,66 +268,73 @@ form p{
 
 
 
-.header{
+.navbar{
+    min-height: inherit;
+    border-radius: 0;
     border-bottom: 2px solid #ef5350;
-    height: 90px;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    min-height: 90px;
+    height: auto;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-}
-.header .container{
+    margin-bottom: 0;
     position: relative;
-    overflow: hidden;
+    z-index:2;
 }
-.header .logo{
+.navbar > .container .navbar-brand,
+.navbar > .container-fluid .navbar-brand{
+    margin-right: 0;
+    padding-top: 5px;
+}
+.navbar-nav{
+    margin-right: 50px;
+}
+.navbar-nav > li{
+    margin: 20px 0;
+}
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:focus,
+.navbar-default .navbar-nav > .active > a:hover,
+nav ul li.active,
+.navbar-default .navbar-nav > li > a:focus,
+.navbar-default .navbar-nav > li > a:hover{
+    background: transparent;
+    color: #ef5350;
+}
+.navbar-default .navbar-brand{
     position: relative;
     color: #333;
     font-family: 'BYekan';
     height: 90px;
+    padding: 0;
 }
-.header .logo a{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index:2;
-}
-.header .logo h1{
-    font-size: 2em;
-    margin-bottom: 10px;
+.navbar-default .navbar-brand h1{
+    font-size: 1.6em;
+    margin-bottom: 0;
     margin-top: 0;
-    position: absolute;
-    top: 15px;
-    right: 100px;
+    display: inline-block;
+    height:83px;
+    vertical-align: middle;
+    margin-right: 10px;
+    padding-top: 8px;
 }
-.header .logo h2{
-    font-size: 1em;
-    margin: 0;
-    position: absolute;
-    top: 50px;
-    right: 100px;
-}
-.header .logo .icon{
-    background: url("../svg/logo-black.svg") no-repeat center / 90px;
-    width: 90px;
-    height: 90px;
-    position: absolute;
-    top: 0px;
-    right: 0;
-}
-.header .nav-container{
-    height:90px;
-    line-height: 90px;
-}
-.header .nav > li > a{
-    padding-top: 0;
-    padding-bottom: 0;
+.navbar-default .navbar-brand h1 small{
+    display: block;
+    font-size: 40%;
     color: #333;
+    margin-top: 5px;
 }
-.header .nav > li > a:hover,
-.header .nav > li > a:active,
-.header .nav > li > a:focus{
-    color: #ef5350;
-    background: transparent;
+.navbar-brand .icon{
+    background: url("../svg/logo-black.svg") no-repeat center;
+    background-size: 70px;
+    width: 73px;
+    height: 83px;
+    display: inline-block;
+    vertical-align: middle;
+}
+.navbar-toggle{
+    margin-top: 25px;
 }
 
 
@@ -1468,4 +1475,7 @@ label.error{
 }
 .bill-button{
     padding: 0;
+}
+.filter-hotel .chevron-down{
+    display: none;
 }

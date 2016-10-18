@@ -6,7 +6,7 @@ class HotelsController extends Controller
     {
         return array(
             'accessControl', // perform access control for CRUD operations
-            'postOnly + getMinMaxPrice'
+            'postOnly + getMinMaxPrice, verify'
         );
     }
 
@@ -19,7 +19,7 @@ class HotelsController extends Controller
     {
         return array(
             array('allow',  // allow all users to perform 'index' and 'views' actions
-                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout', 'bill'),
+                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout', 'bill', 'pay', 'verify'),
                 'users' => array('*'),
             ),
             array('deny',  // deny all users
@@ -64,10 +64,7 @@ class HotelsController extends Controller
             $rooms = $this->getRoomsInfo(Yii::app()->session['rooms']);
             $postman = new Postman();
             $result = $postman->search(Yii::app()->session['cityKey'], true, date('Y-m-d', Yii::app()->session['inDate']), date('Y-m-d', Yii::app()->session['outDate']), CJSON::encode($rooms));
-            var_dump($result);
             $hotels = array();
-            Yii::app()->getModule('setting');
-            $commission = SiteSetting::model()->findByAttributes(array('name' => 'commission'));
             foreach ($result['results'] as $hotel) {
                 $price = null;
                 $traviaID = '';
@@ -87,7 +84,7 @@ class HotelsController extends Controller
                         'tag' => $hotel['images'][0]['tag'],
                         'src' => $hotel['images'][0]['original'],
                     ),
-                    'price' => ($price * 4000) + $commission->value,
+                    'price' => $this->getFixedPrice($price),
                 ));
             }
             $this->render('search', array(
@@ -178,64 +175,57 @@ class HotelsController extends Controller
             $this->performAjaxValidation($orderModel);
 
             $postman = new Postman();
-            $availability = $postman->checkAvailability($traviaID);
             Yii::app()->theme = 'frontend';
             $this->layout = '//layouts/inner';
             $this->pageName = 'checkout';
 
-            if (isset($availability['price'])) {
-                $details = $postman->priceDetails($traviaID);
-                $hotelDetails = $postman->details($traviaID);
+            $details = $postman->priceDetails($traviaID);
+            $hotelDetails = $postman->details($traviaID);
 
-                if (isset($_POST['Order'])) {
-                    $orderModel->attributes = $_POST['Order'];
-                    $orderModel->date = time();
-                    $orderModel->travia_id = $traviaID;
-                    $orderModel->price = $details['price'];
-                    $hasError = false;
-                    if ($orderModel->save()) {
-                        $roomNum=0;
-                        foreach ($_POST['Passengers'] as $room) {
-                            foreach ($room as $passenger) {
-                                $model = new Passengers();
-                                $model->attributes=$passenger;
-                                $model->room_num = $roomNum;
-                                $model->order_id = $orderModel->id;
-                                if (!$model->save()) {
-                                    $hasError = true;
-                                    Yii::app()->user->setFlash('errors', $this->implodeErrors($model));
-                                    $orderModel->delete();
-                                    break;
-                                }
-                            }
-                            $roomNum++;
-                            if ($hasError)
+            if (isset($_POST['Order'])) {
+                $orderModel->attributes = $_POST['Order'];
+                $orderModel->date = time();
+                $orderModel->travia_id = $traviaID;
+                $orderModel->price = $details['price'];
+                $hasError = false;
+                if ($orderModel->save()) {
+                    $roomNum=0;
+                    foreach ($_POST['Passengers'] as $room) {
+                        foreach ($room as $passenger) {
+                            $model = new Passengers();
+                            $model->attributes=$passenger;
+                            $model->room_num = $roomNum;
+                            $model->order_id = $orderModel->id;
+                            if (!$model->save()) {
+                                $hasError = true;
+                                Yii::app()->user->setFlash('errors', $this->implodeErrors($model));
+                                $orderModel->delete();
                                 break;
+                            }
                         }
-                        if (!$hasError) {
-                            Yii::app()->session['orderID'] = $orderModel->id;
-                            $this->redirect('bill');
-                        }
+                        $roomNum++;
+                        if ($hasError)
+                            break;
+                    }
+                    if (!$hasError) {
+                        Yii::app()->session['orderID'] = $orderModel->id;
+                        $this->redirect('bill');
                     }
                 }
+            }
 
-                $this->render('checkout', array(
-                    'buyTerms' => $buyTerms,
-                    'orderModel' => $orderModel,
-                    'passengersModel' => $passengersModel,
-                    'availability' => true,
-                    'details' => $details,
-                    'hotelDetails' => array(
-                        'name' => $hotelDetails['name'],
-                        'star' => $hotelDetails['star'],
-                        'city' => $hotelDetails['city'],
-                        'image' => $hotelDetails['images'][0],
-                    ),
-                ));
-            } else
-                $this->render('checkout', array(
-                    'availability' => false,
-                ));
+            $this->render('checkout', array(
+                'buyTerms' => $buyTerms,
+                'orderModel' => $orderModel,
+                'passengersModel' => $passengersModel,
+                'details' => $details,
+                'hotelDetails' => array(
+                    'name' => $hotelDetails['name'],
+                    'star' => $hotelDetails['star'],
+                    'city' => $hotelDetails['city'],
+                    'image' => $hotelDetails['images'][0],
+                ),
+            ));
         } else
             $this->redirect(['/']);
     }
@@ -249,32 +239,132 @@ class HotelsController extends Controller
 
             /* @var $order Order */
             $order = Order::model()->findByPk(Yii::app()->session['orderID']);
-
             $postman = new Postman();
-            $availability = $postman->checkAvailability($order->travia_id);
 
-            if (isset($availability['price'])) {
-                $details = $postman->priceDetails($order->travia_id);
-                $hotelDetails = $postman->details($order->travia_id);
+            $roomPassengers = array();
+            foreach ($order->passengers as $passenger) {
+                if ($passenger->type == 'child')
+                    $roomPassengers[$passenger->room_num] = array(
+                        'name' => $passenger->name,
+                        'family' => $passenger->family,
+                        'gender' => $passenger->gender,
+                        'passportNo' => $passenger->passport_num,
+                        'type' => 'child',
+                        'age' => $passenger->age,
+                    );
+                elseif ($passenger->type == 'adult')
+                    $roomPassengers[$passenger->room_num] = array(
+                        'name' => $passenger->name,
+                        'family' => $passenger->family,
+                        'gender' => $passenger->gender,
+                        'passportNo' => $passenger->passport_num,
+                        'type' => 'adult',
+                    );
+            }
 
-                $this->render('bill', array(
-                    'order' => $order,
-                    'availability' => true,
-                    'details'=>$details,
-                    'hotelDetails' => array(
-                        'name' => $hotelDetails['name'],
-                        'star' => $hotelDetails['star'],
-                        'city' => $hotelDetails['city'],
-                        'image' => $hotelDetails['images'][0],
-                    ),
-                ));
-            } else
-                $this->render('bill', array(
-                    'availability' => false
-                ));
+            $postman=new Postman();
+            $book=$postman->book($order->travia_id, $roomPassengers);
+            if($book['status']=='succeeded'){
+                Order::model()->updateByPk($order->id, array('order_id' => $book['orderId']));
 
+            }
+            var_dump($book);exit;
+
+            $details = $postman->priceDetails($order->travia_id);
+            $hotelDetails = $postman->details($order->travia_id);
+
+            $this->render('bill', array(
+                'order' => $order,
+                'details'=>$details,
+                'hotelDetails' => array(
+                    'name' => $hotelDetails['name'],
+                    'star' => $hotelDetails['star'],
+                    'city' => $hotelDetails['city'],
+                    'image' => $hotelDetails['images'][0],
+                ),
+            ));
         } else
             $this->redirect(array('/site'));
+    }
+
+    public function actionPay($id)
+    {
+        Yii::app()->theme = 'frontend';
+        $this->layout = '//layouts/empty';
+        $order = Order::model()->findByPk($id);
+        /* @var $order Order */
+        $wsdl = "https://ikc.shaparak.ir/XToken/Tokens.xml";
+        $client = new nusoap_client($wsdl, true);
+        $client->soap_defencoding = 'UTF-8';
+        $params['amount'] = $this->getFixedPrice($order->price); // قیمت
+        $params['merchantId'] = "B0E2"; // مرچند کد
+        $params['invoiceNo'] = $order->id; // شناسه فاکتور
+        $params['paymentId'] = $order->id; // شناسه خرید
+        $params['revertURL'] = "http://www.booker24.net/reservation/hotels/verify"; // آدرس بازگشت
+        $result = $client->call("MakeToken", array($params));
+
+        $this->render('pay', array(
+            'bankResponse' => $result,
+        ));
+    }
+
+    public function actionVerify()
+    {
+        $token = trim($_POST['token']); // همان توکنی که در مرحله رزرو ساخته شد
+        $resultCode = trim($_POST['resultCode']); // کد برگشت که برای تراکنش موفق عدد 100 میباشد
+        $paymentId = trim($_POST['paymentId']); // همان شناسه خرید که در مرحله ساخت توکن استفاده کردیم
+        $referenceId = trim($_POST['referenceId']); // شناسه مرجع که بانک میسازه و قابل پیگیری هست
+
+        if ($resultCode == '100') {
+            $wsdl = "https://ikc.shaparak.ir/XVerify/Verify.xml";
+            $client = new nusoap_client($wsdl, true);
+            $client->soap_defencoding = 'UTF-8';
+            $params['token'] = $token;
+            $params['merchantId'] = 'B0E2'; // مرچند کد
+            $params['referenceNumber'] = $referenceId;
+            $params['sha1Key'] = '22338240992352910814917221751200141041845518824222260'; //sha1Key که از بانک باید گرفته شود
+            $result = $client->call("KicccPaymentsVerification", array($params));
+            $order = Order::model()->findByPk($paymentId);
+            /* @var $order Order */
+            if ($result['KicccPaymentsVerificationResult'] == $order->price) {
+                Yii::app()->user->setFlash('success', 'پرداخت با موفقیت انجام شد.');
+                Order::model()->updateByPk($paymentId, array('payment_tracking_code' => $referenceId));
+
+                $roomPassengers = array();
+                foreach ($order->passengers as $passenger) {
+                    if ($passenger->type == 'child')
+                        $roomPassengers[$passenger->room_num] = array(
+                            'name' => $passenger->name,
+                            'family' => $passenger->family,
+                            'gender' => $passenger->gender,
+                            'passportNo' => $passenger->passport_num,
+                            'type' => 'child',
+                            'age' => $passenger->age,
+                        );
+                    elseif ($passenger->type == 'adult')
+                        $roomPassengers[$passenger->room_num] = array(
+                            'name' => $passenger->name,
+                            'family' => $passenger->family,
+                            'gender' => $passenger->gender,
+                            'passportNo' => $passenger->passport_num,
+                            'type' => 'adult',
+                        );
+                }
+
+                $postman=new Postman();
+                $book=$postman->book($order->travia_id, $roomPassengers);
+                var_dump($book);exit;
+
+            } else {
+                Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
+                $this->redirect('hotels/bill');
+            }
+        } else {
+            Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
+            $this->redirect('hotels/bill');
+        }
+
+
     }
 
     public function getStayingTime($in, $out)

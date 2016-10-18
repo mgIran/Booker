@@ -13,8 +13,10 @@
  * @property string $order_id
  * @property string $travia_id
  * @property string $price
+ * @property string $payment_tracking_code
  *
  * The followings are the available model relations:
+ * @property Bookings[] $bookings
  * @property Passengers[] $passengers
  */
 class Order extends CActiveRecord
@@ -38,11 +40,11 @@ class Order extends CActiveRecord
             array('buyer_name, buyer_family, buyer_mobile, buyer_email', 'required'),
 			array('buyer_name, buyer_family', 'length', 'max'=>50),
 			array('buyer_mobile', 'length', 'max'=>11),
-			array('buyer_email', 'length', 'max'=>255),
+			array('buyer_email, payment_tracking_code', 'length', 'max'=>255),
 			array('date, order_id, travia_id, price', 'length', 'max'=>20),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, buyer_name, buyer_family, buyer_mobile, buyer_email, date, order_id, travia_id, price', 'safe', 'on'=>'search'),
+			array('id, buyer_name, buyer_family, buyer_mobile, buyer_email, date, order_id, travia_id, price, payment_tracking_code', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -54,6 +56,7 @@ class Order extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+            'bookings' => array(self::HAS_MANY, 'Bookings', 'order_id'),
 			'passengers' => array(self::HAS_MANY, 'Passengers', 'order_id'),
 		);
 	}
@@ -73,6 +76,7 @@ class Order extends CActiveRecord
 			'order_id' => 'شماره سفارش',
 			'travia_id' => 'شناسه تراویا',
 			'price' => 'مبلغ',
+			'payment_tracking_code' => 'کد رهگیری پرداخت',
 		);
 	}
 
@@ -103,6 +107,7 @@ class Order extends CActiveRecord
 		$criteria->compare('order_id',$this->order_id,true);
 		$criteria->compare('travia_id',$this->travia_id,true);
 		$criteria->compare('price',$this->price,true);
+        $criteria->compare('payment_tracking_code',$this->payment_tracking_code,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

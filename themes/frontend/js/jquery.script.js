@@ -151,6 +151,8 @@ $(document).ready(function() {
                 $(".fixable").removeClass('fixed');
                 $(".hotels-container").removeClass('fixed-container');
             }
+            $('.fixable').attr('style','');
+            $('.filter-hotel .chevron-down i').text('keyboard_arrow_down');
         }
     });
 

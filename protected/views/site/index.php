@@ -116,6 +116,9 @@
             <li role="presentation"><a href="<?php echo $this->createUrl('/about');?>">درباره ما</a></li>
             <li role="presentation"><a href="<?php echo $this->createUrl('/contactUs');?>">تماس با ما</a></li>
         </ul>
+        <div class="licences hidden-lg hidden-md">
+            <img id='rgvjfukzwlaooeuksizp' style='cursor:pointer' onclick='window.open("http://logo.samandehi.ir/Verify.aspx?id=36489&p=xlaogvkaaodsmcsipfvl", "Popup","toolbar=no, scrollbars=no, location=no, statusbar=no, menubar=no, resizable=0, width=450, height=630, top=30")' alt='logo-samandehi' src='http://logo.samandehi.ir/logo.aspx?id=36489&p=qftiwlbqshwlaqgwbsiy'/>
+        </div>
     </div>
     <div class="slider">
         <ul class="cb-slideshow">
@@ -125,7 +128,7 @@
             <li><span class="slide-item" style="background: url('uploads/s4.jpg') no-repeat center / cover;"></span></li>
         </ul>
     </div>
-    <div class="licences">
+    <div class="licences hidden-xs hidden-sm">
         <img id='rgvjfukzwlaooeuksizp' style='cursor:pointer' onclick='window.open("http://logo.samandehi.ir/Verify.aspx?id=36489&p=xlaogvkaaodsmcsipfvl", "Popup","toolbar=no, scrollbars=no, location=no, statusbar=no, menubar=no, resizable=0, width=450, height=630, top=30")' alt='logo-samandehi' src='http://logo.samandehi.ir/logo.aspx?id=36489&p=qftiwlbqshwlaqgwbsiy'/>
     </div>
 </div>

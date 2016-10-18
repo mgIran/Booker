@@ -1,0 +1,297 @@
+@media (max-width: 767px) {
+    .search-box .box {
+        padding: 20px 25px;
+    }
+
+    .licences {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        margin: 30px auto;
+        text-align: center;
+    }
+
+    .inner-page .content {
+        padding: 35px 15px;
+    }
+
+    .nav > li {
+        float: none;
+    }
+
+    .navbar-nav {
+        margin-right: inherit;
+    }
+
+    .navbar-nav > li {
+        margin: 0;
+    }
+
+    .navbar-nav > li > a {
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+
+    .container-fluid > .navbar-collapse,
+    .container-fluid > .navbar-header,
+    .container > .navbar-collapse,
+    .container > .navbar-header {
+        margin-right: 0;
+    }
+
+    .footer {
+        height: auto;
+    }
+
+    .footer .pull-right {
+        float: none;
+        margin: 0 auto;
+        display: block;
+        width: 100%;
+    }
+
+    .footer .pull-left {
+        float: none;
+        width: 100%;
+        display: block;
+        text-align: center;
+    }
+
+    .footer .nav-pills > li > a {
+        text-align: center;
+    }
+
+    #contact-form .captcha {
+        position: relative;
+        text-align: left;
+    }
+
+    .inner-page .title-container {
+        height: 200px;
+    }
+
+    .inner-page .content {
+        margin: 15px 0;
+        top: 0;
+    }
+
+    .container {
+        width: auto;
+    }
+
+    .inner-page .content h2 {
+        font-size: 2em;
+    }
+
+    .nav-wizard > li {
+        width: 250px;
+        margin: 0 auto;
+        float: none;
+    }
+
+    .nav-wizard > li:not(:last-child) > a {
+        margin-left: 0;
+        margin-bottom: 6px;
+    }
+
+    .nav-wizard > li:first-child > a {
+        border-bottom-right-radius: 0;
+        border-top-left-radius: 4px;
+        padding-top: 16px;
+    }
+
+    .nav-wizard > li:not(:last-child) > a::after {
+        border-bottom: none;
+        border-left: 125px solid transparent;
+        border-right: 125px solid transparent;
+        border-top: 15px solid #d8dee0;
+        left: 0;
+        top: auto;
+        bottom: -15px;
+    }
+
+    .nav-wizard > li:not(:first-child) > a::before {
+        border-bottom: none;
+        border-left: 125px solid transparent;
+        border-right: 125px solid transparent;
+        border-top: 15px solid #ecf0f1;
+        left: 0;
+        top: 0;
+    }
+
+    .nav-wizard > li:not(:first-child) > a {
+        padding-right: 15px;
+    }
+
+    .nav > li > a {
+        padding: 28px 15px 0;
+    }
+
+    .nav > li:last-child > a {
+        padding-bottom: 10px;
+        padding-top: 25px;
+    }
+
+    .nav-wizard > li:last-child > a {
+        border-top-left-radius: 0;
+        border-bottom-right-radius: 4px;
+    }
+
+    .nav-wizard > li.done:hover > a::before,
+    .nav-wizard > li:hover > a::before {
+        border-right-color: transparent;
+        border-top-color: #ecf0f1;
+    }
+
+    .nav-wizard.nav > li.done:hover > a::after,
+    .nav-wizard.nav > li:hover > a::after {
+        border-right-color: transparent;
+        border-top-color: #c9d0d2;
+    }
+
+    .nav-wizard > li.active > a::after {
+        border-top-color: #428bca;
+    }
+
+    .nav-wizard > li.done > a::after {
+        border-top-color: #4caf50;
+    }
+
+    .nav-wizard.nav > li.done:hover > a::after,
+    .nav-wizard.nav > li.done:focus > a::after {
+        border-right-color: transparent;
+        border-top-color: #4caf50;
+    }
+
+    .nav-wizard.nav > li.active:hover > a::after {
+        border-right-color: transparent;
+        border-top-color: #428bca;
+    }
+    .search-info > b:not(:first-child){
+        margin-right: 0;
+    }
+    .search-info > b,
+    .search-info > small{
+        white-space:nowrap;
+    }
+    .search-info > .btn{
+        float: none !important;
+        display: block;
+        width: 100%;
+    }
+    .room-label{
+        width: 250px;
+        border-radius: 3px 3px 0 0;
+    }
+    .room-item h6{
+        margin: 20px 0;
+    }
+    .room-label::after{
+        border-bottom: none;
+        border-right: 125px inset transparent;
+        border-left: 125px inset transparent;
+        border-top: 14px solid #d9534f;
+        left: 0;
+        top:auto;
+        bottom:-14px;
+    }
+    .search-tools #search-form #search{
+        float: none !important;
+        display: block;
+        width:100%;
+    }
+    .filter-hotel .col-xs-12{
+        margin-bottom: 30px;
+    }
+    #price-range{
+        margin:10px 10px 10px 5px;
+    }
+    .filter-hotel.fixed .row{
+        width: 100%;
+    }
+    .filter-hotel.fixed{
+        height:50px;
+        overflow: hidden;
+    }
+    .filter-hotel.fixed .chevron-down{
+        margin-top: 3px;
+        display: block;
+    }
+    .hotel-details .stars{
+        float: none;
+        display: block;
+        margin: 15px 0 0;
+    }
+    .inner-page .content h2{
+        text-align: center;
+        padding-bottom: 20px;
+    }
+    .hotel-details .star{
+        background-size: 20px auto;
+        display: inline-block;
+        float: none;
+        height: 20px;
+        width: 20px;
+        direction: ltr;
+    }
+    .rooms .room-item .ltr.text-left{
+        padding: 0 0 15px;
+    }
+    .rooms .room-item .thumbnail .caption{
+        padding: 5px;
+    }
+    .hotel-details .rooms .room-item{
+        padding: 0;
+    }
+    .hotel-details > .container-fluid{
+        padding: 0;
+    }
+    .rooms .room-item .capacity{
+        float: none !important;
+        margin-top: 15px;
+    }
+    .rooms .room-item .price{
+        float: none !important;
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+    .feature-item ul.facilities{
+        padding: 0;
+    }
+    .feature-item ul.facilities li{
+        width: 50%;
+    }
+    .hotel-details .image-item{
+        height:200px;
+        background-size: 80px auto;
+    }
+    .owl-theme .owl-controls .owl-nav .arrow{
+        margin: 75px auto;
+    }
+    #map-point{
+        height:250px;
+    }
+    .room-passengers .room-item{
+        margin: 50px -10px;
+    }
+    .passengers-info .room-item .room-type{
+        float: none;
+        width: 250px;
+        height:auto;
+        padding-top: 20px;
+    }
+    .search-box #search{
+        float: none;
+        display: block;
+        width: 100%;
+    }
+}
+@media (min-width: 768px) and (max-width: 991px){
+    .licences{
+        position: relative;
+        bottom:auto;
+        left: auto;
+        margin: 30px auto;
+        text-align: center;
+    }
+}

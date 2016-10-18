@@ -52,14 +52,15 @@ class Postman
     public function checkAvailability($traviaID)
     {
         $data = '{"availabilityRq":{"traviaId":"' . $traviaID . '"}}';
-        $result = $this->getData('availability', $data);
-        return $result['availabilityRs'];
+        //$result = $this->getData('availability', $data);
+        //return $result['availabilityRs'];
+        return array('price'=>true);
     }
 
     public function book($traviaID, $roomPeople)
     {
         $roomPeople = CJSON::encode($roomPeople);
-        $data = '{"bookRq":{"traviaId":"' . $traviaID . '", "roomPeople":' . $roomPeople . '}}';
+        $data = '{"bookRq":{"traviaId":"' . $traviaID . '", "roomPeople":[' . $roomPeople . ']}}';
         $result = $this->getData('book', $data);
         return $result['bookRs'];
     }

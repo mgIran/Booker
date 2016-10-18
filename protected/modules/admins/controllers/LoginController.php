@@ -23,28 +23,28 @@ class LoginController extends Controller
     {
         Yii::app()->theme = 'abound';
         $this->layout = '//layouts/login';
-        if(!Yii::app()->user->isGuest && Yii::app()->user->type === 'admin')
+        if (!Yii::app()->user->isGuest && Yii::app()->user->type === 'admin')
             $this->redirect(array('/admins/'));
 
         $model = new AdminLoginForm;
         // if it is ajax validation request
-        if ( isset( $_POST[ 'ajax' ] ) && $_POST[ 'ajax' ] === 'login-form' ) {
-            echo CActiveForm::validate( $model );
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'login-form') {
+            echo CActiveForm::validate($model);
             Yii::app()->end();
         }
 
-// collect user input data
-        if ( isset( $_POST[ 'AdminLoginForm' ] ) ) {
-            $model->attributes = $_POST[ 'AdminLoginForm' ];
+        // collect user input data
+        if (isset($_POST['AdminLoginForm'])) {
+            $model->attributes = $_POST['AdminLoginForm'];
             // validate user input and redirect to the previous page if valid
-            if ( $model->validate() && $model->login())
-                if(Yii::app()->user->returnUrl != Yii::app()->request->baseUrl.'/')
+            if ($model->validate() && $model->login())
+                if (Yii::app()->user->returnUrl != Yii::app()->request->baseUrl . '/')
                     $this->redirect(Yii::app()->user->returnUrl);
                 else
                     $this->redirect(Yii::app()->createUrl('/admins/'));
         }
-// display the login form
-        $this->render( 'index', array( 'model' => $model ) );
+        // display the login form
+        $this->render('index', array('model' => $model));
     }
 
     /**
