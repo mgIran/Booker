@@ -18,6 +18,7 @@
  * The followings are the available model relations:
  * @property Bookings[] $bookings
  * @property Passengers[] $passengers
+ * @property Transactions[] $transactions
  */
 class Order extends CActiveRecord
 {
@@ -58,6 +59,7 @@ class Order extends CActiveRecord
 		return array(
             'bookings' => array(self::HAS_MANY, 'Bookings', 'order_id'),
 			'passengers' => array(self::HAS_MANY, 'Passengers', 'order_id'),
+            'transactions' => array(self::HAS_MANY, 'Transactions', 'order_id'),
 		);
 	}
 

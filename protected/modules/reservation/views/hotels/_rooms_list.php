@@ -1,6 +1,7 @@
 <?php
 /* @var $this HotelsController */
 /* @var $rooms array */
+/* @var $searchID string */
 ?>
 <div class="rooms overflow-fix">
     <?php foreach($rooms as $key=>$room):?>
@@ -40,9 +41,9 @@
                     </div>
                     <div class="clear pull-left">
                         <?php if(isset($room['cancel_support']) and !is_null($room['cancel_support'])):?>
-                            <a href="#cancel-rules-modal" data-url="<?php echo $this->createUrl('/reservation/hotels/getCancelRule',array('tid'=>$room['traviaId'], 'price'=>$this->getFixedPrice($room['price'])));?>" class="cancel-rule modal-trigger">شرایط کنسلی</a>
+                            <a href="#cancel-rules-modal" data-url="<?php echo $this->createUrl('/reservation/hotels/getCancelRule',array('tid'=>$room['traviaId'], 'price'=>$this->getFixedPrice($room['price']), 'search_id'=>$searchID));?>" class="cancel-rule modal-trigger">شرایط کنسلی</a>
                         <?php endif;?>
-                        <a href="<?php echo $this->createUrl('/reservation/hotels/checkout',array('tid'=>$room['traviaId']));?>" class="btn btn-primary light-blue darken-3 waves-effect" role="button">رزرو</a>
+                        <a href="<?php echo $this->createUrl('/reservation/hotels/checkout',array('tid'=>$room['traviaId'], 'sid'=>$searchID));?>" class="btn btn-primary light-blue darken-3 waves-effect" role="button">رزرو</a>
                     </div>
                 </div>
             </div>

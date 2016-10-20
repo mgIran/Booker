@@ -4,8 +4,8 @@ class Postman
 {
     protected function getData($method, $data)
     {
-        $key = 'R204F3J6IMKU82';
-        $url = 'http://travia.global/v1/hotel/' . $method;
+        $key = 'WPtYSK9PJGOI23';
+        $url = 'http://api.travia.info/v1/hotel/' . $method;
         $headers = array(
             'Content-Type:application/json',
             'Authorization: Basic ' . base64_encode(":" . $key)
@@ -21,10 +21,24 @@ class Postman
         return CJSON::decode($response);
     }
 
+    protected function checkResult($result)
+    {
+        if (isset($result['error'])) {
+            if ($result['error']['name'] == 'Request Expired')
+                return -1;
+            return 0;
+        } else
+            return 1;
+    }
+
     public function autoComplete($query)
     {
         $data = '{"autoCompleteRq":{"query":"' . $query . '","domestic":false}}';
-        $result = $this->getData('getautocomplete', $data);
+        $result = $this->getData('autocomplete', $data);
+
+        if ($this->checkResult($result) == -1)
+            return -1;
+
         return $result['autoCompleteRs'];
     }
 
@@ -32,20 +46,32 @@ class Postman
     {
         $data = '{"searchRq":{"destinationCode":"' . $destinationCode . '","isCity":' . (($isCity) ? 'true' : 'false') . ',"inDate":"' . $inDate . '","outDate":"' . $outDate . '","rooms":' . $rooms . ',"nationality":"IR","domestic":false}}';
         $result = $this->getData('search', $data);
+
+        if ($this->checkResult($result) == -1)
+            return -1;
+
         return $result['searchRs'];
     }
 
-    public function details($traviaID)
+    public function details($traviaID, $searchID)
     {
-        $data = '{"detailsRq":{"traviaId":"' . $traviaID . '"}}';
+        $data = '{"detailsRq":{"traviaId":"' . $traviaID . '","searchId":"' . $searchID . '"}}';
         $result = $this->getData('details', $data);
+
+        if ($this->checkResult($result) == -1)
+            return -1;
+
         return $result['detailsRs'];
     }
 
-    public function priceDetails($traviaID)
+    public function priceDetails($traviaID, $searchID)
     {
-        $data = '{"priceDetailsRq":{"traviaId":"' . $traviaID . '"}}';
+        $data = '{"priceDetailsRq":{"traviaId":"' . $traviaID . '","searchId":"' . $searchID . '"}}';
         $result = $this->getData('pricedetails', $data);
+
+        if ($this->checkResult($result) == -1)
+            return -1;
+
         return $result['priceDetailsRs'];
     }
 
@@ -54,7 +80,7 @@ class Postman
         $data = '{"availabilityRq":{"traviaId":"' . $traviaID . '"}}';
         //$result = $this->getData('availability', $data);
         //return $result['availabilityRs'];
-        return array('price'=>true);
+        return array('price' => true);
     }
 
     public function book($traviaID, $roomPeople)
@@ -62,6 +88,10 @@ class Postman
         $roomPeople = CJSON::encode($roomPeople);
         $data = '{"bookRq":{"traviaId":"' . $traviaID . '", "roomPeople":[' . $roomPeople . ']}}';
         $result = $this->getData('book', $data);
+
+        if ($this->checkResult($result) == -1)
+            return -1;
+
         return $result['bookRs'];
     }
 }

@@ -2,6 +2,7 @@
 /* @var $this HotelsController */
 /* @var $hotel array */
 /* @var $rooms array */
+/* @var $searchID string */
 ?>
 <h2 class="yekan-text" style="margin-top: 100px;">
     <?php echo CHtml::encode($hotel['name'])?>
@@ -21,7 +22,7 @@
             <h5 class="yekan-text">اتاق ها</h5>
             <div class="divider"></div>
         </div>
-        <?php $this->renderPartial('_rooms_list', array('rooms'=>$rooms));?>
+        <?php $this->renderPartial('_rooms_list', array('rooms'=>$rooms, 'searchID'=>$searchID));?>
     </div>
     <div class="feature-item">
         <div class="title">
@@ -66,8 +67,10 @@
             <h5 class="yekan-text">آدرس</h5>
             <div class="divider"></div>
         </div>
-        <div id="map-point" data-lat="<?= CHtml::encode($hotel['latitude']) ?>" data-lng="<?= CHtml::encode($hotel['langitude']) ?>"></div>
-        <span>منطقه: <?php echo CHtml::encode($hotel['city']);?></span>
+        <div id="map-point" data-lat="<?= CHtml::encode($hotel['latitude']) ?>" data-lng="<?= CHtml::encode($hotel['longitude']) ?>"></div>
+        <span>آدرس: <?php echo CHtml::encode($hotel['city']).' - '.CHtml::encode($hotel['address']);?></span>
+        <span style="margin-right: 40px;">کد پستی: <?php echo CHtml::encode($hotel['zipCode']);?></span>
+        <span style="margin-right: 40px;">تلفن: <span style="direction: ltr;display: inline-block;"><?php echo CHtml::encode($hotel['phone']);?></span></span>
     </div>
     <div class="feature-item card-panel">
         <h5>درباره هتل</h5>

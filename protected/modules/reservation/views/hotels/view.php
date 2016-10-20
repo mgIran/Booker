@@ -1,6 +1,7 @@
 <?php
 /* @var $this HotelsController */
 /* @var $id string */
+/* @var $searchID string */
 ?>
 <?php Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl.'/css/bootstrap-nav-wizard.css');?>
 <div class="container">
@@ -77,7 +78,7 @@ Yii::app()->clientScript->registerScript('inline-scripts-ready',"
 ");
 Yii::app()->clientScript->registerScript('inline-scripts-load',"
     $.ajax({
-        url: '".$this->createUrl('/reservation/hotels/getHotelInfo', array('hotel_id'=>$id))."',
+        url: '".$this->createUrl('/reservation/hotels/getHotelInfo', array('hotel_id'=>$id,'search_id'=>$searchID))."',
         type: 'POST',
         success: function(data){
             $('#hotel-view').replaceWith(data);

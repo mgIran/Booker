@@ -64,6 +64,10 @@ class HotelsController extends Controller
             $rooms = $this->getRoomsInfo(Yii::app()->session['rooms']);
             $postman = new Postman();
             $result = $postman->search(Yii::app()->session['cityKey'], true, date('Y-m-d', Yii::app()->session['inDate']), date('Y-m-d', Yii::app()->session['outDate']), CJSON::encode($rooms));
+
+            if($result==-1)
+                throw new CHttpException('مدت زمان مجاز برای انجام عملیات به اتمام رسیده؛ لطفا مجددا تلاش کنید.');
+
             $hotels = array();
             foreach ($result['results'] as $hotel) {
                 $price = null;
@@ -90,7 +94,8 @@ class HotelsController extends Controller
             $this->render('search', array(
                 'hotelsDataProvider' => new CArrayDataProvider($hotels, array('pagination' => false)),
                 'country' => $result['country'],
-                'city' => $result['city'],
+                'searchID' => $result['searchId'],
+                //'city' => $result['city'],
             ));
             Yii::app()->end();
         }
@@ -116,14 +121,15 @@ class HotelsController extends Controller
             $this->redirect('/');
     }
 
-    public function actionView($country, $city, $hotel, $hotelID)
+    public function actionView($country, $hotel, $hotelID, $searchID)
     {
         Yii::app()->theme = 'frontend';
         $this->layout = '//layouts/inner';
         $this->pageName = 'details-view';
         if (isset(Yii::app()->session['rooms']))
             $this->render('view', array(
-                'id' => $hotelID
+                'id' => $hotelID,
+                'searchID' => $searchID,
             ));
         else
             $this->redirect(['/']);
@@ -150,19 +156,29 @@ class HotelsController extends Controller
     public function actionGetHotelInfo()
     {
         $postman = new Postman();
-        $hotel = $postman->details(Yii::app()->getRequest()->getQuery('hotel_id'));
+        $hotel = $postman->details(Yii::app()->getRequest()->getQuery('hotel_id'), Yii::app()->getRequest()->getQuery('search_id'));
+
+        if($hotel==-1)
+            throw new CHttpException('مدت زمان مجاز برای انجام عملیات به اتمام رسیده؛ لطفا مجددا تلاش کنید.');
+
         $requestedRooms = $this->getRoomsInfo(Yii::app()->session['rooms']);
         $rooms = $postman->search($hotel['id'], false, date('Y-m-d', Yii::app()->session['inDate']), date('Y-m-d', Yii::app()->session['outDate']), CJSON::encode($requestedRooms));
+
+        if($rooms==-1)
+            throw new CHttpException('مدت زمان مجاز برای انجام عملیات به اتمام رسیده؛ لطفا مجددا تلاش کنید.');
+
         $hotel['facilities'] = $this->translateFacilities($hotel['facilities']);
         $this->renderPartial('_view', array(
             'hotel' => $hotel,
             'rooms' => $rooms['results'][0]['services'],
+            'searchID' => Yii::app()->getRequest()->getQuery('search_id'),
         ));
     }
 
     public function actionCheckout()
     {
         $traviaID = Yii::app()->getRequest()->getQuery('tid');
+        $searchID = Yii::app()->getRequest()->getQuery('sid');
         if ($traviaID) {
             Yii::app()->getModule('pages');
             /* @var $buyTerms Pages */
@@ -179,8 +195,13 @@ class HotelsController extends Controller
             $this->layout = '//layouts/inner';
             $this->pageName = 'checkout';
 
-            $details = $postman->priceDetails($traviaID);
-            $hotelDetails = $postman->details($traviaID);
+            $details = $postman->priceDetails($traviaID, $searchID);
+            if($details==-1)
+                throw new CHttpException('مدت زمان مجاز برای انجام عملیات به اتمام رسیده؛ لطفا مجددا تلاش کنید.');
+
+            $hotelDetails = $postman->details($traviaID, $searchID);
+            if($hotelDetails==-1)
+                throw new CHttpException('مدت زمان مجاز برای انجام عملیات به اتمام رسیده؛ لطفا مجددا تلاش کنید.');
 
             if (isset($_POST['Order'])) {
                 $orderModel->attributes = $_POST['Order'];
@@ -266,7 +287,11 @@ class HotelsController extends Controller
             $book=$postman->book($order->travia_id, $roomPassengers);
             if($book['status']=='succeeded'){
                 Order::model()->updateByPk($order->id, array('order_id' => $book['orderId']));
-
+                $booking=new Bookings();
+                $book['cancelRules']=CJSON::encode($book['cancelRules']);
+                $book['services']=CJSON::encode($book['services']);
+                $booking->attributes=$book;
+                $booking->save();
             }
             var_dump($book);exit;
 
@@ -329,6 +354,12 @@ class HotelsController extends Controller
             if ($result['KicccPaymentsVerificationResult'] == $order->price) {
                 Yii::app()->user->setFlash('success', 'پرداخت با موفقیت انجام شد.');
                 Order::model()->updateByPk($paymentId, array('payment_tracking_code' => $referenceId));
+                $transaction=new Transactions();
+                $transaction->tracking_code=$referenceId;
+                $transaction->amount=$order->price;
+                $transaction->order_id=$paymentId;
+                $transaction->date=time();
+                $transaction->save();
 
                 $roomPassengers = array();
                 foreach ($order->passengers as $passenger) {
@@ -387,8 +418,17 @@ class HotelsController extends Controller
     {
         $traviaId = Yii::app()->request->getQuery('tid');
         $price = Yii::app()->request->getQuery('price');
+        $searchID = Yii::app()->request->getQuery('search_id');
         $postman = new Postman();
-        $details = $postman->priceDetails($traviaId);
+        $details = $postman->priceDetails($traviaId, $searchID);
+        if ($details == -1) {
+            echo CJSON::encode(array(
+                'status' => 'failed',
+                'error' => 'مدت زمان مجاز برای انجام عملیات به اتمام رسیده.'
+            ));
+            exit;
+        }
+
         $str = '';
         foreach ($details['cancelRules'] as $cancelRule) {
             $str .= 'از امروز تا تاریخ ';

@@ -2,6 +2,7 @@
 /* @var $this HotelsController */
 /* @var $hotelsDataProvider CArrayDataProvider */
 /* @var $country string */
+/* @var $searchID string */
 /* @var $city string */
 ?>
 <?php Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl.'/css/bootstrap-nav-wizard.css');?>
@@ -232,7 +233,8 @@
                 'viewData'=>array(
                     'duration'=>floor(((Yii::app()->session['outDate']-Yii::app()->session['inDate'])/(3600*24))),
                     'country'=>(isset($country))?$country:null,
-                    'city'=>(isset($city))?$city:null,
+                    'searchID'=>(isset($searchID))?$searchID:null,
+                    //'city'=>(isset($city))?$city:null,
                 ),
                 'beforeAjaxUpdate'=>"function(){
                     $('html, body').animate({ scrollTop: $('#scroll-destination').offset().top }, 500, function(){
