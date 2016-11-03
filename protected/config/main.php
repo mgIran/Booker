@@ -3,7 +3,7 @@ return array(
 //    'onBeginRequest'=>create_function('$event', 'return ob_start("ob_gzhandler");'),
 //    'onEndRequest'=>create_function('$event', 'return ob_end_flush();'),
 	'basePath' => dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-	'name'=>'بوکر',
+	'name'=>'Booker24',
     'timeZone' => 'Asia/Tehran',
     'theme' => 'abound',
     'language' => 'fa_ir',
@@ -37,6 +37,43 @@ return array(
 
 	// application components
 	'components'=>array(
+        'ePdf' => array(
+            'class'         => 'ext.yii-pdf.EYiiPdf',
+            'params'        => array(
+                'mpdf'     => array(
+                    'librarySourcePath' => 'application.vendor.mpdf.*',
+                    'constants'         => array(
+                        '_MPDF_TEMP_PATH' => Yii::getPathOfAlias('application.runtime'),
+                    ),
+                    'class'=>'mpdf', // the literal class filename to be loaded from the vendors folder
+                    /*'defaultParams'     => array( // More info: http://mpdf1.com/manual/index.php?tid=184
+                        'mode'              => '', //  This parameter specifies the mode of the new document.
+                        'format'            => 'A4', // format A4, A5, ...
+                        'default_font_size' => 0, // Sets the default document font size in points (pt)
+                        'default_font'      => '', // Sets the default font-family for the new document.
+                        'mgl'               => 15, // margin_left. Sets the page margins for the new document.
+                        'mgr'               => 15, // margin_right
+                        'mgt'               => 16, // margin_top
+                        'mgb'               => 16, // margin_bottom
+                        'mgh'               => 9, // margin_header
+                        'mgf'               => 9, // margin_footer
+                        'orientation'       => 'P', // landscape or portrait orientation
+                    )*/
+                ),
+                'HTML2PDF' => array(
+                    'librarySourcePath' => 'application.vendor.html2pdf.*',
+                    'classFile'         => 'html2pdf.class.php', // For adding to Yii::$classMap
+                    /*'defaultParams'     => array( // More info: http://wiki.spipu.net/doku.php?id=html2pdf:en:v4:accueil
+                        'orientation' => 'P', // landscape or portrait orientation
+                        'format'      => 'A4', // format A4, A5, ...
+                        'language'    => 'en', // language: fr, en, it ...
+                        'unicode'     => true, // TRUE means clustering the input text IS unicode (default = true)
+                        'encoding'    => 'UTF-8', // charset encoding; Default is UTF-8
+                        'marges'      => array(5, 5, 5, 8), // margins by default, in order (left, top, right, bottom)
+                    )*/
+                )
+            ),
+        ),
         'userCounter' => array(
             'class' => 'application.components.UserCounter',
             'tableUsers' => 'ym_counter_users',
@@ -119,16 +156,23 @@ return array(
 	// using Yii::app()->params['paramName']
 	'params'=>array(
 		// @todo change webmail of emails
-		'adminEmail'=>'webmaster@booker24.net',
+		'adminEmail'=>'info@booker24.net',
         'noReplyEmail' => 'no-reply@booker24.net',
-        'mailTheme'=>
-            '<h2 style="box-sizing:border-box;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-o-box-sizing:border-box;border-radius:2px 2px 0 0;margin-bottom:0;box-sizing:border-box;display: block;width: 100%;background-color: rgb(239, 83, 80);line-height:60px;color:#fff;font-size: 24px;text-align: right;padding-right: 50px">بوکر<span style="font-size: 14px;color:#f0f0f0"> - مرجع انواع نرم افزار تلفن های هوشمند</span></h2>
+		'SMTP' => array(
+			'Host' => 'mail.booker24.net',
+			'Secure' => 'ssl',
+			'Port' => '465',
+			'Username' => 'no-reply@booker24.net',
+			'Password' => 'v2OuhopU+](m',
+		),
+		'mailTheme'=>
+			'<h2 style="margin-bottom:0;box-sizing:border-box;display: block;width: 100%;background-color: #77c159;line-height:60px;color:#fff;font-size: 24px;text-align: right;padding-right: 50px">بوکر 24<span style="font-size: 14px;color:#f0f0f0">رزرو آنلاین هتل های خارجی</span></h2>
              <div style="display: inline-block;width: 100%;font-family:tahoma;line-height: 28px;">
-                <div style="direction:rtl;display:block;overflow:hidden;border:1px solid #dadada;border-radius: 0 0 2px 2px;text-align: center;padding:15px;">{MessageBody}</div>
+                <div style="direction:rtl;display:block;overflow:hidden;border:1px solid #efefef;text-align: center;padding:15px;">{MessageBody}</div>
              </div>
              <div style="font-size: 8pt;color: #bbb;text-align: right;font-family: tahoma;padding: 15px;">
                 <a href="'.((strpos($_SERVER['SERVER_PROTOCOL'], 'https'))?'https://':'http://').$_SERVER['HTTP_HOST'].'/about">درباره</a> | <a href="'.((strpos($_SERVER['SERVER_PROTOCOL'], 'https'))?'https://':'http://').$_SERVER['HTTP_HOST'].'/help">راهنما</a>
-                <span style="float: left;"> همهٔ حقوق برای بوکر محفوظ است. ©‏ 1395 </span>
+                <span style="float: left;"> همهٔ حقوق برای بوکر 24 محفوظ است. ©‏ {CurrentYear} </span>
              </div>',
 	),
 );

@@ -8,23 +8,29 @@
  * @property string $order_id
  * @property string $hotel
  * @property string $star
+ * @property string $address
+ * @property string $phone
+ * @property string $zipCode
+ * @property string $checkinFrom
+ * @property string $checkoutTo
+ * @property string $latitude
+ * @property string $longitude
+ * @property string $desciption
  * @property string $country
  * @property string $city
  * @property string $passenger
- * @property string $code
  * @property string $traviaId
  * @property string $createdAt
  * @property string $checkIn
  * @property string $checkOut
  * @property string $nationality
  * @property string $currency
- * @property string $hotelId
  * @property string $meal
  * @property string $price
  * @property string $status
  * @property string $nonrefundable
  * @property string $cancelRules
- * @property string $services
+ * @property string $confirmationDetails
  * @property string $orderId
  *
  * The followings are the available model relations:
@@ -48,13 +54,16 @@ class Bookings extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('order_id, passenger', 'length', 'max'=>10),
-			array('hotel, country, city, code, traviaId, createdAt, checkIn, checkOut, nationality, currency, hotelId, meal, price, status, nonrefundable, orderId', 'length', 'max'=>255),
+			array('order_id, checkinFrom, checkoutTo, passenger', 'length', 'max'=>10),
+			array('hotel, country, city, traviaId, createdAt, checkIn, checkOut, nationality, currency, meal, price, status, nonrefundable, orderId', 'length', 'max'=>255),
 			array('star', 'length', 'max'=>2),
-			array('cancelRules, services', 'safe'),
+			array('address', 'length', 'max'=>1024),
+			array('phone, zipCode', 'length', 'max'=>20),
+			array('latitude, longitude', 'length', 'max'=>30),
+			array('desciption, cancelRules, confirmationDetails', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, order_id, hotel, star, country, city, passenger, code, traviaId, createdAt, checkIn, checkOut, nationality, currency, hotelId, meal, price, status, nonrefundable, cancelRules, services, orderId', 'safe', 'on'=>'search'),
+			array('id, order_id, hotel, star, address, phone, zipCode, checkinFrom, checkoutTo, latitude, longitude, desciption, country, city, passenger, traviaId, createdAt, checkIn, checkOut, nationality, currency, meal, price, status, nonrefundable, cancelRules, confirmationDetails, orderId', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -80,23 +89,29 @@ class Bookings extends CActiveRecord
 			'order_id' => 'سفارش',
 			'hotel' => 'هتل',
 			'star' => 'تعداد ستاره های هتل',
+			'address' => 'آدرس',
+			'phone' => 'تلفن',
+			'zipCode' => 'کد پستی',
+			'checkinFrom' => 'ساعت ورود',
+			'checkoutTo' => 'ساعت خروج',
+			'latitude' => 'lat',
+			'longitude' => 'lng',
+			'desciption' => 'توضیحات',
 			'country' => 'کشور',
 			'city' => 'شهر',
 			'passenger' => 'تعداد مسافرین',
-			'code' => 'کد',
 			'traviaId' => 'شناسه تراویا',
 			'createdAt' => 'تاریخ ثبت',
 			'checkIn' => 'تاریخ ورود',
 			'checkOut' => 'تاریخ خروج',
 			'nationality' => 'ملیت',
 			'currency' => 'واحد ارز',
-			'hotelId' => 'شناسه هتل',
 			'meal' => 'پذیرایی',
 			'price' => 'قیمت',
 			'status' => 'وضعیت',
 			'nonrefundable' => 'قابلیت استرداد',
 			'cancelRules' => 'شرایط کنسلی',
-			'services' => 'سرویس',
+			'confirmationDetails' => 'جزئیات تاییده',
 			'orderId' => 'شناسه سفارش',
 		);
 	}
@@ -123,23 +138,29 @@ class Bookings extends CActiveRecord
 		$criteria->compare('order_id',$this->order_id,true);
 		$criteria->compare('hotel',$this->hotel,true);
 		$criteria->compare('star',$this->star,true);
+		$criteria->compare('address',$this->address,true);
+		$criteria->compare('phone',$this->phone,true);
+		$criteria->compare('zipCode',$this->zipCode,true);
+		$criteria->compare('checkinFrom',$this->checkinFrom,true);
+		$criteria->compare('checkoutTo',$this->checkoutTo,true);
+		$criteria->compare('latitude',$this->latitude,true);
+		$criteria->compare('longitude',$this->longitude,true);
+		$criteria->compare('desciption',$this->desciption,true);
 		$criteria->compare('country',$this->country,true);
 		$criteria->compare('city',$this->city,true);
 		$criteria->compare('passenger',$this->passenger,true);
-		$criteria->compare('code',$this->code,true);
 		$criteria->compare('traviaId',$this->traviaId,true);
 		$criteria->compare('createdAt',$this->createdAt,true);
 		$criteria->compare('checkIn',$this->checkIn,true);
 		$criteria->compare('checkOut',$this->checkOut,true);
 		$criteria->compare('nationality',$this->nationality,true);
 		$criteria->compare('currency',$this->currency,true);
-		$criteria->compare('hotelId',$this->hotelId,true);
 		$criteria->compare('meal',$this->meal,true);
 		$criteria->compare('price',$this->price,true);
 		$criteria->compare('status',$this->status,true);
 		$criteria->compare('nonrefundable',$this->nonrefundable,true);
 		$criteria->compare('cancelRules',$this->cancelRules,true);
-		$criteria->compare('services',$this->services,true);
+		$criteria->compare('confirmationDetails',$this->confirmationDetails,true);
 		$criteria->compare('orderId',$this->orderId,true);
 
 		return new CActiveDataProvider($this, array(
@@ -156,5 +177,16 @@ class Bookings extends CActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	public function getPassengersCount($type)
+	{
+		$count=0;
+		$passengers=Passengers::model()->findAll('order_id = :order_id', array(':order_id'=>$this->order_id));
+		/* @var $passenger Passengers */
+		foreach($passengers as $passenger)
+			if ($passenger->type == $type)
+				$count++;
+		return $count;
 	}
 }

@@ -37,7 +37,7 @@
                 <h5 class="red-text">شرایط کنسلی</h5>
                 <div class="reserve-information cancel-rules">
                     <div class="overflow-fix">
-                        <?php echo $this->getCancelRuleString($details['cancelRules'], $details['checkIn'], $this->getFixedPrice($details['price']));?>
+                        <?php echo $this->getCancelRuleString($details['cancelRules'], $details['checkIn'], ($this->getFixedPrice($details['price'])/10));?>
                     </div>
                 </div>
                 <div class="reserve-information reserve-basic-info">
@@ -73,7 +73,7 @@
                             <h5 class="red-text">قیمت</h5>
                             <h5 class="ltr blue-text text-darken-2 overflow-fix">
                                 <small class="blue-text text-darken-2 pull-left" style="margin-right: 10px;">تومان </small>
-                                <span class="pull-left"><?php echo number_format($this->getFixedPrice($details['price']), 0);?></span>
+                                <span class="pull-left"><?php echo number_format(($this->getFixedPrice($details['price']/10)), 0);?></span>
                             </h5>
                         </div>
                     </div>

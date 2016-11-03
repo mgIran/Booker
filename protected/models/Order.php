@@ -14,6 +14,7 @@
  * @property string $travia_id
  * @property string $price
  * @property string $payment_tracking_code
+ * @property string $search_id
  *
  * The followings are the available model relations:
  * @property Bookings[] $bookings
@@ -41,7 +42,7 @@ class Order extends CActiveRecord
             array('buyer_name, buyer_family, buyer_mobile, buyer_email', 'required'),
 			array('buyer_name, buyer_family', 'length', 'max'=>50),
 			array('buyer_mobile', 'length', 'max'=>11),
-			array('buyer_email, payment_tracking_code', 'length', 'max'=>255),
+			array('buyer_email, payment_tracking_code, search_id', 'length', 'max'=>255),
 			array('date, order_id, travia_id, price', 'length', 'max'=>20),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -79,6 +80,7 @@ class Order extends CActiveRecord
 			'travia_id' => 'شناسه تراویا',
 			'price' => 'مبلغ',
 			'payment_tracking_code' => 'کد رهگیری پرداخت',
+			'search_id' => 'شناسه جستجو',
 		);
 	}
 
@@ -110,6 +112,7 @@ class Order extends CActiveRecord
 		$criteria->compare('travia_id',$this->travia_id,true);
 		$criteria->compare('price',$this->price,true);
         $criteria->compare('payment_tracking_code',$this->payment_tracking_code,true);
+		$criteria->compare('search_id',$this->search_id,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

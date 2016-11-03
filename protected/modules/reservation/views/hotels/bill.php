@@ -140,7 +140,7 @@
                     <h6 class="red-text">شرایط کنسلی</h6>
                     <div class="reserve-information cancel-rules">
                         <div class="overflow-fix">
-                            <?php echo $this->getCancelRuleString($details['cancelRules'], $details['checkIn'], $this->getFixedPrice($details['price']));?>
+                            <?php echo $this->getCancelRuleString($details['cancelRules'], $details['checkIn'], ($this->getFixedPrice($details['price'])/10));?>
                         </div>
                     </div>
 
@@ -190,7 +190,7 @@
 
                     <h5 class="pull-right">
                         مبلغ قابل پرداخت:
-                        <span class="red-text"><?php echo number_format($this->getFixedPrice($details['price']), 0);?></span>
+                        <span class="red-text"><?php echo number_format(($this->getFixedPrice($details['price'])/10), 0);?></span>
                         <small class="red-text" style="margin-right: 10px;">تومان </small>
                     </h5>
 

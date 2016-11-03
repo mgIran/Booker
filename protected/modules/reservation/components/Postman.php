@@ -83,11 +83,23 @@ class Postman
         return array('price' => true);
     }
 
-    public function book($traviaID, $roomPeople)
+    public function book($traviaID, $searchID, $roomPeople, $contactInfo)
     {
         $roomPeople = CJSON::encode($roomPeople);
-        $data = '{"bookRq":{"traviaId":"' . $traviaID . '", "roomPeople":[' . $roomPeople . ']}}';
+        $data =
+            '{"bookRq":
+                {
+                    "traviaId":"' . $traviaID . '",
+                    "searchId":"' . $searchID . '",
+                    "roomPeople":[' . $roomPeople . '],
+                    "contactInfo":{
+                        "mobile":"'.$contactInfo['mobile'].'",
+                        "email":"'.$contactInfo['email'].'"
+                    }
+                }
+            }';
         $result = $this->getData('book', $data);
+        var_dump($result);exit;
 
         if ($this->checkResult($result) == -1)
             return -1;
