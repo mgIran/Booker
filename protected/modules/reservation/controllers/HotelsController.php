@@ -66,7 +66,7 @@ class HotelsController extends Controller
             $postman = new Postman();
             $result = $postman->search(Yii::app()->session['cityKey'], true, date('Y-m-d', Yii::app()->session['inDate']), date('Y-m-d', Yii::app()->session['outDate']), CJSON::encode($rooms));
 
-            if($result==-1)
+            if ($result == -1)
                 throw new CHttpException('مدت زمان مجاز برای انجام عملیات به اتمام رسیده؛ لطفا مجددا تلاش کنید.');
 
             $hotels = array();
@@ -159,13 +159,13 @@ class HotelsController extends Controller
         $postman = new Postman();
         $hotel = $postman->details(Yii::app()->getRequest()->getQuery('hotel_id'), Yii::app()->getRequest()->getQuery('search_id'));
 
-        if($hotel==-1)
+        if ($hotel == -1)
             throw new CHttpException('مدت زمان مجاز برای انجام عملیات به اتمام رسیده؛ لطفا مجددا تلاش کنید.');
 
         $requestedRooms = $this->getRoomsInfo(Yii::app()->session['rooms']);
         $rooms = $postman->search($hotel['id'], false, date('Y-m-d', Yii::app()->session['inDate']), date('Y-m-d', Yii::app()->session['outDate']), CJSON::encode($requestedRooms));
 
-        if($rooms==-1)
+        if ($rooms == -1)
             throw new CHttpException('مدت زمان مجاز برای انجام عملیات به اتمام رسیده؛ لطفا مجددا تلاش کنید.');
 
         $hotel['facilities'] = $this->translateFacilities($hotel['facilities']);
@@ -197,11 +197,11 @@ class HotelsController extends Controller
             $this->pageName = 'checkout';
 
             $details = $postman->priceDetails($traviaID, $searchID);
-            if($details==-1)
+            if ($details == -1)
                 throw new CHttpException('مدت زمان مجاز برای انجام عملیات به اتمام رسیده؛ لطفا مجددا تلاش کنید.');
 
             $hotelDetails = $postman->details($traviaID, $searchID);
-            if($hotelDetails==-1)
+            if ($hotelDetails == -1)
                 throw new CHttpException('مدت زمان مجاز برای انجام عملیات به اتمام رسیده؛ لطفا مجددا تلاش کنید.');
 
             if (isset($_POST['Order'])) {
@@ -212,11 +212,11 @@ class HotelsController extends Controller
                 $orderModel->price = $details['price'];
                 $hasError = false;
                 if ($orderModel->save()) {
-                    $roomNum=0;
+                    $roomNum = 0;
                     foreach ($_POST['Passengers'] as $room) {
                         foreach ($room as $passenger) {
                             $model = new Passengers();
-                            $model->attributes=$passenger;
+                            $model->attributes = $passenger;
                             $model->room_num = $roomNum;
                             $model->order_id = $orderModel->id;
                             if (!$model->save()) {
@@ -267,12 +267,12 @@ class HotelsController extends Controller
             $details = $postman->priceDetails($order->travia_id, $order->search_id);
             $hotelDetails = $postman->details($order->travia_id, $order->search_id);
 
-            if($order->price != $details['price'])
-                Order::model()->updateByPk(Yii::app()->session['orderID'], array('price'=>$details['price']));
+            if ($order->price != $details['price'])
+                Order::model()->updateByPk(Yii::app()->session['orderID'], array('price' => $details['price']));
 
             $this->render('bill', array(
                 'order' => $order,
-                'details'=>$details,
+                'details' => $details,
                 'hotelDetails' => array(
                     'name' => $hotelDetails['name'],
                     'star' => $hotelDetails['star'],
@@ -293,8 +293,8 @@ class HotelsController extends Controller
         $postman = new Postman();
         $details = $postman->priceDetails($order->travia_id, $order->search_id);
 
-        if($order->price != $details['price'])
-            Order::model()->updateByPk($id, array('price'=>$details['price']));
+        if ($order->price != $details['price'])
+            Order::model()->updateByPk($id, array('price' => $details['price']));
 
         $wsdl = "https://ikc.shaparak.ir/XToken/Tokens.xml";
         $client = new nusoap_client($wsdl, true);
@@ -313,11 +313,11 @@ class HotelsController extends Controller
 
     public function actionVerify()
     {
-        Yii::app()->theme='frontend';
-        $this->layout='//layouts/inner';
+        Yii::app()->theme = 'frontend';
+        $this->layout = '//layouts/inner';
         $this->pageName = 'bill';
-        $bookingResult=false;
-        $bookingID=null;
+        $bookingResult = false;
+        $bookingID = null;
 
         $token = trim($_POST['token']); // همان توکنی که در مرحله رزرو ساخته شد
         $resultCode = trim($_POST['resultCode']); // کد برگشت که برای تراکنش موفق عدد 100 میباشد
@@ -339,11 +339,11 @@ class HotelsController extends Controller
                 Yii::app()->user->setFlash('success', 'پرداخت با موفقیت انجام شد.');
                 Order::model()->updateByPk($paymentId, array('payment_tracking_code' => $referenceId));
 
-                $transaction=new Transactions();
-                $transaction->tracking_code=$referenceId;
-                $transaction->amount=$order->price;
-                $transaction->order_id=$paymentId;
-                $transaction->date=time();
+                $transaction = new Transactions();
+                $transaction->tracking_code = $referenceId;
+                $transaction->amount = $order->price;
+                $transaction->order_id = $paymentId;
+                $transaction->date = time();
                 $transaction->save();
 
                 $message =
@@ -352,7 +352,7 @@ class HotelsController extends Controller
                         <table style="font-size: 9pt;text-align: right;">
                             <tr>
                                 <td style="font-weight: bold;width: 120px;">زمان</td>
-                                <td>' . JalaliDate::date('d F Y - H:i',$transaction->date) . '</td>
+                                <td>' . JalaliDate::date('d F Y - H:i', $transaction->date) . '</td>
                             </tr>
                             <tr>
                                 <td style="font-weight: bold;width: 120px;">مبلغ</td>
@@ -390,13 +390,13 @@ class HotelsController extends Controller
                         );
                 }
 
-                $postman=new Postman();
-                $contactInfo=array(
-                    'mobile'=>$order->buyer_mobile,
-                    'email'=>$order->buyer_email
+                $postman = new Postman();
+                $contactInfo = array(
+                    'mobile' => $order->buyer_mobile,
+                    'email' => $order->buyer_email
                 );
-                $book=$postman->book($order->travia_id, $order->search_id, $roomPassengers, $contactInfo);
-                if($book['status']=='succeeded') {
+                $book = $postman->book($order->travia_id, $order->search_id, $roomPassengers, $contactInfo);
+                if ($book['status'] == 'succeeded') {
                     Order::model()->updateByPk($order->id, array('order_id' => $book['orderId']));
                     $booking = new Bookings();
                     $book['cancelRules'] = CJSON::encode($book['cancelRules']);
@@ -408,27 +408,27 @@ class HotelsController extends Controller
 
                     $message = '<p style="text-align: right;">کاربر گرامی<br>فرم تاییدیه رزرو هتل در فایل ضمیمه همین نامه خدمتتان ارسال گردیده است. لطفا این فرم را چاپ کرده و هنگام ورود به هتل آن را به متصدیان هتل ارائه دهید.</p>';
                     $html2pdf = Yii::app()->ePdf->HTML2PDF();
-                    $html2pdf->WriteHTML($this->renderPartial('pdf', array('booking'=>$booking), true));
-                    $pdfContent=$html2pdf->Output('',EYiiPdf::OUTPUT_TO_STRING);
+                    $html2pdf->WriteHTML($this->renderPartial('pdf', array('booking' => $booking), true));
+                    $pdfContent = $html2pdf->Output('', EYiiPdf::OUTPUT_TO_STRING);
                     Mailer::mail($order->buyer_email, 'فرم تاییدیه رزرو هتل', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP'],
                         array(
-                            'method'=>'string',
-                            'string'=>$pdfContent,
-                            'filename'=>'HotelVoucher.pdf',
-                            'type'=>'application/pdf'
+                            'method' => 'string',
+                            'string' => $pdfContent,
+                            'filename' => 'HotelVoucher.pdf',
+                            'type' => 'application/pdf'
                         )
                     );
-                    Yii::app()->user->setFlash('reservation-success', 'عملیات رزرو با موفقیت انجام شد. جهت دریافت فرم تاییدیه رزرو هتل به پست الکترونیکی "'.CHtml::encode($order->buyer_email).'" مراجعه فرمایید.');
-                    $bookingResult=true;
-                    $bookingID=$booking->id;
-                }else
+                    Yii::app()->user->setFlash('reservation-success', 'عملیات رزرو با موفقیت انجام شد. جهت دریافت فرم تاییدیه رزرو هتل به پست الکترونیکی "' . CHtml::encode($order->buyer_email) . '" مراجعه فرمایید.');
+                    $bookingResult = true;
+                    $bookingID = $booking->id;
+                } else
                     Yii::app()->user->setFlash('reservation-failed', 'متاسفانه عملیات رزرو انجام نشد. لطفا با بخش پشتیبانی تماس حاصل فرمایید.');
 
                 $this->render('verify', array(
-                    'order'=>$order,
-                    'transaction'=>$transaction,
-                    'bookingResult'=>$bookingResult,
-                    'bookingID'=>$bookingID,
+                    'order' => $order,
+                    'transaction' => $transaction,
+                    'bookingResult' => $bookingResult,
+                    'bookingID' => $bookingID,
                 ));
             } else {
                 Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
@@ -438,31 +438,30 @@ class HotelsController extends Controller
             Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
             $this->redirect(array('/reservation/hotels/bill'));
         }
-
-
     }
 
     public function actionMail()
     {
         $orderID = Yii::app()->request->getQuery('order_id');
         $bookingID = Yii::app()->request->getQuery('booking_id');
-        $order=Order::model()->findByPk($orderID);
-        $booking=Bookings::model()->findByPk($bookingID);
+        $order = Order::model()->findByPk($orderID);
+        $booking = Bookings::model()->findByPk($bookingID);
         $message = '<p style="text-align: right;">کاربر گرامی<br>فرم تاییدیه رزرو هتل در فایل ضمیمه همین نامه خدمتتان ارسال گردیده است. لطفا این فرم را چاپ کرده و هنگام ورود به هتل آن را به متصدیان هتل ارائه دهید.</p>';
         $html2pdf = Yii::app()->ePdf->HTML2PDF();
-        $html2pdf->WriteHTML($this->renderPartial('pdf', array('booking'=>$booking), true));
-        $pdfContent=$html2pdf->Output('',EYiiPdf::OUTPUT_TO_STRING);
-        if(Mailer::mail($order->buyer_email, 'فرم تاییدیه رزرو هتل', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP'],
+        $html2pdf->WriteHTML($this->renderPartial('pdf', array('booking' => $booking), true));
+        $pdfContent = $html2pdf->Output('', EYiiPdf::OUTPUT_TO_STRING);
+        if (Mailer::mail($order->buyer_email, 'فرم تاییدیه رزرو هتل', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP'],
             array(
-                'method'=>'string',
-                'string'=>$pdfContent,
-                'filename'=>'HotelVoucher.pdf',
-                'type'=>'application/pdf'
+                'method' => 'string',
+                'string' => $pdfContent,
+                'filename' => 'HotelVoucher.pdf',
+                'type' => 'application/pdf'
             )
-        ))
-            echo CJSON::encode(array('status'=>true));
+        )
+        )
+            echo CJSON::encode(array('status' => true));
         else
-            echo CJSON::encode(array('status'=>false));
+            echo CJSON::encode(array('status' => false));
     }
 
     public function getStayingTime($in, $out)
@@ -498,11 +497,12 @@ class HotelsController extends Controller
 
         $str = '';
         foreach ($details['cancelRules'] as $cancelRule) {
-            $str .= 'از امروز تا تاریخ ';
+            $str .= 'از تاریخ ';
             $date = strtotime($details['checkIn']);
             $date = $date - ($cancelRule['remainDays'] * 60 * 60 * 24);
             $date = JalaliDate::date('d F Y', $date);
-            $str .= $date . ' هزینه کنسل کردن ';
+            $str .= $date . ' تا تاریخ ' . JalaliDate::date('d F Y', strtotime($details['checkIn']));
+            $str .= ' هزینه کنسل کردن ';
             $ratio = floatval($cancelRule['ratio']);
             $price = $price * $ratio;
             $str .= number_format($price, 0) . ' تومان می باشد.<br>';
@@ -522,7 +522,8 @@ class HotelsController extends Controller
                 $date = strtotime($checkIn);
                 $date = $date - ($cancelRule['remainDays'] * 60 * 60 * 24);
                 $date = JalaliDate::date('d F Y', $date);
-                $str .= $date . ' هزینه کنسل کردن ';
+                $str .= $date . ' تا تاریخ ' . JalaliDate::date('d F Y', strtotime($checkIn));
+                $str .= ' هزینه کنسل کردن ';
                 $ratio = floatval($cancelRule['ratio']);
                 $price = $price * $ratio;
                 $str .= number_format($price, 0) . ' تومان می باشد.</li>';

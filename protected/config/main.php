@@ -99,6 +99,7 @@ return array(
             'appendParams'=>true,
 			'rules'=>array(
 				'reservation/hotels/view/<country>/<hotel>/<hotelID>/<searchID>' => 'reservation/hotels/view',
+				'110' => 'admins/login',
 				'<action:(logout|login|register|dashboard)>' => 'users/public/<action>',
 				'<action:(terms|help|privacy|contactUs|about)>' => 'site/<action>',
                 '<module:\w+>/<controller:\w+>'=>'<module>/<controller>/index',
