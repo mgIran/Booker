@@ -70,7 +70,7 @@
         <div id="map-point" data-lat="<?= CHtml::encode($hotel['latitude']) ?>" data-lng="<?= CHtml::encode($hotel['longitude']) ?>"></div>
         <span>آدرس: <?php echo CHtml::encode($hotel['city']).' - '.CHtml::encode($hotel['address']);?></span>
         <span style="margin-right: 40px;">کد پستی: <?php echo CHtml::encode($hotel['zipCode']);?></span>
-        <span style="margin-right: 40px;">تلفن: <span style="direction: ltr;display: inline-block;"><?php echo CHtml::encode($hotel['phone']);?></span></span>
+<!--        <span style="margin-right: 40px;">تلفن: <span style="direction: ltr;display: inline-block;">--><?php //echo CHtml::encode($hotel['phone']);?><!--</span></span>-->
     </div>
     <div class="feature-item card-panel">
         <h5>درباره هتل</h5>

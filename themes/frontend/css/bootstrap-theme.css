@@ -1457,6 +1457,7 @@ label.error{
 }
 .nav-wizard.nav > li > a{
     line-height: 20px;
+    white-space: nowrap;
 }
 .modal .modal-content{
     line-height: 35px;

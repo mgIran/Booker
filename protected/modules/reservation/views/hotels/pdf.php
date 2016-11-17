@@ -64,8 +64,10 @@ $cancelRules=CJSON::decode($booking->cancelRules);
                                     <?php echo CHtml::encode($room['description'].' - Type:'.$room['type']);?>
                                 <?php endforeach;?>
                             </td>
+                        </tr>
+                        <tr>
                             <?php if($i==0):?>
-                                <td style="vertical-align:middle;border-right: 1px solid #ccc;border-bottom: 1px solid #ccc;padding: 15px;font-size: 16px;font-weight:bold;color: #d9534f;" rowspan="<?php echo count($confirmationDetail['name']);?>"><?php echo CHtml::encode($confirmationDetail['confirmNumber']);?></td>
+                                <td style="text-align:center;border-right: 1px solid #ccc;border-left: 1px solid #ccc;border-bottom: 1px solid #ccc;padding: 15px;font-size: 16px;font-weight:bold;color: #d9534f;" colspan="3"><?php echo CHtml::encode($confirmationDetail['confirmNumber']);?></td>
                             <?php endif;?>
                         </tr>
                     <?php $i++;endforeach;?>
@@ -89,8 +91,8 @@ $cancelRules=CJSON::decode($booking->cancelRules);
                 <tr>
                     <td style="border-left: 1px solid #ccc;border-bottom: 1px solid #ccc;padding: 15px;"><?php echo CHtml::encode($stayTime);?></td>
                     <td style="border-bottom: 1px solid #ccc;padding: 15px;"><?php echo CHtml::encode($booking->passenger);?></td>
-                    <td style="border-bottom: 1px solid #ccc;padding: 15px;"><?php echo CHtml::encode($booking->getPassengersCount('child'));?></td>
                     <td style="border-bottom: 1px solid #ccc;padding: 15px;"><?php echo CHtml::encode($booking->getPassengersCount('adult'));?></td>
+                    <td style="border-bottom: 1px solid #ccc;padding: 15px;"><?php echo CHtml::encode($booking->getPassengersCount('child'));?></td>
                     <td style="border-right: 1px solid #ccc;border-bottom: 1px solid #ccc;padding: 15px;"><?php echo CHtml::encode($booking->meal);?></td>
                 </tr>
             </table>
