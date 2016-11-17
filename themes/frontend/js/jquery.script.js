@@ -15,7 +15,7 @@ $(document).ready(function() {
             }
         });
         $('#destination').typeahead({
-            minLength: 3,
+            minLength: 1,
             limit: 20,
             hint: false
         }, {

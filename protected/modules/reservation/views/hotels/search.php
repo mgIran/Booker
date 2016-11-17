@@ -243,6 +243,7 @@
                 }",
                 'afterAjaxUpdate'=>'function(id, data){
                     var prices=null;
+                    $(\'[data-toggle="popover"]\').popover();
                     $.ajax({
                         url: "'.Yii::app()->createUrl('/reservation/hotels/getMinMaxPrice').'",
                         type: "POST",
@@ -371,23 +372,3 @@
         }
     });
 ", CClientScript::POS_LOAD);?>
-
-<?php
-// ajax link redirect script for save rooms details to session
-$saveRoomsUrl = $this->createUrl('/reservation/hotels/saveRooms');
-Yii::app()->clientScript->registerScript('ajax-links',"
-   $('body').on('click','.ajax-link',function(e){
-        e.preventDefault();
-        var url = $(this).attr('href'),
-            rooms = $(this).parents('.hotel-item').find('input.rooms').val(),
-            searchID = $(this).parents('.hotel-item').find('input.searchID').val();
-        $.ajax({
-            url:'{$saveRoomsUrl}',
-            data:{rooms:rooms,searchID:searchID},
-            type:'POST',
-            success:function(){
-                window.location = url;
-            }
-        });
-   });
-");?>

@@ -90,7 +90,7 @@ class HotelsController extends Controller
                         'src' => $hotel['images'][0]['original'],
                     ),
                     'price' => $this->getFixedPrice($price) / 10,
-                    'rooms' => CJSON::encode($hotel['services']),
+                    'rooms' => $hotel['services'],
                     'searchID' => $result['searchId'],
                 ));
             }
