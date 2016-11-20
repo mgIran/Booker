@@ -39,7 +39,7 @@ class Postman
         if ($this->checkResult($result) == -1)
             return -1;
 
-        return isset($result['autoCompleteRs'])?$result['autoCompleteRs']:-1;
+        return isset($result['autoCompleteRs'])?$result['autoCompleteRs']:$result;
     }
 
     public function search($destinationCode, $isCity, $inDate, $outDate, $rooms)

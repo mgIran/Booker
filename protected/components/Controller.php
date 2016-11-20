@@ -198,4 +198,11 @@ class Controller extends CController
         $tax = ($price * $tax) / 100;
         return $price + $commission + $tax;
     }
+    
+    public function searchArabicAndPersian($value)
+    {
+        $patterns = array('/([.\\+*?\[^\]$(){}=!<>|:-])/','/ی|ي|ئ/','/ک|ك/','/ه|ة/','/ا|آ|إ|أ/','/\s/');
+        $replacements = array('','(ی|ي|ئ)','(ک|ك)','(ه|ة)','(ا|آ|إ|أ)','.+');
+        return preg_replace($patterns, $replacements, $value);
+    }
 }

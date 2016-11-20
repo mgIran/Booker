@@ -33,7 +33,8 @@ class HotelsController extends Controller
     {
         Yii::app()->getModule('cityNames');
         $criteria = new CDbCriteria();
-        $criteria->compare('city_name', $title, true);
+        $criteria->addCondition('city_name REGEXP :title OR country_name REGEXP :title');
+        $criteria->params[':title']= $this->searchArabicAndPersian($title);
         $query = CityNames::model()->findAll($criteria);
         $cities = array();
         if (empty($query)) {
@@ -65,7 +66,6 @@ class HotelsController extends Controller
             $rooms = $this->getRoomsInfo(Yii::app()->session['rooms']);
             $postman = new Postman();
             $result = $postman->search(Yii::app()->session['cityKey'], true, date('Y-m-d', Yii::app()->session['inDate']), date('Y-m-d', Yii::app()->session['outDate']), CJSON::encode($rooms));
-
             if ($result == -1)
                 throw new CHttpException('مدت زمان مجاز برای انجام عملیات به اتمام رسیده؛ لطفا مجددا تلاش کنید.');
 
