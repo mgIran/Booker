@@ -356,7 +356,7 @@ class HotelsController extends Controller
                             </tr>
                             <tr>
                                 <td style="font-weight: bold;width: 120px;">مبلغ</td>
-                                <td>' . Controller::parseNumbers(number_format($transaction->amount, 0)) . ' ریال</td>
+                                <td>' . Controller::parseNumbers(number_format($this->getFixedPrice($transaction->amount), 0)) . ' ریال</td>
                             </tr>
                             <tr>
                                 <td style="font-weight: bold;width: 120px;">شناسه خرید</td>

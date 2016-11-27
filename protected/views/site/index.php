@@ -51,6 +51,9 @@
                                             stayTime=0;
                                         $('.stay-time').text(stayTime);
                                     }"
+                                ),
+                                'htmlOptions'=>array(
+                                    'readonly'=>'1'
                                 )
                             ));?>
                             <?php echo CHtml::label('تاریخ ورود', 'enter-date');?>
@@ -83,6 +86,9 @@
                                             stayTime=0;
                                         $('.stay-time').text(stayTime);
                                     }"
+                                ),
+                                'htmlOptions'=>array(
+                                    'readonly'=>'1'
                                 )
                             ));?>
                             <?php echo CHtml::label('تاریخ خروج', 'out-date');?>
@@ -117,7 +123,7 @@
             <li role="presentation"><a href="<?php echo $this->createUrl('/contactUs');?>">تماس با ما</a></li>
         </ul>
         <div class="licences hidden-lg hidden-md">
-            <img id='rgvjfukzwlaooeuksizp' style='cursor:pointer' onclick='window.open("http://logo.samandehi.ir/Verify.aspx?id=36489&p=xlaogvkaaodsmcsipfvl", "Popup","toolbar=no, scrollbars=no, location=no, statusbar=no, menubar=no, resizable=0, width=450, height=630, top=30")' alt='logo-samandehi' src='http://logo.samandehi.ir/logo.aspx?id=36489&p=qftiwlbqshwlaqgwbsiy'/>
+            <img id='nbpegwmdgwmddrftlbrh' style='cursor:pointer' onclick='window.open("https://trustseal.enamad.ir/Verify.aspx?id=29917&p=wkynjzpgjzpgnbpdqgwl", "Popup","toolbar=no, location=no, statusbar=no, menubar=no, scrollbars=1, resizable=0, width=580, height=600, top=30")' alt='' src='https://trustseal.enamad.ir/logo.aspx?id=29917&p=qesgzpfvzpfvlznbpeuk'/>
         </div>
     </div>
     <div class="slider">
