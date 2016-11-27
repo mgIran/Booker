@@ -39,17 +39,18 @@ class Postman
         if ($this->checkResult($result) == -1)
             return -1;
 
-        return isset($result['autoCompleteRs'])?$result['autoCompleteRs']:$result;
+        return $result['autoCompleteRs'];
     }
 
     public function search($destinationCode, $isCity, $inDate, $outDate, $rooms)
     {
         $data = '{"searchRq":{"destinationCode":"' . $destinationCode . '","isCity":' . (($isCity) ? 'true' : 'false') . ',"inDate":"' . $inDate . '","outDate":"' . $outDate . '","rooms":' . $rooms . ',"nationality":"IR","domestic":false}}';
         $result = $this->getData('search', $data);
+
         if ($this->checkResult($result) == -1)
             return -1;
 
-        return isset($result['searchRs'])?$result['searchRs']:$result;
+        return $result['searchRs'];
     }
 
     public function details($traviaID, $searchID)
@@ -59,7 +60,8 @@ class Postman
 
         if ($this->checkResult($result) == -1)
             return -1;
-        return isset($result['detailsRs'])?$result['detailsRs']:$result;
+
+        return $result['detailsRs'];
     }
 
     public function priceDetails($traviaID, $searchID)
@@ -97,6 +99,7 @@ class Postman
                 }
             }';
         $result = $this->getData('book', $data);
+        var_dump($result);exit;
 
         if ($this->checkResult($result) == -1)
             return -1;

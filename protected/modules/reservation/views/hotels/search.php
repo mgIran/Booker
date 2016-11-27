@@ -243,7 +243,6 @@
                 }",
                 'afterAjaxUpdate'=>'function(id, data){
                     var prices=null;
-                    $(\'[data-toggle="popover"]\').popover();
                     $.ajax({
                         url: "'.Yii::app()->createUrl('/reservation/hotels/getMinMaxPrice').'",
                         type: "POST",

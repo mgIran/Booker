@@ -20,7 +20,7 @@ class HotelsController extends Controller
     {
         return array(
             array('allow',  // allow all users to perform 'index' and 'views' actions
-                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout', 'bill', 'pay', 'verify', 'mail', 'saveRooms'),
+                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout', 'bill', 'pay', 'verify', 'mail'),
                 'users' => array('*'),
             ),
             array('deny',  // deny all users
@@ -33,8 +33,7 @@ class HotelsController extends Controller
     {
         Yii::app()->getModule('cityNames');
         $criteria = new CDbCriteria();
-        $criteria->addCondition('city_name REGEXP :title OR country_name REGEXP :title');
-        $criteria->params[':title']= $this->searchArabicAndPersian($title);
+        $criteria->compare('city_name', $title, true);
         $query = CityNames::model()->findAll($criteria);
         $cities = array();
         if (empty($query)) {
@@ -66,6 +65,7 @@ class HotelsController extends Controller
             $rooms = $this->getRoomsInfo(Yii::app()->session['rooms']);
             $postman = new Postman();
             $result = $postman->search(Yii::app()->session['cityKey'], true, date('Y-m-d', Yii::app()->session['inDate']), date('Y-m-d', Yii::app()->session['outDate']), CJSON::encode($rooms));
+
             if ($result == -1)
                 throw new CHttpException('مدت زمان مجاز برای انجام عملیات به اتمام رسیده؛ لطفا مجددا تلاش کنید.');
 
@@ -90,8 +90,6 @@ class HotelsController extends Controller
                         'src' => $hotel['images'][0]['original'],
                     ),
                     'price' => $this->getFixedPrice($price) / 10,
-                    'rooms' => $hotel['services'],
-                    'searchID' => $result['searchId'],
                 ));
             }
             $this->render('search', array(
@@ -160,15 +158,21 @@ class HotelsController extends Controller
     {
         $postman = new Postman();
         $hotel = $postman->details(Yii::app()->getRequest()->getQuery('hotel_id'), Yii::app()->getRequest()->getQuery('search_id'));
+
         if ($hotel == -1)
             throw new CHttpException('مدت زمان مجاز برای انجام عملیات به اتمام رسیده؛ لطفا مجددا تلاش کنید.');
-        $rooms = CJSON::decode(Yii::app()->session['thisRooms']);
-        $searchID = Yii::app()->session['thisSearchID'];
+
+        $requestedRooms = $this->getRoomsInfo(Yii::app()->session['rooms']);
+        $rooms = $postman->search($hotel['id'], false, date('Y-m-d', Yii::app()->session['inDate']), date('Y-m-d', Yii::app()->session['outDate']), CJSON::encode($requestedRooms));
+
+        if ($rooms == -1)
+            throw new CHttpException('مدت زمان مجاز برای انجام عملیات به اتمام رسیده؛ لطفا مجددا تلاش کنید.');
+
         $hotel['facilities'] = $this->translateFacilities($hotel['facilities']);
         $this->renderPartial('_view', array(
             'hotel' => $hotel,
-            'rooms' => $rooms,
-            'searchID' => $searchID,
+            'rooms' => $rooms['results'][0]['services'],
+            'searchID' => $rooms['searchId'],
         ));
     }
 
@@ -670,14 +674,6 @@ class HotelsController extends Controller
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'order-form') {
             echo CActiveForm::validate($model);
             Yii::app()->end();
-        }
-    }
-
-    public function actionSaveRooms(){
-        if(isset($_POST['rooms']) && isset($_POST['rooms']))
-        {
-            Yii::app()->session['thisRooms'] = $_POST['rooms'];
-            Yii::app()->session['thisSearchID'] = $_POST['searchID'];
         }
     }
 }
