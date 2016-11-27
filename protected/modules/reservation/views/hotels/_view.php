@@ -3,6 +3,7 @@
 /* @var $hotel array */
 /* @var $rooms array */
 /* @var $searchID string */
+$purifier=new CHtmlPurifier();
 ?>
 <h2 class="yekan-text" style="margin-top: 100px;">
     <?php echo CHtml::encode($hotel['name'])?>
@@ -74,6 +75,6 @@
     </div>
     <div class="feature-item card-panel">
         <h5>درباره هتل</h5>
-        <div class="text-left ltr text-justify"><?php echo CHtml::encode($hotel['description'])?></div>
+        <div class="text-left ltr text-justify"><?php echo $purifier->purify($hotel['description'])?></div>
     </div>
 </div>
