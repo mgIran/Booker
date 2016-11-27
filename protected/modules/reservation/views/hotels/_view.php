@@ -22,7 +22,6 @@
             <h5 class="yekan-text">اتاق ها</h5>
             <div class="divider"></div>
         </div>
-        <?php $this->renderPartial('_rooms_list', array('rooms'=>$rooms, 'searchID'=>$searchID));?>
     </div>
     <div class="feature-item">
         <div class="title">
