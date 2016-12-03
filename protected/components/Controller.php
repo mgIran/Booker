@@ -27,7 +27,8 @@ class Controller extends CController
     public $pageTitle;
     public $pageName;
 
-    public function beforeRender($view){
+    public function beforeRender($view)
+    {
         $this->description = Yii::app()->db->createCommand()
             ->select('value')
             ->from('ym_site_setting')
@@ -53,71 +54,71 @@ class Controller extends CController
 
     public static function createAdminMenu()
     {
-        if(Yii::app()->user->type === 'admin')
+        if (Yii::app()->user->type === 'admin')
             return array(
                 array(
-                    'label' => 'پیشخوان' ,
+                    'label' => 'پیشخوان',
                     'url' => array('/admins/dashboard')
-                ) ,
+                ),
                 array(
-                    'label' => 'نقشه گوگل<span class="caret"></span>' ,
-                    'url' => '#' ,
-                    'itemOptions' => array('class' => 'dropdown' ,'tabindex' => "-1") ,
-                    'linkOptions' => array('class' => 'dropdown-toggle' ,'data-toggle' => "dropdown") ,
+                    'label' => 'نقشه گوگل<span class="caret"></span>',
+                    'url' => '#',
+                    'itemOptions' => array('class' => 'dropdown', 'tabindex' => "-1"),
+                    'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => "dropdown"),
                     'items' => array(
-                        array('label' => 'مدیریت' ,'url' => Yii::app()->createUrl('/map/manage/update')) ,
+                        array('label' => 'مدیریت', 'url' => Yii::app()->createUrl('/map/manage/update')),
                     )
-                ) ,
+                ),
                 array(
-                    'label' => 'شهرها<span class="caret"></span>' ,
-                    'url' => '#' ,
-                    'itemOptions' => array('class' => 'dropdown' ,'tabindex' => "-1") ,
-                    'linkOptions' => array('class' => 'dropdown-toggle' ,'data-toggle' => "dropdown") ,
+                    'label' => 'شهرها<span class="caret"></span>',
+                    'url' => '#',
+                    'itemOptions' => array('class' => 'dropdown', 'tabindex' => "-1"),
+                    'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => "dropdown"),
                     'items' => array(
-                        array('label' => 'مدیریت شهرها' ,'url' => Yii::app()->createUrl('/cityNames/manage/admin')) ,
-                        array('label' => 'افزودن شهر جدید' ,'url' => Yii::app()->createUrl('/cityNames/manage/create')) ,
+                        array('label' => 'مدیریت شهرها', 'url' => Yii::app()->createUrl('/cityNames/manage/admin')),
+                        array('label' => 'افزودن شهر جدید', 'url' => Yii::app()->createUrl('/cityNames/manage/create')),
                     )
-                ) ,
+                ),
                 array(
-                    'label' => 'صفحات متنی' ,
+                    'label' => 'صفحات متنی',
                     'url' => Yii::app()->createUrl('/pages/manage/admin/?slug=base'),
-                ) ,
+                ),
                 array(
-                    'label' => 'مدیران <span class="caret"></span>' ,
-                    'url' => '#' ,
-                    'itemOptions' => array('class' => 'dropdown' ,'tabindex' => "-1") ,'linkOptions' => array('class' => 'dropdown-toggle' ,'data-toggle' => "dropdown") ,
+                    'label' => 'مدیران <span class="caret"></span>',
+                    'url' => '#',
+                    'itemOptions' => array('class' => 'dropdown', 'tabindex' => "-1"), 'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => "dropdown"),
                     'items' => array(
-                        array('label' => 'مدیریت' ,'url' => Yii::app()->createUrl('/admins/manage')) ,
-                        array('label' => 'افزودن' ,'url' => Yii::app()->createUrl('/admins/manage/create')) ,
+                        array('label' => 'مدیریت', 'url' => Yii::app()->createUrl('/admins/manage')),
+                        array('label' => 'افزودن', 'url' => Yii::app()->createUrl('/admins/manage/create')),
                     )
-                ) ,
+                ),
                 array(
-                    'label' => 'کاربران <span class="caret"></span>' ,
-                    'url' => '#' ,
-                    'itemOptions' => array('class' => 'dropdown' ,'tabindex' => "-1") ,
-                    'linkOptions' => array('class' => 'dropdown-toggle' ,'data-toggle' => "dropdown") ,
+                    'label' => 'کاربران <span class="caret"></span>',
+                    'url' => '#',
+                    'itemOptions' => array('class' => 'dropdown', 'tabindex' => "-1"),
+                    'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => "dropdown"),
                     'items' => array(
-                        array('label' => 'مدیریت' ,'url' => Yii::app()->createUrl('/users/manage')) ,
+                        array('label' => 'مدیریت', 'url' => Yii::app()->createUrl('/users/manage')),
                     )
-                ) ,
+                ),
                 array(
-                    'label' => 'تنظیمات<span class="caret"></span>' ,
-                    'url' => '#' ,
-                    'itemOptions' => array('class' => 'dropdown' ,'tabindex' => "-1") ,
-                    'linkOptions' => array('class' => 'dropdown-toggle' ,'data-toggle' => "dropdown") ,
+                    'label' => 'تنظیمات<span class="caret"></span>',
+                    'url' => '#',
+                    'itemOptions' => array('class' => 'dropdown', 'tabindex' => "-1"),
+                    'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => "dropdown"),
                     'items' => array(
-                        array('label' => 'عمومی' ,'url' => Yii::app()->createUrl('/setting/siteSettingManage/changeSetting')) ,
+                        array('label' => 'عمومی', 'url' => Yii::app()->createUrl('/setting/siteSettingManage/changeSetting')),
                     )
-                ) ,
+                ),
                 array(
-                    'label' => 'ورود' ,
-                    'url' => array('/admins/login') ,
+                    'label' => 'ورود',
+                    'url' => array('/admins/login'),
                     'visible' => Yii::app()->user->isGuest
-                ) ,
+                ),
                 array(
-                    'label' => 'خروج' ,
-                    'url' => array('/admins/login/logout') ,
-                    'visible' => !Yii::app()->user->isGuest) ,
+                    'label' => 'خروج',
+                    'url' => array('/admins/login/logout'),
+                    'visible' => !Yii::app()->user->isGuest),
             );
         else
             return array();
@@ -130,8 +131,8 @@ class Controller extends CController
     public function implodeErrors($model)
     {
         $errors = '';
-        foreach($model->getErrors() as $err){
-            foreach($err as $error)
+        foreach ($model->getErrors() as $err) {
+            foreach ($err as $error)
                 $errors .= "<li>$error</li>";
         }
         return $errors;
@@ -142,8 +143,8 @@ class Controller extends CController
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
         $randomString = '';
-        for($i = 0;$i < $length;$i++){
-            $randomString .= $characters[rand(0 ,$charactersLength - 1)];
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
         }
         return $randomString;
     }
@@ -153,10 +154,10 @@ class Controller extends CController
      */
     public static function parseNumbers($matches)
     {
-        $farsi_array = array('۰' ,'۱' ,'۲' ,'۳' ,'۴' ,'۵' ,'۶' ,'۷' ,'۸' ,'۹');
-        $english_array = array('0' ,'1' ,'2' ,'3' ,'4' ,'5' ,'6' ,'7' ,'8' ,'9');
+        $farsi_array = array('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹');
+        $english_array = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
 
-        return str_replace($english_array ,$farsi_array ,$matches);
+        return str_replace($english_array, $farsi_array, $matches);
     }
 
     public static function allCategories()
@@ -165,22 +166,21 @@ class Controller extends CController
         return AdvertiseCategories::model()->findAll('parent IS NULL order by name ASC');
     }
 
-    public static function fileSize($file){
-        if(file_exists($file)) {
+    public static function fileSize($file)
+    {
+        if (file_exists($file)) {
             $size = filesize($file);
-            if($size < 1024)
-                return $size.' Byte';
-            elseif($size < 1024*1024){
-                $size = (float)$size/1024;
-                return number_format($size,1). ' KB';
-            }
-            elseif($size < 1024*1024*1024){
-                $size = (float)$size/(1024*1024);
-                return number_format($size,1). ' MB';
-            }else
-            {
-                $size = (float)$size/(1024*1024*1024);
-                return number_format($size,1). ' MB';
+            if ($size < 1024)
+                return $size . ' Byte';
+            elseif ($size < 1024 * 1024) {
+                $size = (float)$size / 1024;
+                return number_format($size, 1) . ' KB';
+            } elseif ($size < 1024 * 1024 * 1024) {
+                $size = (float)$size / (1024 * 1024);
+                return number_format($size, 1) . ' MB';
+            } else {
+                $size = (float)$size / (1024 * 1024 * 1024);
+                return number_format($size, 1) . ' MB';
             }
         }
         return 0;
@@ -197,5 +197,12 @@ class Controller extends CController
         $commission = ($price * $commission) / 100;
         $tax = ($price * $tax) / 100;
         return $price + $commission + $tax;
+    }
+
+    public function searchArabicAndPersian($value)
+    {
+        $patterns = array('/([.\\+*?\[^\]$(){}=!<>|:-])/', '/ی|ي|ئ/', '/ک|ك/', '/ه|ة/', '/ا|آ|إ|أ/', '/\s/');
+        $replacements = array('', '(ی|ي|ئ)', '(ک|ك)', '(ه|ة)', '(ا|آ|إ|أ)', '.+');
+        return preg_replace($patterns, $replacements, $value);
     }
 }

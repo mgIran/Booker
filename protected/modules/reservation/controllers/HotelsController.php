@@ -33,7 +33,8 @@ class HotelsController extends Controller
     {
         Yii::app()->getModule('cityNames');
         $criteria = new CDbCriteria();
-        $criteria->compare('city_name', $title, true);
+        $criteria->addCondition('city_name REGEXP :title OR country_name REGEXP :title');
+        $criteria->params[':title']= $this->searchArabicAndPersian($title);
         $query = CityNames::model()->findAll($criteria);
         $cities = array();
         if (empty($query)) {
@@ -61,6 +62,7 @@ class HotelsController extends Controller
     {
         Yii::app()->session['minPrice'] = null;
         Yii::app()->session['maxPrice'] = null;
+        var_dump(1);
         if (isset($_GET['ajax']) and $_GET['ajax'] == 'hotels-list') {
             $rooms = $this->getRoomsInfo(Yii::app()->session['rooms']);
             $postman = new Postman();
