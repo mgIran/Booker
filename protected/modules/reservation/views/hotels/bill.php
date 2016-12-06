@@ -66,7 +66,7 @@
                         <li>هنگام ورود به هتل، اطلاعات واچر با گذرنامه مطابقت داده خواهد شد.</li>
                         <li class="red-text">مسئوليت كنترل گذرنامه از نظر اعتبار ( 6 ماه قبل از تاريخ انقضاء ) و ممنوعيت خروج از كشور بر عهده مسافر است .</li>
                     </ul>
-
+                    <?php $j=0;?>
                     <?php foreach($details['services']['rooms'] as $key=>$room):;?>
                         <div class="room-item overflow-fix">
                             <div class="container-fluid">
@@ -85,7 +85,6 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <?php $j=0;?>
                                         <?php foreach($order->passengers as $passenger):?>
                                             <?php if($passenger->room_num==$j):?>
                                                 <tr>
