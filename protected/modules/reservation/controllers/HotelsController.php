@@ -337,7 +337,7 @@ class HotelsController extends Controller
             $result = $client->call("KicccPaymentsVerification", array($params));
             $order = Order::model()->findByPk($paymentId);
             /* @var $order Order */
-            if ($result['KicccPaymentsVerificationResult'] == $order->price) {
+            if ($result['KicccPaymentsVerificationResult'] == $this->getFixedPrice($order->price)) {
                 Yii::app()->user->setFlash('success', 'پرداخت با موفقیت انجام شد.');
                 Order::model()->updateByPk($paymentId, array('payment_tracking_code' => $referenceId));
 
