@@ -62,7 +62,6 @@ class HotelsController extends Controller
     {
         Yii::app()->session['minPrice'] = null;
         Yii::app()->session['maxPrice'] = null;
-        var_dump(1);
         if (isset($_GET['ajax']) and $_GET['ajax'] == 'hotels-list') {
             $rooms = $this->getRoomsInfo(Yii::app()->session['rooms']);
             $postman = new Postman();
@@ -85,7 +84,7 @@ class HotelsController extends Controller
                 array_push($hotels, array(
                     'name' => $hotel['name'],
                     'star' => $hotel['star'],
-                    'id' => $hotel['id'],
+                    'id' => '',
                     'traviaID' => $traviaID,
                     'image' => array(
                         'tag' => $hotel['images'][0]['tag'],

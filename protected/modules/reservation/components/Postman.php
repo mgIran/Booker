@@ -99,7 +99,6 @@ class Postman
                 }
             }';
         $result = $this->getData('book', $data);
-        var_dump($result);exit;
 
         if ($this->checkResult($result) == -1)
             return -1;
