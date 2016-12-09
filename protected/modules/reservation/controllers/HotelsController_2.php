@@ -397,8 +397,9 @@ class HotelsController extends Controller
                     'email' => $order->buyer_email
                 );
                 $book = $postman->book($order->travia_id, $order->search_id, $roomPassengers, $contactInfo);
-                //if ($book['status'] == 'succeeded') {
                 if(!isset($book['error'])){
+					$book = $book['bookRs'];
+               // if ($book['status'] == 'succeeded') {
                     Order::model()->updateByPk($order->id, array('order_id' => $book['orderId']));
                     $booking = new Bookings();
                     $book['cancelRules'] = CJSON::encode($book['cancelRules']);
@@ -424,14 +425,15 @@ class HotelsController extends Controller
                     $bookingResult = true;
                     $bookingID = $booking->id;
                 } else
-                    Yii::app()->user->setFlash('reservation-failed', 'متاسفانه عملیات رزرو انجام نشد. لطفا با بخش پشتیبانی تماس حاصل فرمایید.');
+					Yii::app()->user->setFlash('reservation-failed', 'متاسفانه عملیات رزرو انجام نشد. لطفا با بخش پشتیبانی تماس حاصل فرمایید.');
 
-                $this->render('verify', array(
-                    'order' => $order,
-                    'transaction' => $transaction,
-                    'bookingResult' => $bookingResult,
-                    'bookingID' => $bookingID,
-                ));
+					$this->render('verify', array(
+						'order' => $order,
+						'transaction' => $transaction,
+						'bookingResult' => $bookingResult,
+						'bookingID' => $bookingID,
+					));
+				
             } else {
                 Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
                 $this->redirect(array('/reservation/hotels/bill'));
