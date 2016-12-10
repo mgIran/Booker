@@ -20,21 +20,13 @@ class HotelsController extends Controller
     {
         return array(
             array('allow',  // allow all users to perform 'index' and 'views' actions
-                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout', 'bill', 'pay', 'verify', 'mail', 'loadMore','test'),
+                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout', 'bill', 'pay', 'verify', 'mail', 'loadMore'),
                 'users' => array('*'),
             ),
             array('deny',  // deny all users
                 'users' => array('*'),
             ),
         );
-    }
-
-    public function actionTest()
-    {
-        $message = '<p style="text-align: right;">test</p>';
-        var_dump(Mailer::mail('behnam_haddadi@yahoo.com', 'Test', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP']));
-        var_dump(Mailer::mail('gharagozlu.masoud@gmail.com', 'Test', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP']));
-        var_dump(Mailer::mail('msgh1370@yahoo.com', 'Test', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP']));
     }
 
     public function actionAutoComplete($title)
