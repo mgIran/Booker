@@ -6,8 +6,8 @@ class HotelsController extends Controller
     {
         return array(
             'accessControl', // perform access control for CRUD operations
-            'postOnly + getMinMaxPrice, verify',
-            'ajaxOnly + mail'
+            'postOnly + getMinMaxPrice, verify, loadMore',
+            'ajaxOnly + mail, loadMore'
         );
     }
 
@@ -20,13 +20,21 @@ class HotelsController extends Controller
     {
         return array(
             array('allow',  // allow all users to perform 'index' and 'views' actions
-                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout', 'bill', 'pay', 'verify', 'mail'),
+                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout', 'bill', 'pay', 'verify', 'mail', 'loadMore','test'),
                 'users' => array('*'),
             ),
             array('deny',  // deny all users
                 'users' => array('*'),
             ),
         );
+    }
+
+    public function actionTest()
+    {
+        $message = '<p style="text-align: right;">test</p>';
+        var_dump(Mailer::mail('behnam_haddadi@yahoo.com', 'Test', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP']));
+        var_dump(Mailer::mail('gharagozlu.masoud@gmail.com', 'Test', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP']));
+        var_dump(Mailer::mail('msgh1370@yahoo.com', 'Test', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP']));
     }
 
     public function actionAutoComplete($title)
@@ -67,8 +75,9 @@ class HotelsController extends Controller
             $postman = new Postman();
             $result = $postman->search(Yii::app()->session['cityKey'], true, date('Y-m-d', Yii::app()->session['inDate']), date('Y-m-d', Yii::app()->session['outDate']), CJSON::encode($rooms));
 
-            if ($result == -1)
-                throw new CHttpException('مدت زمان مجاز برای انجام عملیات به اتمام رسیده؛ لطفا مجددا تلاش کنید.');
+            $nextPage=null;
+            if (isset($result['nextPage']))
+                $nextPage=$result['nextPage'];
 
             $hotels = array();
             foreach ($result['results'] as $hotel) {
@@ -97,6 +106,7 @@ class HotelsController extends Controller
                 'hotelsDataProvider' => new CArrayDataProvider($hotels, array('pagination' => false)),
                 'country' => $result['country'],
                 'searchID' => $result['searchId'],
+                'nextPage' => $nextPage,
                 //'city' => $result['city'],
             ));
             Yii::app()->end();
@@ -121,6 +131,54 @@ class HotelsController extends Controller
             ));
         } else
             $this->redirect('/');
+    }
+
+    public function actionLoadMore()
+    {
+        $postman = new Postman();
+        $result = $postman->loadMore($_POST['key']);
+
+        $nextPage=null;
+        if (isset($result['nextPage']))
+            $nextPage=$result['nextPage'];
+
+        $hotels = array();
+        foreach ($result['results'] as $hotel) {
+            $price = null;
+            $traviaID = '';
+            foreach ($hotel['services'] as $service) {
+                if (is_null($price)) {
+                    $price = $service['price'];
+                    $traviaID = $service['traviaId'];
+                } elseif ($service['price'] < $price)
+                    $price = $service['price'];
+            }
+            array_push($hotels, array(
+                'name' => $hotel['name'],
+                'star' => $hotel['star'],
+                'id' => '',
+                'traviaID' => $traviaID,
+                'image' => array(
+                    'tag' => $hotel['images'][0]['tag'],
+                    'src' => $hotel['images'][0]['original'],
+                ),
+                'price' => $this->getFixedPrice($price) / 10,
+            ));
+        }
+        $this->beginClip('hotels');
+        $this->renderPartial('load-more', array(
+            'hotelsDataProvider' => new CArrayDataProvider($hotels, array('pagination' => false)),
+            'country' => $result['country'],
+            'searchID' => $result['searchId'],
+            'nextPage' => $nextPage,
+            //'city' => $result['city'],
+        ));
+        $this->endClip();
+
+        echo CJSON::encode(array(
+            'hotels'=>$this->clips['hotels'],
+            'loadMore'=>$result['nextPage']
+        ));
     }
 
     public function actionView($country, $hotel, $hotelID, $searchID)
@@ -373,7 +431,7 @@ class HotelsController extends Controller
                 $roomPassengers = array();
                 foreach ($order->passengers as $passenger) {
                     if ($passenger->type == 'child')
-                        $roomPassengers[$passenger->room_num] = array(
+                        $roomPassengers[$passenger->room_num][] = array(
                             'name' => $passenger->name,
                             'family' => $passenger->family,
                             'gender' => $passenger->gender,
@@ -382,7 +440,7 @@ class HotelsController extends Controller
                             'age' => $passenger->age,
                         );
                     elseif ($passenger->type == 'adult')
-                        $roomPassengers[$passenger->room_num] = array(
+                        $roomPassengers[$passenger->room_num][] = array(
                             'name' => $passenger->name,
                             'family' => $passenger->family,
                             'gender' => $passenger->gender,

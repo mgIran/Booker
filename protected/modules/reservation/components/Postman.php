@@ -42,9 +42,23 @@ class Postman
         return $result['autoCompleteRs'];
     }
 
-    public function search($destinationCode, $isCity, $inDate, $outDate, $rooms)
+    public function search($destinationCode, $isCity, $inDate, $outDate, $rooms, $limit=100)
     {
-        $data = '{"searchRq":{"destinationCode":"' . $destinationCode . '","isCity":' . (($isCity) ? 'true' : 'false') . ',"inDate":"' . $inDate . '","outDate":"' . $outDate . '","rooms":' . $rooms . ',"nationality":"IR","domestic":false}}';
+        if ($isCity)
+            $data = '{"searchRq":{"destinationCode":"' . $destinationCode . '","isCity":' . (($isCity) ? 'true' : 'false') . ',"inDate":"' . $inDate . '","outDate":"' . $outDate . '","rooms":' . $rooms . ',"nationality":"IR","domestic":false,"limit":' . $limit . '}}';
+        else
+            $data = '{"searchRq":{"destinationCode":"' . $destinationCode . '","isCity":' . (($isCity) ? 'true' : 'false') . ',"inDate":"' . $inDate . '","outDate":"' . $outDate . '","rooms":' . $rooms . ',"nationality":"IR","domestic":false}}';
+        $result = $this->getData('search', $data);
+
+        if ($this->checkResult($result) == -1)
+            return -1;
+
+        return $result['searchRs'];
+    }
+
+    public function loadMore($page)
+    {
+        $data = '{"searchRq":{"page":"' . $page . '","domestic":false}}';
         $result = $this->getData('search', $data);
 
         if ($this->checkResult($result) == -1)
@@ -91,7 +105,7 @@ class Postman
                 {
                     "traviaId":"' . $traviaID . '",
                     "searchId":"' . $searchID . '",
-                    "roomPeople":[' . $roomPeople . '],
+                    "roomPeople":' . $roomPeople . ',
                     "contactInfo":{
                         "mobile":"'.$contactInfo['mobile'].'",
                         "email":"'.$contactInfo['email'].'"

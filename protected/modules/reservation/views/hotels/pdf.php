@@ -53,8 +53,9 @@ $cancelRules=CJSON::decode($booking->cancelRules);
                     <td style="padding: 15px;background: #d9534f;color:#fff;font-weight: bold;">Nationality</td>
                     <td style="padding: 15px;background: #d9534f;color:#fff;font-weight: bold;">Room</td>
                 </tr>
-                <?php foreach($confirmationDetails as $confirmationDetail):$i=0;?>
+                <?php $confirmNumber='';foreach($confirmationDetails as $confirmationDetail):$i=0;?>
                     <?php foreach($confirmationDetail['name'] as $passengerName):?>
+                        <?php $confirmNumber=$confirmationDetail['confirmNumber'];?>
                         <tr>
                             <td style="border-left: 1px solid #ccc;border-bottom: 1px solid #ccc;padding: 15px;"><?php echo CHtml::encode($passengerName);?></td>
                             <td style="border-bottom: 1px solid #ccc;padding: 15px;"><?php echo CHtml::encode($booking->nationality);?></td>
@@ -64,13 +65,11 @@ $cancelRules=CJSON::decode($booking->cancelRules);
                                 <?php endforeach;?>
                             </td>
                         </tr>
-                        <tr>
-                            <?php if($i==0):?>
-                                <td style="text-align:center;border-right: 1px solid #ccc;border-left: 1px solid #ccc;border-bottom: 1px solid #ccc;padding: 15px;font-size: 16px;font-weight:bold;color: #d9534f;" colspan="3">Booking ID: <?php echo CHtml::encode($confirmationDetail['confirmNumber']);?></td>
-                            <?php endif;?>
-                        </tr>
                     <?php $i++;endforeach;?>
                 <?php endforeach;?>
+                <tr>
+                    <td style="text-align:center;border-right: 1px solid #ccc;border-left: 1px solid #ccc;border-bottom: 1px solid #ccc;padding: 15px;font-size: 16px;font-weight:bold;color: #d9534f;" colspan="3">Booking ID: <?php echo CHtml::encode($confirmNumber);?></td>
+                </tr>
             </table>
             <div style="height: 2px;background: #ccc;margin: 15px 0;"></div>
             <h4 style="margin-top: 0;">Summery</h4>

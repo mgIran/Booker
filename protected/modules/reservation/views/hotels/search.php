@@ -3,7 +3,9 @@
 /* @var $hotelsDataProvider CArrayDataProvider */
 /* @var $country string */
 /* @var $searchID string */
-/* @var $city string */
+/* @var $nextPage string */
+if(!isset($nextPage))
+    $nextPage=null;
 ?>
 <?php Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl.'/css/bootstrap-nav-wizard.css');?>
 <div class="container" id="scroll-destination">
@@ -242,6 +244,9 @@
                     });
                 }",
                 'afterAjaxUpdate'=>'function(id, data){
+                    if($(data).find("#load-more-container").find("#load-more").length != 0)
+                        $("#load-more-container").html($(data).find("#load-more-container").html());
+                
                     var prices=null;
                     $.ajax({
                         url: "'.Yii::app()->createUrl('/reservation/hotels/getMinMaxPrice').'",
@@ -289,6 +294,11 @@
                     });
                 }'
             ));?>
+            <div id="load-more-container">
+                <?php if(!is_null($nextPage)):?>
+                    <div id="load-more" data-key="<?php echo CHtml::encode($nextPage);?>">هتل های بیشتر...</div>
+                <?php endif;?>
+            </div>
         </div>
     </div>
 </div>
@@ -322,6 +332,27 @@
 <?php Yii::app()->clientScript->registerScript('search-hotels',"
     $.fn.yiiListView.update('hotels-list');
 ", CClientScript::POS_LOAD);?>
+
+<?php Yii::app()->clientScript->registerScript('load-more-hotels',"
+    $('body').on('click', '#load-more', function(){
+        if(!$(this).hasClass('doing')){
+            $(this).text('در حال بارگذاری...').addClass('doing');
+            $.ajax({
+                url: '".$this->createUrl('/reservation/hotels/loadMore')."',
+                type: 'POST',
+                dataType: 'JSON',
+                data: {key: $(this).data('key')},
+                success:function(data){
+                    $('#hotels-list .items').append($(data.hotels).find('.items').html());
+                    if(data.loadMore != null)
+                        $('#load-more').text('هتل های بیشتر...').removeClass('doing').attr('data-key', data.loadMore);
+                    else
+                        $('#load-more').remove();
+                }
+            })
+        }
+    });
+", CClientScript::POS_END);?>
 <?php Yii::app()->clientScript->registerScript('filter-hotels',"
     $('select#stars-count').on('change', function(){
         stars=$(this).val();
