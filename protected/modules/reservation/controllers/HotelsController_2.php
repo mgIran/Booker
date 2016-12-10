@@ -1,6 +1,6 @@
 <?php
 
-class HotelsController extends Controller
+class HotelsController2 extends Controller
 {
     public function filters()
     {

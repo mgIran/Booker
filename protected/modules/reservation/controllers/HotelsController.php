@@ -34,7 +34,7 @@ class HotelsController extends Controller
         Yii::app()->getModule('cityNames');
         $criteria = new CDbCriteria();
         $criteria->addCondition('city_name REGEXP :title OR country_name REGEXP :title');
-        $criteria->params[':title']= $this->searchArabicAndPersian($title);
+        $criteria->params[':title'] = $this->searchArabicAndPersian($title);
         $query = CityNames::model()->findAll($criteria);
         $cities = array();
         if (empty($query)) {
@@ -397,32 +397,35 @@ class HotelsController extends Controller
                     'email' => $order->buyer_email
                 );
                 $book = $postman->book($order->travia_id, $order->search_id, $roomPassengers, $contactInfo);
-                //if ($book['status'] == 'succeeded') {
-                if(!isset($book['error'])){
-                    Order::model()->updateByPk($order->id, array('order_id' => $book['orderId']));
-                    $booking = new Bookings();
-                    $book['cancelRules'] = CJSON::encode($book['cancelRules']);
-                    $book['nonrefundable'] = ($book['nonrefundable'] == true) ? '1' : '0';
-                    $book['confirmationDetails'] = CJSON::encode($book['confirmationDetails']);
-                    $booking->attributes = $book;
-                    $booking->order_id = $order->id;
-                    $booking->save();
+                if (!isset($book['error'])) {
+                    $book = $book['bookRs'];
+                    if ($book['status'] == 'succeeded') {
+                        Order::model()->updateByPk($order->id, array('order_id' => $book['orderId']));
+                        $booking = new Bookings();
+                        $book['cancelRules'] = CJSON::encode($book['cancelRules']);
+                        $book['nonrefundable'] = ($book['nonrefundable'] == true) ? '1' : '0';
+                        $book['confirmationDetails'] = CJSON::encode($book['confirmationDetails']);
+                        $booking->attributes = $book;
+                        $booking->order_id = $order->id;
+                        $booking->save();
 
-                    $message = '<p style="text-align: right;">کاربر گرامی<br>فرم تاییدیه رزرو هتل در فایل ضمیمه همین نامه خدمتتان ارسال گردیده است. لطفا این فرم را چاپ کرده و هنگام ورود به هتل آن را به متصدیان هتل ارائه دهید.</p>';
-                    $html2pdf = Yii::app()->ePdf->HTML2PDF();
-                    $html2pdf->WriteHTML($this->renderPartial('pdf', array('booking' => $booking), true));
-                    $pdfContent = $html2pdf->Output('', EYiiPdf::OUTPUT_TO_STRING);
-                    Mailer::mail($order->buyer_email, 'فرم تاییدیه رزرو هتل', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP'],
-                        array(
-                            'method' => 'string',
-                            'string' => $pdfContent,
-                            'filename' => 'HotelVoucher.pdf',
-                            'type' => 'application/pdf'
-                        )
-                    );
-                    Yii::app()->user->setFlash('reservation-success', 'عملیات رزرو با موفقیت انجام شد. جهت دریافت فرم تاییدیه رزرو هتل به پست الکترونیکی "' . CHtml::encode($order->buyer_email) . '" مراجعه فرمایید.');
-                    $bookingResult = true;
-                    $bookingID = $booking->id;
+                        $message = '<p style="text-align: right;">کاربر گرامی<br>فرم تاییدیه رزرو هتل در فایل ضمیمه همین نامه خدمتتان ارسال گردیده است. لطفا این فرم را چاپ کرده و هنگام ورود به هتل آن را به متصدیان هتل ارائه دهید.</p>';
+                        $html2pdf = Yii::app()->ePdf->HTML2PDF();
+                        $html2pdf->WriteHTML($this->renderPartial('pdf', array('booking' => $booking), true));
+                        $pdfContent = $html2pdf->Output('', EYiiPdf::OUTPUT_TO_STRING);
+                        Mailer::mail($order->buyer_email, 'فرم تاییدیه رزرو هتل', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP'],
+                            array(
+                                'method' => 'string',
+                                'string' => $pdfContent,
+                                'filename' => 'HotelVoucher.pdf',
+                                'type' => 'application/pdf'
+                            )
+                        );
+                        Yii::app()->user->setFlash('reservation-success', 'عملیات رزرو با موفقیت انجام شد. جهت دریافت فرم تاییدیه رزرو هتل به پست الکترونیکی "' . CHtml::encode($order->buyer_email) . '" مراجعه فرمایید.');
+                        $bookingResult = true;
+                        $bookingID = $booking->id;
+                    } else
+                        Yii::app()->user->setFlash('reservation-failed', 'متاسفانه عملیات رزرو انجام نشد. لطفا با بخش پشتیبانی تماس حاصل فرمایید.');
                 } else
                     Yii::app()->user->setFlash('reservation-failed', 'متاسفانه عملیات رزرو انجام نشد. لطفا با بخش پشتیبانی تماس حاصل فرمایید.');
 

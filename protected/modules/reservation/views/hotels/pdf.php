@@ -52,7 +52,6 @@ $cancelRules=CJSON::decode($booking->cancelRules);
                     <td style="padding: 15px;background: #d9534f;color:#fff;font-weight: bold;">Passenger name</td>
                     <td style="padding: 15px;background: #d9534f;color:#fff;font-weight: bold;">Nationality</td>
                     <td style="padding: 15px;background: #d9534f;color:#fff;font-weight: bold;">Room</td>
-                    <td style="padding: 15px;background: #d9534f;color:#fff;font-weight: bold;">Booking ID</td>
                 </tr>
                 <?php foreach($confirmationDetails as $confirmationDetail):$i=0;?>
                     <?php foreach($confirmationDetail['name'] as $passengerName):?>
@@ -67,7 +66,7 @@ $cancelRules=CJSON::decode($booking->cancelRules);
                         </tr>
                         <tr>
                             <?php if($i==0):?>
-                                <td style="text-align:center;border-right: 1px solid #ccc;border-left: 1px solid #ccc;border-bottom: 1px solid #ccc;padding: 15px;font-size: 16px;font-weight:bold;color: #d9534f;" colspan="3"><?php echo CHtml::encode($confirmationDetail['confirmNumber']);?></td>
+                                <td style="text-align:center;border-right: 1px solid #ccc;border-left: 1px solid #ccc;border-bottom: 1px solid #ccc;padding: 15px;font-size: 16px;font-weight:bold;color: #d9534f;" colspan="3">Booking ID: <?php echo CHtml::encode($confirmationDetail['confirmNumber']);?></td>
                             <?php endif;?>
                         </tr>
                     <?php $i++;endforeach;?>
