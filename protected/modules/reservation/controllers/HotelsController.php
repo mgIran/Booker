@@ -20,7 +20,7 @@ class HotelsController extends Controller
     {
         return array(
             array('allow',  // allow all users to perform 'index' and 'views' actions
-                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout', 'bill', 'pay', 'verify', 'mail', 'loadMore'),
+                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout', 'bill', 'pay', 'verify', 'mail', 'loadMore', 'voucher'),
                 'users' => array('*'),
             ),
             array('deny',  // deny all users
@@ -169,7 +169,7 @@ class HotelsController extends Controller
 
         echo CJSON::encode(array(
             'hotels'=>$this->clips['hotels'],
-            'loadMore'=>$result['nextPage']
+            'loadMore'=>$nextPage
         ));
     }
 
@@ -517,6 +517,15 @@ class HotelsController extends Controller
             echo CJSON::encode(array('status' => true));
         else
             echo CJSON::encode(array('status' => false));
+    }
+
+    public function actionVoucher()
+    {
+        $bookingID = Yii::app()->request->getQuery('booking_id');
+        $booking = Bookings::model()->findByPk($bookingID);
+        $html2pdf = Yii::app()->ePdf->HTML2PDF();
+        $html2pdf->WriteHTML($this->renderPartial('pdf', array('booking' => $booking), true));
+        $html2pdf->Output();
     }
 
     public function getStayingTime($in, $out)

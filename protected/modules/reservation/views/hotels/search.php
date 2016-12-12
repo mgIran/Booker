@@ -345,7 +345,7 @@ if(!isset($nextPage))
                 success:function(data){
                     $('#hotels-list .items').append($(data.hotels).find('.items').html());
                     if(data.loadMore != null)
-                        $('#load-more').text('هتل های بیشتر...').removeClass('doing').attr('data-key', data.loadMore);
+                        $('#load-more').text('هتل های بیشتر...').removeClass('doing').data('key', data.loadMore);
                     else
                         $('#load-more').remove();
                 }

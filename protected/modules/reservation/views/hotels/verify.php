@@ -54,6 +54,7 @@
                 <div class="alert alert-success"><h5 class="text-center">عملیات رزور هتل با موفقیت به پایان رسید.</h5></div>
                 <div class="overflow-fix" style="padding: 15px;">
                     <a href="<?php echo $this->createUrl('/site');?>" class="btn waves-effect waves-light green lighten-1 col-md-2 pull-left">اتمام</a>
+                    <a href="<?php echo $this->createUrl('/reservation/hotels/voucher', array('booking_id'=>$bookingID));?>" style="margin-left: 10px;" target="_blank" class="btn waves-effect waves-light amber darken-2 pull-left">دانلود فرم تاییدیه رزرو</a>
                     <?php echo CHtml::ajaxLink('ایمیل تاییدیه رزرو را دریافت نکردم', $this->createUrl('/reservation/hotels/mail', array('order_id'=>$order->id,'booking_id'=>$bookingID)), array(
                         'dataType'=>'JSON',
                         'beforeSend'=>'js:function(){

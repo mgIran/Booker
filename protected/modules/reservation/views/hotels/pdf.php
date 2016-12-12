@@ -74,9 +74,11 @@ $cancelRules=CJSON::decode($booking->cancelRules);
             <div style="height: 2px;background: #ccc;margin: 15px 0;"></div>
             <h4 style="margin-top: 0;">Summery</h4>
             <?php
+            date_default_timezone_set('UTC');
             $stayTime=floor((strtotime($booking->checkOut)-strtotime($booking->checkIn))/(60*60*24));
             if($stayTime < 0)
                 $stayTime=0;
+            date_default_timezone_set('Asia/Tehran');
             ?>
             <table cellspacing="0">
                 <tr>
