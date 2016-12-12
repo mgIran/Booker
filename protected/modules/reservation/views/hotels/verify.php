@@ -4,6 +4,7 @@
 /* @var $transaction Transactions */
 /* @var $bookingResult boolean */
 /* @var $bookingID integer */
+/* @var $booking Bookings */
 ?>
 <?php Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl.'/css/bootstrap-nav-wizard.css');?>
 <div class="container">
@@ -51,7 +52,7 @@
             </div>
 
             <?php if($bookingResult):?>
-                <div class="alert alert-success"><h5 class="text-center">عملیات رزور هتل با موفقیت به پایان رسید.</h5></div>
+                <div class="alert alert-warning"><h6>عملیات رزور هتل با موفقیت به پایان رسید. کد رهگیری عملیات رزرو B24-<?php echo $booking->orderId?> می باشد.<small class="red-text lighten-1" style="display: block;margin-top: 15px;">لطفا این کد را جهت سایر عملیات ها نزد خود نگهداری کنید.</small></h6></div>
                 <div class="overflow-fix" style="padding: 15px;">
                     <a href="<?php echo $this->createUrl('/site');?>" class="btn waves-effect waves-light green lighten-1 col-md-2 pull-left">اتمام</a>
                     <a href="<?php echo $this->createUrl('/reservation/hotels/voucher', array('booking_id'=>$bookingID));?>" style="margin-left: 10px;" target="_blank" class="btn waves-effect waves-light amber darken-2 pull-left">دانلود فرم تاییدیه رزرو</a>

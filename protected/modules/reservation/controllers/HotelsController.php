@@ -20,7 +20,7 @@ class HotelsController extends Controller
     {
         return array(
             array('allow',  // allow all users to perform 'index' and 'views' actions
-                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout', 'bill', 'pay', 'verify', 'mail', 'loadMore', 'voucher'),
+                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout', 'bill', 'pay', 'verify', 'mail', 'loadMore', 'voucher','cancellation'),
                 'users' => array('*'),
             ),
             array('deny',  // deny all users
@@ -67,9 +67,9 @@ class HotelsController extends Controller
             $postman = new Postman();
             $result = $postman->search(Yii::app()->session['cityKey'], true, date('Y-m-d', Yii::app()->session['inDate']), date('Y-m-d', Yii::app()->session['outDate']), CJSON::encode($rooms));
 
-            $nextPage=null;
+            $nextPage = null;
             if (isset($result['nextPage']))
-                $nextPage=$result['nextPage'];
+                $nextPage = $result['nextPage'];
 
             $hotels = array();
             foreach ($result['results'] as $hotel) {
@@ -130,9 +130,9 @@ class HotelsController extends Controller
         $postman = new Postman();
         $result = $postman->loadMore($_POST['key']);
 
-        $nextPage=null;
+        $nextPage = null;
         if (isset($result['nextPage']))
-            $nextPage=$result['nextPage'];
+            $nextPage = $result['nextPage'];
 
         $hotels = array();
         foreach ($result['results'] as $hotel) {
@@ -168,8 +168,8 @@ class HotelsController extends Controller
         $this->endClip();
 
         echo CJSON::encode(array(
-            'hotels'=>$this->clips['hotels'],
-            'loadMore'=>$nextPage
+            'hotels' => $this->clips['hotels'],
+            'loadMore' => $nextPage
         ));
     }
 
@@ -447,6 +447,7 @@ class HotelsController extends Controller
                     'email' => $order->buyer_email
                 );
                 $book = $postman->book($order->travia_id, $order->search_id, $roomPassengers, $contactInfo);
+                $booking = null;
                 if (!isset($book['error'])) {
                     $book = $book['bookRs'];
                     if ($book['status'] == 'succeeded') {
@@ -460,6 +461,8 @@ class HotelsController extends Controller
                         $booking->save();
 
                         $message = '<p style="text-align: right;">کاربر گرامی<br>فرم تاییدیه رزرو هتل در فایل ضمیمه همین نامه خدمتتان ارسال گردیده است. لطفا این فرم را چاپ کرده و هنگام ورود به هتل آن را به متصدیان هتل ارائه دهید.</p>';
+                        $message .= '<p style="text-align: right;"><b>کد رهگیری : </b>B24-' . $booking->orderId . '</p>';
+                        $message .= '<p style="text-align: right;color: #ef5350;">لطفا این کد را جهت سایر عملیات ها نزد خود نگهداری کنید.</p>';
                         $html2pdf = Yii::app()->ePdf->HTML2PDF();
                         $html2pdf->WriteHTML($this->renderPartial('pdf', array('booking' => $booking), true));
                         $pdfContent = $html2pdf->Output('', EYiiPdf::OUTPUT_TO_STRING);
@@ -484,6 +487,7 @@ class HotelsController extends Controller
                     'transaction' => $transaction,
                     'bookingResult' => $bookingResult,
                     'bookingID' => $bookingID,
+                    'booking' => $booking
                 ));
             } else {
                 Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
@@ -727,6 +731,21 @@ class HotelsController extends Controller
         foreach ($rooms as $room)
             $adults += $room['adult'];
         return $adults;
+    }
+
+    public function actionCancellation()
+    {
+        Yii::app()->theme = 'frontend';
+        $this->layout = '//layouts/inner';
+        $this->pageName = 'signup';
+
+        $model=new CancellationRequests();
+
+        $this->performAjaxValidation($model);
+
+        $this->render('cancellation', array(
+            'model'=>$model,
+        ));
     }
 
     /**
