@@ -13,12 +13,15 @@
                 <?php $this->renderPartial('//layouts/_flashMessage');?>
 
                 <?php $form=$this->beginWidget('CActiveForm', array(
-                    'id'=>'contact-form',
+                    'id'=>'cancellation-form',
+                    'enableAjaxValidation'=>true,
                     'enableClientValidation'=>true,
                     'clientOptions'=>array(
                         'validateOnSubmit'=>true,
                     ),
                 )); ?>
+
+                <?php $this->renderPartial('//layouts/_flashMessage');?>
 
                 <p class="note">جهت انصراف از رزرو فرم زیر را پر کنید.</p>
 
