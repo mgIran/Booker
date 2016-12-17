@@ -22,21 +22,27 @@ class DashboardController extends Controller
     {
         return array(
             array('allow',  // allow all users to perform 'index' and 'views' actions
-                'actions'=>array('index'),
+                'actions' => array('index'),
                 'roles' => array('admin'),
             ),
             array('deny',  // deny all users
-                'actions'=>array('index'),
-                'users'=>array('*'),
+                'actions' => array('index'),
+                'users' => array('*'),
             ),
         );
     }
 
-	public function actionIndex()
+    public function actionIndex()
     {
-		$this->render('index', array(
-
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('status = :status');
+        $criteria->params = array(':status' => 'pending');
+        $cancellationRequests = new CActiveDataProvider('CancellationRequests', array(
+            'criteria' => $criteria
         ));
-	}
 
+        $this->render('index', array(
+            'cancellationRequests' => $cancellationRequests,
+        ));
+    }
 }

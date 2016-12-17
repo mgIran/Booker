@@ -7,12 +7,19 @@
  * @property string $id
  * @property string $orderId
  * @property string $created_date
+ * @property string $status
  *
  * The followings are the available model relations:
- * @property Bookings $order
+ * @property Bookings $booking
  */
 class CancellationRequests extends CActiveRecord
 {
+    public $statusLabels=array(
+        'pending'=>'در انتظار',
+        'canceled'=>'کنسل شده',
+        'refused'=>'رد شده',
+    );
+
     /**
      * @return string the associated database table name
      */
@@ -33,9 +40,10 @@ class CancellationRequests extends CActiveRecord
             array('orderId', 'checkOrderID'),
             array('created_date', 'default', 'value' => time()),
             array('orderId, created_date', 'length', 'max' => 20),
+            array('status', 'length', 'max'=>8),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, orderId, created_date', 'safe', 'on' => 'search'),
+            array('id, orderId, created_date, status', 'safe', 'on' => 'search'),
         );
     }
 
@@ -47,7 +55,7 @@ class CancellationRequests extends CActiveRecord
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'order' => array(self::BELONGS_TO, 'Bookings', 'orderId'),
+            'booking' => array(self::BELONGS_TO, 'Bookings', 'orderId'),
         );
     }
 
@@ -58,8 +66,9 @@ class CancellationRequests extends CActiveRecord
     {
         return array(
             'id' => 'شناسه',
-            'orderId' => 'کد رهگیری',
-            'created_date' => 'تاریخ ثبت',
+            'orderId' => 'کد رهگیری رزرو',
+            'created_date' => 'تاریخ ثبت درخواست',
+            'status' => 'وضعیت',
         );
     }
 
@@ -84,6 +93,7 @@ class CancellationRequests extends CActiveRecord
         $criteria->compare('id', $this->id, true);
         $criteria->compare('orderId', $this->orderId, true);
         $criteria->compare('created_date', $this->created_date, true);
+        $criteria->compare('status',$this->status,true);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,

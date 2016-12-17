@@ -115,8 +115,7 @@
             <?php echo CHtml::endForm();?>
         </div>
         <ul class="nav nav-justified">
-<!--            <li role="presentation"><a href="--><?php //echo $this->createUrl('/login');?><!--">ورود</a></li>-->
-<!--            <li role="presentation"><a href="--><?php //echo $this->createUrl('/register');?><!--">ثبت نام</a></li>-->
+            <li role="presentation"><a href="<?php echo $this->createUrl('/reservation/hotels/cancellation');?>">درخواست انصراف</a></li>
             <li role="presentation"><a href="<?php echo $this->createUrl('/terms');?>">قوانین و مقررات</a></li>
             <li role="presentation"><a href="<?php echo $this->createUrl('/help');?>">راهنما</a></li>
             <li role="presentation"><a href="<?php echo $this->createUrl('/about');?>">درباره ما</a></li>

@@ -39,14 +39,14 @@ class Order extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-            array('buyer_name, buyer_family, buyer_mobile, buyer_email', 'required'),
-			array('buyer_name, buyer_family', 'length', 'max'=>50),
-			array('buyer_mobile', 'length', 'max'=>11),
-			array('buyer_email, payment_tracking_code, search_id', 'length', 'max'=>255),
-			array('date, order_id, travia_id, price', 'length', 'max'=>20),
+			array('buyer_name, buyer_family, buyer_mobile, buyer_email', 'required'),
+			array('buyer_name, buyer_family', 'length', 'max' => 50),
+			array('buyer_mobile', 'length', 'max' => 11),
+			array('buyer_email, payment_tracking_code, search_id', 'length', 'max' => 255),
+			array('date, order_id, travia_id, price', 'length', 'max' => 20),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, buyer_name, buyer_family, buyer_mobile, buyer_email, date, order_id, travia_id, price, payment_tracking_code', 'safe', 'on'=>'search'),
+			array('id, buyer_name, buyer_family, buyer_mobile, buyer_email, date, order_id, travia_id, price, payment_tracking_code', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -58,9 +58,9 @@ class Order extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-            'bookings' => array(self::HAS_MANY, 'Bookings', 'order_id'),
+			'bookings' => array(self::HAS_MANY, 'Bookings', 'order_id'),
 			'passengers' => array(self::HAS_MANY, 'Passengers', 'order_id'),
-            'transactions' => array(self::HAS_MANY, 'Transactions', 'order_id'),
+			'transactions' => array(self::HAS_MANY, 'Transactions', 'order_id'),
 		);
 	}
 
@@ -100,22 +100,22 @@ class Order extends CActiveRecord
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
-		$criteria=new CDbCriteria;
+		$criteria = new CDbCriteria;
 
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('buyer_name',$this->buyer_name,true);
-		$criteria->compare('buyer_family',$this->buyer_family,true);
-		$criteria->compare('buyer_mobile',$this->buyer_mobile,true);
-		$criteria->compare('buyer_email',$this->buyer_email,true);
-		$criteria->compare('date',$this->date,true);
-		$criteria->compare('order_id',$this->order_id,true);
-		$criteria->compare('travia_id',$this->travia_id,true);
-		$criteria->compare('price',$this->price,true);
-        $criteria->compare('payment_tracking_code',$this->payment_tracking_code,true);
-		$criteria->compare('search_id',$this->search_id,true);
+		$criteria->compare('id', $this->id, true);
+		$criteria->compare('buyer_name', $this->buyer_name, true);
+		$criteria->compare('buyer_family', $this->buyer_family, true);
+		$criteria->compare('buyer_mobile', $this->buyer_mobile, true);
+		$criteria->compare('buyer_email', $this->buyer_email, true);
+		$criteria->compare('date', $this->date, true);
+		$criteria->compare('order_id', $this->order_id, true);
+		$criteria->compare('travia_id', $this->travia_id, true);
+		$criteria->compare('price', $this->price, true);
+		$criteria->compare('payment_tracking_code', $this->payment_tracking_code, true);
+		$criteria->compare('search_id', $this->search_id, true);
 
 		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
+			'criteria' => $criteria,
 		));
 	}
 
@@ -125,8 +125,13 @@ class Order extends CActiveRecord
 	 * @param string $className active record class name.
 	 * @return Order the static model class
 	 */
-	public static function model($className=__CLASS__)
+	public static function model($className = __CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	public function getFullName()
+	{
+		return $this->buyer_name . ' ' . $this->buyer_family;
 	}
 }

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50617
 File Encoding         : 65001
 
-Date: 2016-12-12 13:36:39
+Date: 2016-12-17 12:20:59
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -89,7 +89,7 @@ CREATE TABLE `ym_bookings` (
   KEY `order_id` (`order_id`),
   KEY `orderId` (`orderId`),
   CONSTRAINT `ym_bookings_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `ym_order` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of ym_bookings
@@ -98,7 +98,8 @@ INSERT INTO `ym_bookings` VALUES ('6', '23', 'Taksim Green House Hostel', '0', '
 INSERT INTO `ym_bookings` VALUES ('7', '24', 'Boyuk Gala Hotel', '3', ' Mirza Mansur Street 68', '', 'AZ1000', '12:00', '12:00', '40.366940366676', '49.834923148155', 'Boyuk Gala Hotel is located in Baku%2C capital city of Azerbaijan%2C namely in beautiful and fascinating %5C%22Icheri Sheher%5C%22 which has been included into the World Cultural Heritage List of UNESCO. Our 4 star hotel is distinquished with its high-level services and modern requirements%2C convenient location%2C a few minutes walk to business and shopping centers of the city%2C and conservative style. The hotel has been established and designed elegantly to meet the individual and business needs of our highly respected guests. We offer a wide range of services including breakfast while enjoying a spectacular view of the city%2C free and unlimited WI-FI internet access to give you an opportunity to contact your relatives and friends%2C free use of fax machines and printers%2C as well as dental services in order to make you feel at home. Our goal is your 100%25 satisfaction. Our advantage is qualified staff and a variety of services intended to satisfy your needs.', 'Azerbaijan', 'Baku', '1', 'QvrzWpkFEM', '2016-12-10 06:45:55.488852+00:00', '2017-02-16', '2017-02-17', 'Iran', 'IRR', 'Breakfast Continental', '877100', 'succeeded', '0', '[{\"ratio\":\"1.00\",\"remainDays\":1}]', '[{\"confirmNumber\":\"1130-14628\",\"name\":[\"masoud gharagozlu\"],\"rooms\":[{\"description\":\"SINGLE DELUXE\",\"type\":\"SGL-E10\"}]}]', '3374');
 INSERT INTO `ym_bookings` VALUES ('8', '24', 'Boyuk Gala Hotel', '3', ' Mirza Mansur Street 68', '', 'AZ1000', '12:00', '12:00', '40.366940366676', '49.834923148155', 'Boyuk Gala Hotel is located in Baku%2C capital city of Azerbaijan%2C namely in beautiful and fascinating %5C%22Icheri Sheher%5C%22 which has been included into the World Cultural Heritage List of UNESCO. Our 4 star hotel is distinquished with its high-level services and modern requirements%2C convenient location%2C a few minutes walk to business and shopping centers of the city%2C and conservative style. The hotel has been established and designed elegantly to meet the individual and business needs of our highly respected guests. We offer a wide range of services including breakfast while enjoying a spectacular view of the city%2C free and unlimited WI-FI internet access to give you an opportunity to contact your relatives and friends%2C free use of fax machines and printers%2C as well as dental services in order to make you feel at home. Our goal is your 100%25 satisfaction. Our advantage is qualified staff and a variety of services intended to satisfy your needs.', 'Azerbaijan', 'Baku', '1', 'QvrzWpkFEM', '2016-12-10 06:45:55.488852+00:00', '2017-02-16', '2017-02-17', 'Iran', 'IRR', 'Breakfast Continental', '877100', 'succeeded', '0', '[{\"ratio\":\"1.00\",\"remainDays\":1}]', '[{\"confirmNumber\":\"1130-14628\",\"name\":[\"masoud gharagozlu\"],\"rooms\":[{\"description\":\"SINGLE DELUXE\",\"type\":\"SGL-E10\"}]}]', '3374');
 INSERT INTO `ym_bookings` VALUES ('9', '24', 'Boyuk Gala Hotel', '3', ' Mirza Mansur Street 68', '', 'AZ1000', '12:00', '12:00', '40.366940366676', '49.834923148155', 'Boyuk Gala Hotel is located in Baku%2C capital city of Azerbaijan%2C namely in beautiful and fascinating %5C%22Icheri Sheher%5C%22 which has been included into the World Cultural Heritage List of UNESCO. Our 4 star hotel is distinquished with its high-level services and modern requirements%2C convenient location%2C a few minutes walk to business and shopping centers of the city%2C and conservative style. The hotel has been established and designed elegantly to meet the individual and business needs of our highly respected guests. We offer a wide range of services including breakfast while enjoying a spectacular view of the city%2C free and unlimited WI-FI internet access to give you an opportunity to contact your relatives and friends%2C free use of fax machines and printers%2C as well as dental services in order to make you feel at home. Our goal is your 100%25 satisfaction. Our advantage is qualified staff and a variety of services intended to satisfy your needs.', 'Azerbaijan', 'Baku', '1', 'QvrzWpkFEM', '2016-12-10 06:45:55.488852+00:00', '2017-02-16', '2017-02-17', 'Iran', 'IRR', 'Breakfast Continental', '877100', 'succeeded', '0', '[{\"ratio\":\"1.00\",\"remainDays\":1}]', '[{\"confirmNumber\":\"1130-14628\",\"name\":[\"masoud gharagozlu\"],\"rooms\":[{\"description\":\"SINGLE DELUXE\",\"type\":\"SGL-E10\"}]}]', '3374');
-INSERT INTO `ym_bookings` VALUES ('10', '24', 'Boyuk Gala Hotel', '3', ' Mirza Mansur Street 68', '', 'AZ1000', '12:00', '12:00', '40.366940366676', '49.834923148155', 'Boyuk Gala Hotel is located in Baku%2C capital city of Azerbaijan%2C namely in beautiful and fascinating %5C%22Icheri Sheher%5C%22 which has been included into the World Cultural Heritage List of UNESCO. Our 4 star hotel is distinquished with its high-level services and modern requirements%2C convenient location%2C a few minutes walk to business and shopping centers of the city%2C and conservative style. The hotel has been established and designed elegantly to meet the individual and business needs of our highly respected guests. We offer a wide range of services including breakfast while enjoying a spectacular view of the city%2C free and unlimited WI-FI internet access to give you an opportunity to contact your relatives and friends%2C free use of fax machines and printers%2C as well as dental services in order to make you feel at home. Our goal is your 100%25 satisfaction. Our advantage is qualified staff and a variety of services intended to satisfy your needs.', 'Azerbaijan', 'Baku', '1', 'QvrzWpkFEM', '2016-12-10 06:45:55.488852+00:00', '2017-02-16', '2017-02-17', 'Iran', 'IRR', 'Breakfast Continental', '877100', 'succeeded', '0', '[{\"ratio\":\"1.00\",\"remainDays\":1}]', '[{\"confirmNumber\":\"1130-14628\",\"name\":[\"masoud gharagozlu\"],\"rooms\":[{\"description\":\"SINGLE DELUXE\",\"type\":\"SGL-E10\"}]}]', '3374');
+INSERT INTO `ym_bookings` VALUES ('10', '24', 'Boyuk Gala Hotel', '3', ' Mirza Mansur Street 68', '', 'AZ1000', '12:00', '12:00', '40.366940366676', '49.834923148155', 'Boyuk Gala Hotel is located in Baku%2C capital city of Azerbaijan%2C namely in beautiful and fascinating %5C%22Icheri Sheher%5C%22 which has been included into the World Cultural Heritage List of UNESCO. Our 4 star hotel is distinquished with its high-level services and modern requirements%2C convenient location%2C a few minutes walk to business and shopping centers of the city%2C and conservative style. The hotel has been established and designed elegantly to meet the individual and business needs of our highly respected guests. We offer a wide range of services including breakfast while enjoying a spectacular view of the city%2C free and unlimited WI-FI internet access to give you an opportunity to contact your relatives and friends%2C free use of fax machines and printers%2C as well as dental services in order to make you feel at home. Our goal is your 100%25 satisfaction. Our advantage is qualified staff and a variety of services intended to satisfy your needs.', 'Azerbaijan', 'Baku', '1', 'QvrzWpkFEM', '2016-12-10 06:45:55.488852+00:00', '2017-02-16', '2017-02-17', 'Iran', 'IRR', 'Breakfast Continental', '877100', 'succeeded', '0', '[{\"ratio\":\"1.00\",\"remainDays\":1},{\"ratio\":\"0.50\",\"remainDays\":2}]', '[{\"confirmNumber\":\"E06048178\",\"name\":[\"farideh farzaneh\",\"khalil salmani\",\"maryam salmani\",\"meisam salmani\"],\"rooms\":[{\"description\":\"Twin Room\",\"type\":\"00001\"},{\"description\":\"Double Room\",\"type\":\"01001\"}]}]', '3375');
+INSERT INTO `ym_bookings` VALUES ('11', '25', 'Taksim Green House Hostel', '0', 'Cumhuriyet caddesi paparoncalli sok No 15 Elmadag/Taksim', '+905324869064', '34437', '12:00', '11:30', '41.042702997683', '28.985420465469', '<p><b>Property Location</b> <br />A stay at Taksim Green House Hostel places you in the heart of Istanbul, convenient to Taksim Gezi Park and Topkapi Palace. This hostel is close to Suleymaniye Mosque and Grand Bazaar.</p><p><b>Rooms</b> <br />Make yourself at home in one of the 9 guestrooms. Prepare your meals in the shared/communal kitchen. Complimentary wireless Internet access is available to keep you connected. Bathrooms have showers and hair dryers.</p><p><b>Rec, Spa, Premium Amenities</b> <br />Make use of convenient amenities such as complimentary wireless Internet access, gift shops/newsstands, and tour/ticket assistance. Getting to nearby attractions is a breeze with the area shuttle (surcharge).</p><p><b>Dining</b> <br />Enjoy a meal at a restaurant or in a coffee shop/café. Or stay in and take advantage of the hostel\'s room service (during limited hours). Quench your thirst with your favorite drink at a bar/lounge.</p><p><b>Business, Other Amenities</b> <br />Featured amenities include a computer station, dry cleaning/laundry services, and a 24-hour front desk. A roundtrip airport shuttle is provided for a surcharge (available on request), and free valet parking is available onsite.</p>', 'Turkey', 'Sisli', '1', 'ciRktvFCCR', '2016-12-16 15:34:03.725010+00:00', '2017-02-16', '2017-02-17', 'Iran', 'IRR', 'Room Only', '382280', 'succeeded', '0', '[{\"ratio\":\"1.00\",\"remainDays\":8}]', '[{\"confirmNumber\":\"276807465|134522400973\",\"name\":[\"masoud gharagozlu\"],\"rooms\":[{\"description\":\" 6-Bed Female Dormitory\",\"type\":\"1\"}]}]', '3380');
 
 -- ----------------------------
 -- Table structure for ym_cancellation_requests
@@ -106,16 +107,19 @@ INSERT INTO `ym_bookings` VALUES ('10', '24', 'Boyuk Gala Hotel', '3', ' Mirza M
 DROP TABLE IF EXISTS `ym_cancellation_requests`;
 CREATE TABLE `ym_cancellation_requests` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'شناسه',
-  `orderId` varchar(20) CHARACTER SET utf8 DEFAULT NULL COMMENT 'کد رهگیری',
-  `created_date` varchar(20) CHARACTER SET utf8 DEFAULT NULL COMMENT 'تاریخ ثبت',
+  `orderId` varchar(20) CHARACTER SET utf8 DEFAULT NULL COMMENT 'کد رهگیری رزرو',
+  `created_date` varchar(20) CHARACTER SET utf8 DEFAULT NULL COMMENT 'تاریخ ثبت درخواست',
+  `status` enum('pending','canceled','refused') CHARACTER SET utf8 DEFAULT 'pending' COMMENT 'وضعیت',
   PRIMARY KEY (`id`),
   KEY `orderId` (`orderId`),
   CONSTRAINT `ym_cancellation_requests_ibfk_1` FOREIGN KEY (`orderId`) REFERENCES `ym_bookings` (`orderId`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of ym_cancellation_requests
 -- ----------------------------
+INSERT INTO `ym_cancellation_requests` VALUES ('3', '3375', '1481791222', 'pending');
+INSERT INTO `ym_cancellation_requests` VALUES ('4', '3380', '1481902546', 'pending');
 
 -- ----------------------------
 -- Table structure for ym_city_names
@@ -171,11 +175,11 @@ CREATE TABLE `ym_counter_save` (
 -- ----------------------------
 -- Records of ym_counter_save
 -- ----------------------------
-INSERT INTO `ym_counter_save` VALUES ('counter', '159');
-INSERT INTO `ym_counter_save` VALUES ('day_time', '2457735');
+INSERT INTO `ym_counter_save` VALUES ('counter', '162');
+INSERT INTO `ym_counter_save` VALUES ('day_time', '2457739');
 INSERT INTO `ym_counter_save` VALUES ('max_count', '5');
 INSERT INTO `ym_counter_save` VALUES ('max_time', '1457598600');
-INSERT INTO `ym_counter_save` VALUES ('yesterday', '0');
+INSERT INTO `ym_counter_save` VALUES ('yesterday', '1');
 
 -- ----------------------------
 -- Table structure for ym_counter_users
@@ -190,7 +194,7 @@ CREATE TABLE `ym_counter_users` (
 -- ----------------------------
 -- Records of ym_counter_users
 -- ----------------------------
-INSERT INTO `ym_counter_users` VALUES ('837ec5754f503cfaaee0929fd48974e7', '1481537012');
+INSERT INTO `ym_counter_users` VALUES ('837ec5754f503cfaaee0929fd48974e7', '1481902907');
 
 -- ----------------------------
 -- Table structure for ym_countries
@@ -486,7 +490,7 @@ CREATE TABLE `ym_order` (
   `payment_tracking_code` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT 'کد رهگیری پرداخت',
   `search_id` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT 'شناسه جستجو',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of ym_order
@@ -494,6 +498,7 @@ CREATE TABLE `ym_order` (
 INSERT INTO `ym_order` VALUES ('22', 'masoud', 'gharagozlu', '09373252746', 'gharagozlu.masoud@gmail.com', '1477253518', null, '7yM3rq8InV', '2370900', null, 'jvSo6n8Bv9lnJo7hv7tf');
 INSERT INTO `ym_order` VALUES ('23', 'masoud', 'gharagozlu', '09373252746', 'gharagozlu.masoud@gmail.com', '1477570732', '3359', 'Ln7mNXTkxa', '327600', null, 'Wv5LWb4U-FiHMw08-SLH');
 INSERT INTO `ym_order` VALUES ('24', 'masoud', 'gharagozlu', '09373252746', 'gharagozlu.masoud@gmail.com', '1481301232', '3374', 'pXnNNzyAb4', '388500', '1234', 'UzPyGbGZidSYcvDlxk');
+INSERT INTO `ym_order` VALUES ('25', 'masoud', 'gharagozlu', '09373252746', 'gharagozlu.masoud@gmail.com', '1481902312', '3380', 'ciRktvFCCR', '382280', '123456', 'y4DxMVwDoPbXeqSdXt');
 
 -- ----------------------------
 -- Table structure for ym_pages
@@ -551,13 +556,14 @@ CREATE TABLE `ym_passengers` (
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`),
   CONSTRAINT `ym_passengers_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `ym_order` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of ym_passengers
 -- ----------------------------
 INSERT INTO `ym_passengers` VALUES ('30', 'masoud', 'gharagozlu', 'male', '1234567890', 'adult', '-', '0', '22');
 INSERT INTO `ym_passengers` VALUES ('31', 'masoud', 'gharagozlu', 'male', '1234567890', 'adult', '-', '0', '24');
+INSERT INTO `ym_passengers` VALUES ('32', 'masoud', 'gharagozlu', 'male', '1234567890', 'adult', '-', '0', '25');
 
 -- ----------------------------
 -- Table structure for ym_site_setting
@@ -594,7 +600,7 @@ CREATE TABLE `ym_transactions` (
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`),
   CONSTRAINT `ym_transactions_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `ym_order` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of ym_transactions
@@ -612,6 +618,7 @@ INSERT INTO `ym_transactions` VALUES ('10', '1234', '388500', '24', '1481357268'
 INSERT INTO `ym_transactions` VALUES ('11', '1234', '388500', '24', '1481357694');
 INSERT INTO `ym_transactions` VALUES ('12', '1234', '388500', '24', '1481357758');
 INSERT INTO `ym_transactions` VALUES ('13', '1234', '388500', '24', '1481358117');
+INSERT INTO `ym_transactions` VALUES ('14', '123456', '382280', '25', '1481902435');
 
 -- ----------------------------
 -- Table structure for ym_users

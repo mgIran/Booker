@@ -4,7 +4,7 @@
 ?>
 <div class="container">
     <div class="content page-box text-page">
-        <h2 class="yekan-text">انصراف از رزرو</h2>
+        <h2 class="yekan-text">درخواست انصراف</h2>
         <div class="container-fluid">
             <p>جهت انصراف از رزرو انجام شده درخواست شما در سیستم ثبت شده و پس از بررسی های لازم توسط تیم پشتیبانی عملیات مورد نظر انجام خواهد شد.</p>
             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-2 page-break"></div>
