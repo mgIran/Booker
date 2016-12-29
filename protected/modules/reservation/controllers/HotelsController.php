@@ -89,7 +89,7 @@ class HotelsController extends Controller
                 array_push($hotels, array(
                     'name' => $hotel['name'],
                     'star' => $hotel['star'],
-                    'id' => '',
+                    'rooms' => $hotel['services'],
                     'traviaID' => $traviaID,
                     'image' => array(
                         'tag' => $hotel['images'][0]['tag'],
@@ -99,7 +99,7 @@ class HotelsController extends Controller
                 ));
             }
             $this->render('search', array(
-                'hotelsDataProvider' => new CArrayDataProvider($hotels, array('pagination' => false)),
+                'hotelsDataProvider' => new CArrayDataProvider($hotels, array('keyField'=>'traviaID','pagination' => false)),
                 'country' => $result['country'],
                 'searchID' => $result['searchId'],
                 'nextPage' => $nextPage,
@@ -152,7 +152,7 @@ class HotelsController extends Controller
             array_push($hotels, array(
                 'name' => $hotel['name'],
                 'star' => $hotel['star'],
-                'id' => '',
+                'rooms' => $hotel['services'],
                 'traviaID' => $traviaID,
                 'image' => array(
                     'tag' => $hotel['images'][0]['tag'],
@@ -163,7 +163,7 @@ class HotelsController extends Controller
         }
         $this->beginClip('hotels');
         $this->renderPartial('load-more', array(
-            'hotelsDataProvider' => new CArrayDataProvider($hotels, array('pagination' => false)),
+            'hotelsDataProvider' => new CArrayDataProvider($hotels, array('keyField'=>'traviaID','pagination' => false)),
             'country' => $result['country'],
             'searchID' => $result['searchId'],
             'nextPage' => $nextPage,
@@ -214,20 +214,9 @@ class HotelsController extends Controller
         $postman = new Postman();
         $hotel = $postman->details(Yii::app()->getRequest()->getQuery('hotel_id'), Yii::app()->getRequest()->getQuery('search_id'));
 
-        if ($hotel == -1)
-            throw new CHttpException('مدت زمان مجاز برای انجام عملیات به اتمام رسیده؛ لطفا مجددا تلاش کنید.');
-
-        $requestedRooms = $this->getRoomsInfo(Yii::app()->session['rooms']);
-        $rooms = $postman->search($hotel['id'], false, date('Y-m-d', Yii::app()->session['inDate']), date('Y-m-d', Yii::app()->session['outDate']), CJSON::encode($requestedRooms));
-
-        if ($rooms == -1)
-            throw new CHttpException('مدت زمان مجاز برای انجام عملیات به اتمام رسیده؛ لطفا مجددا تلاش کنید.');
-
         $hotel['facilities'] = $this->translateFacilities($hotel['facilities']);
         $this->renderPartial('_view', array(
             'hotel' => $hotel,
-            'rooms' => $rooms['results'][0]['services'],
-            'searchID' => $rooms['searchId'],
         ));
     }
 

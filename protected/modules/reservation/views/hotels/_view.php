@@ -1,8 +1,6 @@
 <?php
 /* @var $this HotelsController */
 /* @var $hotel array */
-/* @var $rooms array */
-/* @var $searchID string */
 $purifier=new CHtmlPurifier();
 ?>
 <h2 class="yekan-text" style="margin-top: 100px;">
@@ -18,13 +16,6 @@ $purifier=new CHtmlPurifier();
     </span>
 </h2>
 <div class="container-fluid">
-    <div class="feature-item">
-        <div class="title">
-            <h5 class="yekan-text">اتاق ها</h5>
-            <div class="divider"></div>
-        </div>
-        <?php $this->renderPartial('_rooms_list', array('rooms'=>$rooms, 'searchID'=>$searchID));?>
-    </div>
     <div class="feature-item">
         <div class="title">
             <h5 class="yekan-text">امکانات</h5>

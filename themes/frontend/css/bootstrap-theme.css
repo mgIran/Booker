@@ -583,34 +583,6 @@ label.error{
 }
 
 
-
-.modal-content{
-    border:none;
-    border-radius: 0;
-    box-shadow: none;
-    background: transparent;
-}
-.modal .modal-footer .btn,
-.modal .modal-footer .btn-large,
-.modal .modal-footer .btn-flat{
-    float: left;
-}
-.modal .modal-footer a:hover,
-.modal .modal-footer a:active,
-.modal .modal-footer a:focus{
-    text-decoration: none;
-}
-#rooms-modal .dropdown-content li > a,
-#rooms-modal .dropdown-content li > span{
-    padding: 5px 16px;
-    font-size: 14px;
-    line-height:15px;
-}
-#rooms-modal .dropdown-content li{
-    min-height:auto;
-}
-
-
 .licences{
     position: fixed;
     left: 50px;
@@ -854,7 +826,8 @@ label.error{
 .star.off{
     background: url("../svg/star-off.svg") no-repeat center / 13px auto;
 }
-.hotel-item a.pull-left{
+.hotel-item a.pull-left,
+.hotel-item a.pull-right{
     margin-top: 15px;
 }
 .hotel-item a:hover,
@@ -1277,20 +1250,6 @@ label.error{
 .rooms .room-item .cancel-rule{
     margin-left: 15px;
 }
-.modal{
-    padding: 0;
-    bottom:auto;
-}
-.modal h1,
-.modal h2,
-.modal h3,
-.modal h4,
-.modal h5{
-    margin:0 0 20px 0;
-}
-.modal-footer{
-    border-top: none;
-}
 .reserve-information{
     margin-top: 30px;
     margin-bottom: 60px;
@@ -1458,10 +1417,6 @@ label.error{
 .nav-wizard.nav > li > a{
     line-height: 20px;
 }
-.modal .modal-content{
-    line-height: 35px;
-    text-align: justify;
-}
 #bill-page .table{
     margin: 40px 0;
 }
@@ -1492,4 +1447,57 @@ label.error{
 }
 .page-box .note{
     padding-bottom: 15px;
+}
+.modal{
+    background-color: rgba(0,0,0,0.7);
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    z-index: 10500;
+}
+.modal .modal-dialog{
+    background-color: #f0f0f0;
+}
+.modal .modal-dialog .modal-header{
+    padding: 0;
+    position: relative;
+}
+.modal .modal-dialog .close{
+    top: 50%;
+    left: 0;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+    position: absolute;
+}
+.modal .modal-header h5{
+    margin: 0;
+    border: none;
+}
+.modal-backdrop{
+    display: none !important;
+}
+.modal .modal-content{
+    max-width: 50%;
+    margin: 50px auto 0;
+    border-radius: 0;
+    max-height:70%;
+    overflow: auto;
+    box-shadow: none;
+    border:none;
+}
+.modal .yekan-text{
+    margin-top: 0;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 15px;
+    padding-bottom: 30px;
+}
+.modal .modal-footer{
+    max-width: 50%;
+    margin: 0 auto;
+    border-radius: 0;
+    padding: 5px 24px;
+    height:auto;
 }

@@ -332,7 +332,6 @@ if(!isset($nextPage))
 <?php Yii::app()->clientScript->registerScript('search-hotels',"
     $.fn.yiiListView.update('hotels-list');
 ", CClientScript::POS_LOAD);?>
-
 <?php Yii::app()->clientScript->registerScript('load-more-hotels',"
     $('body').on('click', '#load-more', function(){
         if(!$(this).hasClass('doing')){
@@ -402,3 +401,28 @@ if(!isset($nextPage))
         }
     });
 ", CClientScript::POS_LOAD);?>
+<?php Yii::app()->clientScript->registerScript('show-cancel-rule',"
+    $(document).on('click', '.cancel-rule', function(){
+        $('#cancel-rules-modal').find('.modal-content p').html('در حال بارگذاری اطلاعات...');
+        $.ajax({
+            url:$(this).data('url'),
+            type:'POST',
+            dataType:'JSON',
+            success:function(data){
+                if(data.status=='success')
+                    $('#cancel-rules-modal').find('.modal-content p').html(data.rules);
+                else
+                    $('#cancel-rules-modal').find('.modal-content p').html('در انجام عملیات خطایی رخ داده است. لطفا مجددا تلاش کنید!');
+            }
+        });
+    });
+");?>
+<div id="cancel-rules-modal" class="modal">
+    <div class="modal-content">
+        <h5 class="yekan-text">شرایط کنسلی</h5>
+        <p></p>
+    </div>
+    <div class="modal-footer">
+        <a href="#" data-dismiss="modal" class="waves-effect waves-red btn-flat">انصراف</a>
+    </div>
+</div>
