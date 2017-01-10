@@ -107,16 +107,14 @@ class Postman
         return $result;
     }
 
-    public function cancel($traviaID, $searchID, $orderID)
+    public function cancel($orderID, $traviaID)
     {
-        $data = '{"cancelRq":{"searchId":"' . $searchID . '", "traviaId":"' . $traviaID . '", "orderId":"' . $orderID . '"}}';
+        $data = '{"cancelRq":{"orderId":"' . $orderID . '", "traviaId":"' . $traviaID . '"}}';
         $result = $this->getData('cancel', $data);
 
         if ($this->hasError($result))
             throw new CHttpException('در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!', 212);
 
-        var_dump($result);
-        exit;
-        return $result;
+        return $result['cancelRs'];
     }
 }

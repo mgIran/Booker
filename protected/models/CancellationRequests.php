@@ -14,10 +14,10 @@
  */
 class CancellationRequests extends CActiveRecord
 {
-    public $statusLabels=array(
-        'pending'=>'در انتظار',
-        'canceled'=>'کنسل شده',
-        'refused'=>'رد شده',
+    public $statusLabels = array(
+        'pending' => 'در انتظار',
+        'canceled' => 'کنسل شده',
+        'refused' => 'رد شده',
     );
 
     /**
@@ -36,11 +36,11 @@ class CancellationRequests extends CActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('orderId', 'required'),
-            array('orderId', 'checkOrderID'),
-            array('created_date', 'default', 'value' => time()),
+            array('orderId', 'required', 'on' => 'insert'),
+            array('orderId', 'checkOrderID', 'on' => 'insert'),
+            array('created_date', 'default', 'value' => time(), 'on' => 'insert'),
             array('orderId, created_date', 'length', 'max' => 20),
-            array('status', 'length', 'max'=>8),
+            array('status', 'length', 'max' => 8),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('id, orderId, created_date, status', 'safe', 'on' => 'search'),
@@ -93,7 +93,7 @@ class CancellationRequests extends CActiveRecord
         $criteria->compare('id', $this->id, true);
         $criteria->compare('orderId', $this->orderId, true);
         $criteria->compare('created_date', $this->created_date, true);
-        $criteria->compare('status',$this->status,true);
+        $criteria->compare('status', $this->status, true);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
@@ -127,8 +127,10 @@ class CancellationRequests extends CActiveRecord
     public function beforeSave()
     {
         if (parent::beforeSave()) {
-            preg_match('/(^B24-)(\d*)/', $this->orderId, $matches);
-            $this->orderId = $matches[2];
+            if($this->getScenario() == 'insert') {
+                preg_match('/(^B24-)(\d*)/', $this->orderId, $matches);
+                $this->orderId = $matches[2];
+            }
             return true;
         }
         return false;

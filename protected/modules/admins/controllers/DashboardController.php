@@ -34,15 +34,30 @@ class DashboardController extends Controller
 
     public function actionIndex()
     {
+        $bookings = Bookings::model()->search();
+
         $criteria = new CDbCriteria();
         $criteria->addCondition('status = :status');
         $criteria->params = array(':status' => 'pending');
+        $criteria->order='id DESC';
         $cancellationRequests = new CActiveDataProvider('CancellationRequests', array(
             'criteria' => $criteria
         ));
 
+        $criteria = new CDbCriteria();
+        $criteria->select='SUM(amount) AS amount';
+        $sumTransactions=Transactions::model()->find($criteria);
+
+        Yii::app()->getModule('setting');
+        $commissionPercent=SiteSetting::model()->find('name = :name', array(':name'=>'commission'))->value;
+        $taxPercent=SiteSetting::model()->find('name = :name', array(':name'=>'tax'))->value;
+
         $this->render('index', array(
             'cancellationRequests' => $cancellationRequests,
+            'bookings' => $bookings,
+            'sumTransactions' => $sumTransactions,
+            'commissionPercent' => $commissionPercent,
+            'taxPercent' => $taxPercent,
         ));
     }
 }

@@ -162,6 +162,7 @@ class Bookings extends CActiveRecord
         $criteria->compare('cancelRules', $this->cancelRules, true);
         $criteria->compare('confirmationDetails', $this->confirmationDetails, true);
         $criteria->compare('orderId', $this->orderId, true);
+        $criteria->order='id DESC';
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,

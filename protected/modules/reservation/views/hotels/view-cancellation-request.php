@@ -17,6 +17,8 @@ elseif ($model->status == 'refused')
 
 <h1>اطلاعات رزرو</h1>
 
+<?php $this->renderPartial('//layouts/_flashMessage');?>
+
 <?php $this->widget('zii.widgets.CDetailView', array(
     'data'=>$model,
     'attributes'=>array(

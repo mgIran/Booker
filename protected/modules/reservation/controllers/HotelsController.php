@@ -20,11 +20,11 @@ class HotelsController extends Controller
     {
         return array(
             array('allow',
-                'actions' => array('autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout', 'bill', 'pay', 'verify', 'mail', 'loadMore', 'voucher', 'cancellation', 'test'),
+                'actions' => array('test','autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout', 'bill', 'pay', 'verify', 'mail', 'loadMore', 'voucher', 'cancellation'),
                 'users' => array('*'),
             ),
             array('allow',
-                'actions' => array('viewCancellationRequest', 'cancel'),
+                'actions' => array('viewCancellationRequest','viewBooking', 'cancel', 'refuseCancel'),
                 'roles' => array('admin'),
             ),
             array('deny',  // deny all users
@@ -99,7 +99,7 @@ class HotelsController extends Controller
                 ));
             }
             $this->render('search', array(
-                'hotelsDataProvider' => new CArrayDataProvider($hotels, array('keyField'=>'traviaID','pagination' => false)),
+                'hotelsDataProvider' => new CArrayDataProvider($hotels, array('keyField' => 'traviaID', 'pagination' => false)),
                 'country' => $result['country'],
                 'searchID' => $result['searchId'],
                 'nextPage' => $nextPage,
@@ -163,7 +163,7 @@ class HotelsController extends Controller
         }
         $this->beginClip('hotels');
         $this->renderPartial('load-more', array(
-            'hotelsDataProvider' => new CArrayDataProvider($hotels, array('keyField'=>'traviaID','pagination' => false)),
+            'hotelsDataProvider' => new CArrayDataProvider($hotels, array('keyField' => 'traviaID', 'pagination' => false)),
             'country' => $result['country'],
             'searchID' => $result['searchId'],
             'nextPage' => $nextPage,
@@ -387,130 +387,6 @@ class HotelsController extends Controller
                 $transaction->tracking_code = $referenceId;
                 $transaction->amount = $order->price;
                 $transaction->order_id = $paymentId;
-                $transaction->date = time();
-                $transaction->save();
-
-                $message =
-                    '<p style="text-align: right;">با سلام<br>کاربر گرامی، تراکنش شما با موفقیت انجام شد. جزئیات تراکنش به شرح ذیل می باشد:</p>
-                        <div style="width: 100%;height: 1px;background: #ccc;margin-bottom: 15px;"></div>
-                        <table style="font-size: 9pt;text-align: right;">
-                            <tr>
-                                <td style="font-weight: bold;width: 120px;">زمان</td>
-                                <td>' . JalaliDate::date('d F Y - H:i', $transaction->date) . '</td>
-                            </tr>
-                            <tr>
-                                <td style="font-weight: bold;width: 120px;">مبلغ</td>
-                                <td>' . Controller::parseNumbers(number_format($this->getFixedPrice($transaction->amount), 0)) . ' ریال</td>
-                            </tr>
-                            <tr>
-                                <td style="font-weight: bold;width: 120px;">شناسه خرید</td>
-                                <td>' . $transaction->order_id . '</td>
-                            </tr>
-                            <tr>
-                                <td style="font-weight: bold;width: 120px;">کد رهگیری</td>
-                                <td>' . $transaction->tracking_code . '</td>
-                            </tr>
-                        </table>';
-                Mailer::mail($order->buyer_email, 'رسید پرداخت اینترنتی', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP']);
-
-                $roomPassengers = array();
-                foreach ($order->passengers as $passenger) {
-                    if ($passenger->type == 'child')
-                        $roomPassengers[$passenger->room_num][] = array(
-                            'name' => $passenger->name,
-                            'family' => $passenger->family,
-                            'gender' => $passenger->gender,
-                            'passportNo' => $passenger->passport_num,
-                            'type' => 'child',
-                            'age' => $passenger->age,
-                        );
-                    elseif ($passenger->type == 'adult')
-                        $roomPassengers[$passenger->room_num][] = array(
-                            'name' => $passenger->name,
-                            'family' => $passenger->family,
-                            'gender' => $passenger->gender,
-                            'passportNo' => $passenger->passport_num,
-                            'type' => 'adult',
-                        );
-                }
-
-                $postman = new Postman();
-                $contactInfo = array(
-                    'mobile' => $order->buyer_mobile,
-                    'email' => $order->buyer_email
-                );
-                $book = $postman->book($order->travia_id, $order->search_id, $roomPassengers, $contactInfo);
-                $booking = null;
-                if (!isset($book['error'])) {
-                    $book = $book['bookRs'];
-                    if ($book['status'] == 'succeeded') {
-                        Order::model()->updateByPk($order->id, array('order_id' => $book['orderId']));
-                        $booking = new Bookings();
-                        $book['cancelRules'] = CJSON::encode($book['cancelRules']);
-                        $book['nonrefundable'] = ($book['nonrefundable'] == true) ? '1' : '0';
-                        $book['confirmationDetails'] = CJSON::encode($book['confirmationDetails']);
-                        $booking->attributes = $book;
-                        $booking->order_id = $order->id;
-                        $booking->save();
-
-                        $message = '<p style="text-align: right;">کاربر گرامی<br>فرم تاییدیه رزرو هتل در فایل ضمیمه همین نامه خدمتتان ارسال گردیده است. لطفا این فرم را چاپ کرده و هنگام ورود به هتل آن را به متصدیان هتل ارائه دهید.</p>';
-                        $message .= '<p style="text-align: right;"><b>کد رهگیری : </b>B24-' . $booking->orderId . '</p>';
-                        $message .= '<p style="text-align: right;color: #ef5350;">لطفا این کد را جهت سایر عملیات ها نزد خود نگهداری کنید.</p>';
-                        $html2pdf = Yii::app()->ePdf->HTML2PDF();
-                        $html2pdf->WriteHTML($this->renderPartial('pdf', array('booking' => $booking), true));
-                        $pdfContent = $html2pdf->Output('', EYiiPdf::OUTPUT_TO_STRING);
-                        Mailer::mail($order->buyer_email, 'فرم تاییدیه رزرو هتل', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP'],
-                            array(
-                                'method' => 'string',
-                                'string' => $pdfContent,
-                                'filename' => 'HotelVoucher.pdf',
-                                'type' => 'application/pdf'
-                            )
-                        );
-                        Yii::app()->user->setFlash('reservation-success', 'عملیات رزرو با موفقیت انجام شد. جهت دریافت فرم تاییدیه رزرو هتل به پست الکترونیکی "' . CHtml::encode($order->buyer_email) . '" مراجعه فرمایید.');
-                        $bookingResult = true;
-                        $bookingID = $booking->id;
-                    } else
-                        Yii::app()->user->setFlash('reservation-failed', 'متاسفانه عملیات رزرو انجام نشد. لطفا با بخش پشتیبانی تماس حاصل فرمایید.');
-                } else
-                    Yii::app()->user->setFlash('reservation-failed', 'متاسفانه عملیات رزرو انجام نشد. لطفا با بخش پشتیبانی تماس حاصل فرمایید.');
-
-                $this->render('verify', array(
-                    'order' => $order,
-                    'transaction' => $transaction,
-                    'bookingResult' => $bookingResult,
-                    'bookingID' => $bookingID,
-                    'booking' => $booking
-                ));
-            } else {
-                Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
-                $this->redirect(array('/reservation/hotels/bill'));
-            }
-        } else {
-            Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
-            $this->redirect(array('/reservation/hotels/bill'));
-        }
-    }
-
-    public function actionTest()
-    {
-        Yii::app()->theme = 'frontend';
-        $this->layout = '//layouts/inner';
-        $this->pageName = 'bill';
-        $bookingResult = false;
-        $bookingID = null;
-
-        if (true) {
-            $order = Order::model()->findByPk(25);
-            /* @var $order Order */
-            if (true) {
-                Yii::app()->user->setFlash('success', 'پرداخت با موفقیت انجام شد.');
-                Order::model()->updateByPk(25, array('payment_tracking_code' => '123456'));
-
-                $transaction = new Transactions();
-                $transaction->tracking_code = '123456';
-                $transaction->amount = $order->price;
-                $transaction->order_id = 25;
                 $transaction->date = time();
                 $transaction->save();
 
@@ -887,14 +763,65 @@ class HotelsController extends Controller
         ));
     }
 
+    public function actionViewBooking($id)
+    {
+        Yii::app()->theme = 'abound';
+        $this->layout = '//layouts/column2';
+
+        $model = Bookings::model()->findByPk($id);
+
+        $this->render('view-booking', array(
+            'model' => $model,
+            'id' => $id,
+        ));
+    }
+
     public function actionCancel($id)
     {
+        /* @var $cancelRequest CancellationRequests */
         $cancelRequest = CancellationRequests::model()->findByPk($id);
 
         $postman = new Postman();
-        $result = $postman->cancel($cancelRequest->booking->order->travia_id, $cancelRequest->booking->order->search_id, $cancelRequest->booking->orderId);
-        var_dump($result);
-        exit;
+        $result = $postman->cancel($cancelRequest->booking->orderId, $cancelRequest->booking->order->travia_id);
+
+        if ($result) {
+            // Change status of request
+            $cancelRequest->setScenario('change-status');
+            $cancelRequest->status = 'canceled';
+            if ($cancelRequest->save()) {
+                // Change status of booking
+                $cancelRequest->booking->status = 'canceled';
+                if ($cancelRequest->booking->save()) {
+                    // Send mail to user
+                    $message = '<p style="text-align: right;">با سلام<br>کاربر گرامی، درخواست انصراف شما توسط تیم مدیریت مورد تایید قرار گرفت و سفارش شما با کد رهگیری B24-' . $cancelRequest->orderId . ' کنسل گردید.</p>';
+                    Mailer::mail($cancelRequest->booking->order->buyer_email, 'درخواست انصراف', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP']);
+                    Yii::app()->user->setFlash('success', 'درخواست مورد نظر کنسل گردید. مبلغ کسر شده از حساب ' . $result['chargeAmount'] . ' تومان می باشد.');
+                } else
+                    Yii::app()->user->setFlash('failed', 'در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید.');
+            } else
+                Yii::app()->user->setFlash('failed', 'در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید.');
+        }
+
+        $this->redirect(array('/reservation/hotels/viewCancellationRequest/' . $cancelRequest->id));
+    }
+
+    public function actionRefuseCancel($id)
+    {
+        /* @var $cancelRequest CancellationRequests */
+        $cancelRequest = CancellationRequests::model()->findByPk($id);
+
+        // Change status of request
+        $cancelRequest->setScenario('change-status');
+        $cancelRequest->status = 'refused';
+        if ($cancelRequest->save()) {
+            // Send mail to user
+            $message = '<p style="text-align: right;">با سلام<br>کاربر گرامی، با عرض پوزش درخواست شما جهت انصراف از سفارش با کد رهگیری B24-' . $cancelRequest->orderId . ' مورد تایید تیم مدیریت قرار نگرفت.</p>';
+            Mailer::mail($cancelRequest->booking->order->buyer_email, 'درخواست انصراف', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP']);
+            Yii::app()->user->setFlash('success', 'اطلاعات با موفقیت ثبت شد. درخواست مورد نظر رد شد.');
+        } else
+            Yii::app()->user->setFlash('failed', 'در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید.');
+
+        $this->redirect(array('/reservation/hotels/viewCancellationRequest/' . $cancelRequest->id));
     }
 
     /**

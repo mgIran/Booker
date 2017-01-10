@@ -133,7 +133,10 @@
             <li><span class="slide-item" style="background: url('uploads/s4.jpg') no-repeat center / cover;"></span></li>
         </ul>
     </div>
-    <div class="licences hidden-xs hidden-sm">
+    <div class="socials">
+        <a href="https://telegram.me/joinchat/Awz6Sz_LeZAxMYufY1ZmIQ" target="_blank" class="telegram"></a>
+    </div>
+    <div class="licences">
         <img id='nbpegwmdgwmddrftlbrh' style='cursor:pointer' onclick='window.open("https://trustseal.enamad.ir/Verify.aspx?id=29917&p=wkynjzpgjzpgnbpdqgwl", "Popup","toolbar=no, location=no, statusbar=no, menubar=no, scrollbars=1, resizable=0, width=580, height=600, top=30")' alt='' src='https://trustseal.enamad.ir/logo.aspx?id=29917&p=qesgzpfvzpfvlznbpeuk'/>
     </div>
 </div>

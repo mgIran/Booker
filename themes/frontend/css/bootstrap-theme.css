@@ -583,10 +583,15 @@ label.error{
 }
 
 
-.licences{
+.licences,
+.socials{
     position: fixed;
     left: 50px;
     bottom: 50px;
+}
+.socials{
+    left: auto;
+    right: 50px;
 }
 .licences img{
     width: 80px;
@@ -600,6 +605,14 @@ label.error{
 .licences img{
     width: 150px;
     height: auto;
+}
+.socials .telegram{
+    background: url("../svg/telegram.svg") no-repeat center;
+    background-size: 50px auto;
+    display: inline-block;
+    width:50px;
+    height:50px;
+    border-radius: 5px;
 }
 
 

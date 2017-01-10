@@ -19,6 +19,16 @@
  */
 class Passengers extends CActiveRecord
 {
+	public $genderLabels=array(
+		'male'=>'مرد',
+		'female'=>'زن',
+	);
+
+	public $typeLabels=array(
+		'adult'=>'بزرگسال',
+		'child'=>'کودک',
+	);
+
 	/**
 	 * @return string the associated database table name
 	 */
