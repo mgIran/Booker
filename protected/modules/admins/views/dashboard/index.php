@@ -31,9 +31,9 @@
 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
     <div class="panel-heading">آمار مالی</div>
     <div class="panel-body">
-        <label>مجموع تراکنش ها:</label><?php echo number_format($sumTransactions->amount).' تومان';?><br />
-        <label>مجموع کمیسیون سایت:</label><?php echo number_format(($sumTransactions->amount*$commissionPercent)/100).' تومان';?><br />
-        <label>مجموع مالیات:</label><?php echo number_format(($sumTransactions->amount*$taxPercent)/100).' تومان';?><br />
+        <label>مجموع تراکنش ها:</label><?php echo number_format($sumTransactions->amount/10).' تومان';?><br />
+        <label>مجموع کمیسیون سایت:</label><?php echo number_format((($sumTransactions->amount/10)*$commissionPercent)/100).' تومان';?><br />
+        <label>مجموع مالیات:</label><?php echo number_format((($sumTransactions->amount/10)*$taxPercent)/100).' تومان';?><br />
     </div>
 </div>
 <div class="clearfix"></div>

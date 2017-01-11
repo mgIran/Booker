@@ -141,7 +141,7 @@
         ),
         array(
             'header'=>'مبلغ',
-            'value'=>'number_format($data->amount)." تومان"',
+            'value'=>'number_format($data->amount/10)." تومان"',
         ),
         array(
             'header'=>'تاریخ و ساعت',
