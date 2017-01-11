@@ -46,10 +46,13 @@
                                     'onHide'=>"js:function(){
                                         $('.datepicker-overlay').addClass('hidden');
                                         $('.btn-submit-date').addClass('hidden');
-                                        var stayTime=Math.floor(($('#out-date_altField').val()-$('#enter-date_altField').val())/(60*60*24));
+                                        var checkInDate=persianDate.unix($('#enter-date_altField').val());
+                                        var checkOutDate=persianDate.unix($('#out-date_altField').val());
+                                        var stayTime=checkOutDate.diff(checkInDate, 'days');
                                         if(stayTime < 0)
                                             stayTime=0;
                                         $('.stay-time').text(stayTime);
+                                        $('#stay-time').val(stayTime);
                                     }"
                                 ),
                                 'htmlOptions'=>array(
@@ -81,10 +84,13 @@
                                     'onHide'=>"js:function(){
                                         $('.datepicker-overlay').addClass('hidden');
                                         $('.btn-submit-date').addClass('hidden');
-                                        var stayTime=Math.floor(($('#out-date_altField').val()-$('#enter-date_altField').val())/(60*60*24));
+                                        var checkInDate=persianDate.unix($('#enter-date_altField').val());
+                                        var checkOutDate=persianDate.unix($('#out-date_altField').val());
+                                        var stayTime=checkOutDate.diff(checkInDate, 'days');
                                         if(stayTime < 0)
                                             stayTime=0;
                                         $('.stay-time').text(stayTime);
+                                        $('#stay-time').val(stayTime);
                                     }"
                                 ),
                                 'htmlOptions'=>array(
@@ -96,6 +102,7 @@
                     </div>
                     <div class="container-fluid">
                         <small><b>مدت اقامت: </b><span class="stay-time">0</span> شب</small>
+                        <?php echo CHtml::hiddenField('stay_time', '0', array('id'=>'stay-time'));?>
                     </div>
                 </div>
                 <div class="input-field">

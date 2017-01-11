@@ -3,8 +3,7 @@
 /* @var $error array */
 ?>
 <div class="page-error">
-    <div class="code"><?php echo $code; ?></div>
-    <div class="title"><?php echo CHtml::encode($message);?></div>
+    <div class="title">با عرض پوزش خطایی در سیستم رخ داده است لطفا عملیات جستجو را دوباره انجام دهید.</div>
 
     <div class="buttons">
         <div class="row">

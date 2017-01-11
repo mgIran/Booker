@@ -36,6 +36,7 @@ class SiteController extends Controller
 			Yii::app()->session['cityKey'] = $_POST['city_key'];
 			Yii::app()->session['inDate'] = $_POST['enter-date_altField'];
 			Yii::app()->session['outDate'] = $_POST['out-date_altField'];
+			Yii::app()->session['stayTime'] = $_POST['stay_time'];
 			Yii::app()->session['roomsCount'] = $_POST['rooms-count'];
 			Yii::app()->session['rooms'] = $_POST['rooms'];
 
@@ -49,17 +50,25 @@ class SiteController extends Controller
 	 * This is the action to handle external exceptions.
 	 */
 	public function actionError()
-	{
+    {
         Yii::app()->theme = 'frontend';
-        $this->layout = '//layouts/inner';
-		if($error=Yii::app()->errorHandler->error)
-		{
-			if(Yii::app()->request->isAjaxRequest)
-				echo $error['message'];
-			else
-				$this->render('error', $error);
-		}
-	}
+        $this->layout = '//layouts/error';
+        $code = Yii::app()->request->getQuery('code');
+        if (!is_null($code) and $code == 212)
+            $this->render('webservice-error');
+        else {
+            if ($error = Yii::app()->errorHandler->error) {
+                if (Yii::app()->request->isAjaxRequest)
+                    echo $error['message'];
+                else {
+                    if($error['code']==212)
+                        $this->render('webservice-error');
+                    else
+                        $this->render('error', $error);
+                }
+            }
+        }
+    }
 
 	/**
 	 * Displays the contact page

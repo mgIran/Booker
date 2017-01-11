@@ -23,9 +23,14 @@ class Postman
 
     protected function hasError($result)
     {
-        if (isset($result['error']))
+        if (isset($result['error']) or is_null($result)) {
+            if(!file_exists('errors'))
+                mkdir('errors');
+            $fp = fopen('errors/result-'.date('Y-m-d-H-i', time()).'.json', 'w');
+            fwrite($fp, json_encode($result));
+            fclose($fp);
             return true;
-        else
+        }else
             return false;
     }
 
@@ -35,7 +40,7 @@ class Postman
         $result = $this->getData('autocomplete', $data);
 
         if ($this->hasError($result))
-            throw new CHttpException('در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!', 212);
+            throw new CHttpException(212, 'در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!');
 
         return $result['autoCompleteRs'];
     }
@@ -49,7 +54,7 @@ class Postman
         $result = $this->getData('search', $data);
 
         if ($this->hasError($result))
-            throw new CHttpException('در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!', 212);
+            throw new CHttpException(212, 'در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!');
 
         return $result['searchRs'];
     }
@@ -60,7 +65,7 @@ class Postman
         $result = $this->getData('search', $data);
 
         if ($this->hasError($result))
-            throw new CHttpException('در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!', 212);
+            throw new CHttpException(212, 'در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!');
 
         return $result['searchRs'];
     }
@@ -71,7 +76,7 @@ class Postman
         $result = $this->getData('details', $data);
 
         if ($this->hasError($result))
-            throw new CHttpException('در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!', 212);
+            throw new CHttpException(212, 'در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!');
 
         return $result['detailsRs'];
     }
@@ -82,7 +87,7 @@ class Postman
         $result = $this->getData('pricedetails', $data);
 
         if ($this->hasError($result))
-            throw new CHttpException('در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!', 212);
+            throw new CHttpException(212, 'در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!');
 
         return $result['priceDetailsRs'];
     }
@@ -113,7 +118,7 @@ class Postman
         $result = $this->getData('cancel', $data);
 
         if ($this->hasError($result))
-            throw new CHttpException('در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!', 212);
+            throw new CHttpException(212, 'در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!');
 
         return $result['cancelRs'];
     }

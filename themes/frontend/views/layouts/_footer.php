@@ -10,6 +10,6 @@
                 <li role="presentation"><a href="<?php echo $this->createUrl('/contactUs');?>">تماس با ما</a></li>
             </ul>
         </div>
-        <div class="copyright pull-left">Copyright © <?php echo date('Y');?> Booker24.net All rights reserved.</div>
+        <div class="copyright pull-left">Copyright &copy; <?php echo date('Y');?> Booker24.net All rights reserved.</div>
     </div>
 </footer>

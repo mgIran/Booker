@@ -24,7 +24,7 @@ if(!isset($nextPage))
             <li>
                 <div class="collapsible-header search-info">
                     <b class="red-text">شهر مقصد: </b><small><?php echo CHtml::encode(Yii::app()->session['cityName']);?></small>
-                    <b class="red-text">مدت اقامت: </b><small><?php echo $this->getStayingTime(Yii::app()->session['inDate'], Yii::app()->session['outDate']).' شب | از '.JalaliDate::date('d F', Yii::app()->session['inDate']).' تا '.JalaliDate::date('d F', Yii::app()->session['outDate']);?></small>
+                    <b class="red-text">مدت اقامت: </b><small><?php echo Yii::app()->session['stayTime'].' شب | از '.JalaliDate::date('d F', Yii::app()->session['inDate']).' تا '.JalaliDate::date('d F', Yii::app()->session['outDate']);?></small>
                     <b class="red-text">تعداد اتاق: </b><small><?php echo Yii::app()->session['roomsCount'].' اتاق';?></small>
                     <button class="btn btn-sm waves-effect waves-light red lighten-1 pull-left">تغییر جستجو</button>
                 </div>
@@ -68,10 +68,13 @@ if(!isset($nextPage))
                                     'onHide'=>"js:function(){
                                         $('.datepicker-overlay').addClass('hidden');
                                         $('.btn-submit-date').addClass('hidden');
-                                        var stayTime=Math.floor(($('#out-date_altField').val()-$('#enter-date_altField').val())/(60*60*24));
+                                        var checkInDate=persianDate.unix($('#enter-date_altField').val());
+                                        var checkOutDate=persianDate.unix($('#out-date_altField').val());
+                                        var stayTime=checkOutDate.diff(checkInDate, 'days');
                                         if(stayTime < 0)
                                             stayTime=0;
                                         $('.stay-time').text(stayTime);
+                                        $('#stay-time').val(stayTime);
                                     }"
                                     )
                                 ));?>
@@ -101,16 +104,20 @@ if(!isset($nextPage))
                                     'onHide'=>"js:function(){
                                         $('.datepicker-overlay').addClass('hidden');
                                         $('.btn-submit-date').addClass('hidden');
-                                        var stayTime=Math.floor(($('#out-date_altField').val()-$('#enter-date_altField').val())/(60*60*24));
+                                        var checkInDate=persianDate.unix($('#enter-date_altField').val());
+                                        var checkOutDate=persianDate.unix($('#out-date_altField').val());
+                                        var stayTime=checkOutDate.diff(checkInDate, 'days');
                                         if(stayTime < 0)
                                             stayTime=0;
                                         $('.stay-time').text(stayTime);
+                                        $('#stay-time').val(stayTime);
                                     }"
                                     )
                                 ));?>
                                 <?php echo CHtml::label('تاریخ خروج', 'out-date');?>
                             </div>
                         </div>
+                        <?php echo CHtml::hiddenField('stay_time', Yii::app()->session['stayTime'], array('id'=>'stay-time'));?>
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                             <div class="input-field">
                                 <?php echo CHtml::label('تعداد اتاق', 'rooms-count', array('class'=>'active'));?>
@@ -330,7 +337,7 @@ if(!isset($nextPage))
     });
 ");?>
 <?php Yii::app()->clientScript->registerScript('search-hotels',"
-    $.fn.yiiListView.update('hotels-list');
+    $.fn.yiiListView.update('hotels-list', {error:function(){window.location.href='".Yii::app()->createUrl('/error?code=212')."';return false;}});
 ", CClientScript::POS_LOAD);?>
 <?php Yii::app()->clientScript->registerScript('load-more-hotels',"
     $('body').on('click', '#load-more', function(){
@@ -347,6 +354,9 @@ if(!isset($nextPage))
                         $('#load-more').text('هتل های بیشتر...').removeClass('doing').data('key', data.loadMore);
                     else
                         $('#load-more').remove();
+                },
+                error:function(){
+                    window.location.href='".Yii::app()->createUrl('/error?code=212')."';
                 }
             })
         }
@@ -413,6 +423,9 @@ if(!isset($nextPage))
                     $('#cancel-rules-modal').find('.modal-content p').html(data.rules);
                 else
                     $('#cancel-rules-modal').find('.modal-content p').html('در انجام عملیات خطایی رخ داده است. لطفا مجددا تلاش کنید!');
+            },
+            error:function(){
+                $('#cancel-rules-modal').find('.modal-content p').html('در انجام عملیات خطایی رخ داده است. لطفا مجددا تلاش کنید!');
             }
         });
     });

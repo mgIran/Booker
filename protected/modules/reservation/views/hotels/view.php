@@ -159,7 +159,7 @@ Yii::app()->clientScript->registerScript('inline-scripts-load',"
             $('.modal-trigger').leanModal();
         },
         error: function(){
-            $('#hotel-view').html('در انجام عملیات خطایی رخ داده است. لطفا مجددا تلاش کنید!');
+            window.location.href='".Yii::app()->createUrl('/error?code=212')."';
         }
     });
 ", CClientScript::POS_END);?>

@@ -21,7 +21,14 @@ $(document).ready(function() {
         }, {
             name: 'destination',
             display: 'name',
-            source: destinationSource
+            source: destinationSource,
+            templates: {
+                empty: [
+                    '<div class="auto-complete-message">',
+                    'نتیجه ای یافت نشد.',
+                    '</div>'
+                ].join('\n')
+            }
         }).on('focus', function () {
             $(this).parents('.input-field').find('label').addClass('active');
         }).on('blur', function () {
@@ -34,6 +41,7 @@ $(document).ready(function() {
                 $(this).parents('.input-field').find('.auto-complete-loading').removeClass('left').addClass('right');
             $(this).parents('.input-field').find('.auto-complete-loading').show();
         }).on('typeahead:asyncreceive', function (a, b, c) {
+            console.log('asyncreceive');
             $(this).parents('.input-field').find('.auto-complete-loading').hide();
         }).on('typeahead:selected', function (e, datum) {
             $('#city-key').val(datum.key);

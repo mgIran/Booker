@@ -114,6 +114,7 @@ class HotelsController extends Controller
             Yii::app()->session['cityKey'] = $_POST['city_key'];
             Yii::app()->session['inDate'] = $_POST['enter-date_altField'];
             Yii::app()->session['outDate'] = $_POST['out-date_altField'];
+            Yii::app()->session['stayTime'] = $_POST['stay_time'];
             Yii::app()->session['roomsCount'] = $_POST['rooms-count'];
             Yii::app()->session['rooms'] = $_POST['rooms'];
         }
@@ -241,12 +242,7 @@ class HotelsController extends Controller
             $this->pageName = 'checkout';
 
             $details = $postman->priceDetails($traviaID, $searchID);
-            if ($details == -1)
-                throw new CHttpException('مدت زمان مجاز برای انجام عملیات به اتمام رسیده؛ لطفا مجددا تلاش کنید.');
-
             $hotelDetails = $postman->details($traviaID, $searchID);
-            if ($hotelDetails == -1)
-                throw new CHttpException('مدت زمان مجاز برای انجام عملیات به اتمام رسیده؛ لطفا مجددا تلاش کنید.');
 
             if (isset($_POST['Order'])) {
                 $orderModel->attributes = $_POST['Order'];
@@ -472,8 +468,14 @@ class HotelsController extends Controller
                         $bookingID = $booking->id;
                     } else
                         Yii::app()->user->setFlash('reservation-failed', 'متاسفانه عملیات رزرو انجام نشد. لطفا با بخش پشتیبانی تماس حاصل فرمایید.');
-                } else
+                } else {
+                    if(!file_exists('errors'))
+                        mkdir('errors');
+                    $fp = fopen('errors/result-'.date('Y-m-d-H-i', time()).'.json', 'w');
+                    fwrite($fp, json_encode($book));
+                    fclose($fp);
                     Yii::app()->user->setFlash('reservation-failed', 'متاسفانه عملیات رزرو انجام نشد. لطفا با بخش پشتیبانی تماس حاصل فرمایید.');
+                }
 
                 $this->render('verify', array(
                     'order' => $order,
@@ -548,13 +550,6 @@ class HotelsController extends Controller
         $searchID = Yii::app()->request->getQuery('search_id');
         $postman = new Postman();
         $details = $postman->priceDetails($traviaId, $searchID);
-        if ($details == -1) {
-            echo CJSON::encode(array(
-                'status' => 'failed',
-                'error' => 'مدت زمان مجاز برای انجام عملیات به اتمام رسیده.'
-            ));
-            exit;
-        }
 
         $str = '';
         foreach ($details['cancelRules'] as $cancelRule) {
