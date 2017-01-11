@@ -251,6 +251,8 @@ if(!isset($nextPage))
                     });
                 }",
                 'afterAjaxUpdate'=>'function(id, data){
+                    if(data=="در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!")
+                        window.location.href="'.Yii::app()->createUrl('/error?code=212').'";
                     if($(data).find("#load-more-container").find("#load-more").length != 0)
                         $("#load-more-container").html($(data).find("#load-more-container").html());
                 

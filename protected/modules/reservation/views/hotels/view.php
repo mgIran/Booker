@@ -81,6 +81,8 @@ Yii::app()->clientScript->registerScript('inline-scripts-load',"
         url: '".$this->createUrl('/reservation/hotels/getHotelInfo', array('hotel_id'=>$id,'search_id'=>$searchID))."',
         type: 'POST',
         success: function(data){
+            if(data=='در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!')
+                window.location.href='".Yii::app()->createUrl('/error?code=212')."';
             $('#hotel-view').replaceWith(data);
 
             $('[data-toggle=\"popover\"]').popover();

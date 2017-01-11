@@ -23,7 +23,7 @@ class Postman
 
     protected function hasError($result)
     {
-        if (isset($result['error']) or is_null($result)) {
+        if (isset($result['error']) or in_array('Internal Server Error', $result) or is_null($result)) {
             if(!file_exists('errors'))
                 mkdir('errors');
             $fp = fopen('errors/result-'.date('Y-m-d-H-i', time()).'.json', 'w');
