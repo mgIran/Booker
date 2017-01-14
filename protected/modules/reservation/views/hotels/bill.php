@@ -127,7 +127,7 @@
                         <div class="overflow-fix">
                             <div class="col-lg-4"><b>تاریخ ورود : </b><?php echo JalaliDate::date('d F Y', strtotime($details['checkIn']));?></div>
                             <div class="col-lg-4"><b>تاریخ خروج : </b><?php echo JalaliDate::date('d F Y', strtotime($details['checkOut']));?></div>
-                            <div class="col-lg-4"><b>تعداد شب : </b><?php echo $this->getStayingTime(strtotime($details['checkIn']), strtotime($details['checkOut']));?></div>
+                            <div class="col-lg-4"><b>تعداد شب : </b><?php echo Yii::app()->session['stayTime'];?></div>
                         </div>
                         <div class="overflow-fix">
                             <div class="col-lg-4"><b>تعداد بزرگسال : </b><?php echo $this->getAdultsCount($details['services']['rooms']);?></div>

@@ -36,7 +36,7 @@
                         <?php endif;?>
                     </div>
                     <div class="price pull-right red-text">
-                        <b>قیمت برای <?php echo floor(((Yii::app()->session['outDate']-Yii::app()->session['inDate'])/(3600*24)));?> شب: </b><?php echo number_format(($this->getFixedPrice($room['price'])/10), 0).' تومان';?>
+                        <b>قیمت برای <?php echo Yii::app()->session['stayTime'];?> شب: </b><?php echo number_format(($this->getFixedPrice($room['price'])/10), 0).' تومان';?>
                     </div>
                     <div class="clear pull-left">
                         <?php if(isset($room['cancel_support']) and !is_null($room['cancel_support'])):?>
