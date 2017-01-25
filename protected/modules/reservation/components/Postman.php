@@ -109,6 +109,12 @@ class Postman
             }';
         $result = $this->getData('book', $data);
 
+        if(!file_exists('bookings'))
+            mkdir('bookings');
+        $fp = fopen('bookings/result-'.date('Y-m-d-H-i', time()).'.json', 'w');
+        fwrite($fp, json_encode($result));
+        fclose($fp);
+
         return $result;
     }
 

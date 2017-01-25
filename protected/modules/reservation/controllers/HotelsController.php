@@ -341,7 +341,7 @@ class HotelsController extends Controller
         $client->soap_defencoding = 'UTF-8';
         $params['amount'] = $this->getFixedPrice($details['price']); // قیمت
         $params['merchantId'] = "B0E2"; // مرچند کد
-        $params['invoiceNo'] = $order->id; // شناسه فاکتور
+        $params['invoiceNo'] = time(); // شناسه فاکتور
         $params['paymentId'] = $order->id; // شناسه خرید
         $params['revertURL'] = "http://www.booker24.net/reservation/hotels/verify"; // آدرس بازگشت
         $result = $client->call("MakeToken", array($params));
