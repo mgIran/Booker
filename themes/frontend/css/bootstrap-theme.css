@@ -351,12 +351,16 @@ nav ul li.active,
 .footer{
     background: #666;
     color: #ecf0f1;
-    height:50px;
+    height:70px;
 }
 .footer .copyright{
     opacity:0.5;
     direction: ltr;
-    line-height:50px;
+    line-height:20px;
+    float: none;
+    clear: both;
+    font-size: 12px;
+    padding-right: 15px;
 }
 .footer .nav-pills{
     margin: 5px 0;
@@ -587,7 +591,7 @@ label.error{
 .socials{
     position: fixed;
     left: 50px;
-    bottom: 50px;
+    bottom: 20px;
 }
 .socials{
     left: auto;
@@ -1590,4 +1594,23 @@ label.error{
 }
 .error-page{
     background: #ecf0f1;
+}
+.rahbod{
+    position: absolute;
+    bottom: 20px;
+    right: 50%;
+    width: 90px;
+    margin-right: -45px;
+    opacity:0.5;
+}
+.rahbod img{
+    width: 90px;
+}
+.inner-page .rahbod{
+    position: relative;
+    bottom:auto;
+    right:auto;
+    margin-right: 0;
+    line-height:70px;
+    opacity:0.3;
 }

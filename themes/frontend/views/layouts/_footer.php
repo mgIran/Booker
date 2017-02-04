@@ -8,8 +8,11 @@
                 <li role="presentation"><a href="<?php echo $this->createUrl('/help');?>">راهنما</a></li>
                 <li role="presentation"><a href="<?php echo $this->createUrl('/about');?>">درباره ما</a></li>
                 <li role="presentation"><a href="<?php echo $this->createUrl('/contactUs');?>">تماس با ما</a></li>
+                <li class="copyright">&copy; <?php echo date('Y');?> Booker24</li>
             </ul>
         </div>
-        <div class="copyright pull-left">Copyright &copy; <?php echo date('Y');?> Booker24.net All rights reserved.</div>
+        <div class="pull-left rahbod">
+            <a href="https://t.me/rahbod" target="_blank" title="Rahbod"><img src="<?php echo Yii::app()->theme->baseUrl."/images/rahbod.png";?>"></a>
+        </div>
     </div>
 </footer>

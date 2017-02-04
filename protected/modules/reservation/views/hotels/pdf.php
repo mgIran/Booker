@@ -60,9 +60,13 @@ $cancelRules=CJSON::decode($booking->cancelRules);
                             <td style="border-left: 1px solid #ccc;border-bottom: 1px solid #ccc;padding: 15px;"><?php echo CHtml::encode($passengerName);?></td>
                             <td style="border-bottom: 1px solid #ccc;padding: 15px;"><?php echo CHtml::encode($booking->nationality);?></td>
                             <td style="border-bottom: 1px solid #ccc;border-right: 1px solid #ccc;padding: 15px;">
-                                <?php foreach($confirmationDetail['rooms'] as $room):?>
-                                    <?php echo CHtml::encode($room['description'].' - Type:'.$room['type']);?>
-                                <?php endforeach;?>
+                                <?php if(isset($confirmationDetail['rooms'][0]) and is_array($confirmationDetail['rooms'][0])):?>
+                                    <?php foreach($confirmationDetail['rooms'] as $room):?>
+                                        <?php echo CHtml::encode($room['description'].' - Type:'.$room['type']);?>
+                                    <?php endforeach;?>
+                                <?php else:?>
+                                    <?php echo CHtml::encode($confirmationDetail['rooms']['description'].' - Type:'.$confirmationDetail['rooms']['type']);?>
+                                <?php endif;?>
                             </td>
                         </tr>
                     <?php $i++;endforeach;?>

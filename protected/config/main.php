@@ -37,6 +37,12 @@ return array(
 
 	// application components
 	'components'=>array(
+		'mellat' => array(
+			'class'=> 'ext.MellatPayment.MellatPayment',
+			'terminalId' => '2038775',
+			'userName' => 'mir23',
+			'userPassword' => '73359993',
+		),
         'ePdf' => array(
             'class'         => 'ext.yii-pdf.EYiiPdf',
             'params'        => array(
