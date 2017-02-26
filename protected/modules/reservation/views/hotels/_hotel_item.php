@@ -15,6 +15,8 @@ if(is_null(Yii::app()->session['minPrice'])) {
     if (intval($data['price']/1000) > Yii::app()->session['maxPrice'])
         Yii::app()->session['maxPrice'] = intval($data['price']/1000);
 }
+
+$hotelName=preg_replace(array('/[^a-z0-9]/i', '/[-]+/') , '-', str_replace(' ','-',strtolower($data['name'])));
 ?>
 
 <div class="hotel-item col-lg-3 col-md-3 col-sm-4 col-xs-12" data-stars="<?= CHtml::encode($data['star']) ?>" data-name="<?= CHtml::encode(strtolower($data['name'])) ?>" data-price="<?= CHtml::encode($data['price']) ?>">
@@ -35,10 +37,10 @@ if(is_null(Yii::app()->session['minPrice'])) {
         </div>
         <small>قیمت برای <span><?php echo $duration;?></span> شب از</small>
         <h6 class="red-text text-accent-2"><?php echo number_format($data['price'], 0).' تومان';?></h6>
-        <a href="#rooms-modal-<?= CHtml::encode(str_replace(' ','-',strtolower($data['name']))); ?>" data-toggle="modal" class="pull-left">انتخاب اتاق</a>
+        <a href="#rooms-modal-<?= CHtml::encode($hotelName); ?>" data-toggle="modal" class="pull-left">انتخاب اتاق</a>
         <a href="<?php echo Yii::app()->createUrl('reservation/hotels/view/'.urlencode($country)/*.'/'.urlencode($city)*/.'/'.urlencode($data['name']).'/'.urlencode($data['traviaID']).'/'.urlencode($searchID));?>" target="_blank" class="pull-right">جزئیات هتل</a>
     </div>
-    <div id="rooms-modal-<?= CHtml::encode(str_replace(' ','-',strtolower($data['name']))); ?>" class="modal">
+    <div id="rooms-modal-<?= CHtml::encode($hotelName); ?>" class="modal">
         <div class="modal-content">
             <h5 class="yekan-text">اتاق ها</h5>
             <?php $this->renderPartial('_rooms_list', array('rooms'=>$data['rooms'], 'searchID'=>$searchID));?>

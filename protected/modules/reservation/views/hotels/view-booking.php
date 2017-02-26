@@ -4,7 +4,32 @@
 /* @var $id integer */
 ?>
 
+<?php $this->renderPartial("//layouts/_flashMessage");?>
+
 <h1>اطلاعات رزرو</h1>
+<span id="email-loading" class="pull-left hidden" style="margin-top: -40px;">در حال ارسال ایمیل...</span>
+<div class="pull-left" style="margin-top: -40px;">
+    <?php echo CHtml::ajaxLink('ارسال مجدد واچر', $this->createUrl('/reservation/hotels/mail', array('order_id'=>$model->order_id,'booking_id'=>$model->id)), array(
+        'dataType'=>'JSON',
+        'beforeSend'=>'js:function(){
+            $("#email-loading").removeClass("hidden");
+            $("#email-sending").parent("div").addClass("hidden");
+        }',
+        'success'=>'js:function(data){
+            if(data.status)
+                alert("ایمیل تاییدیه رزرو هتل ارسال شد.");
+            else
+                alert("در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید.");
+
+            $("#email-loading").addClass("hidden");
+            $("#email-sending").parent("div").removeClass("hidden");
+        }',
+    ),array(
+        'id'=>'email-sending',
+        'class'=>'btn btn-success'
+    ))?>
+    <a href="<?php echo $this->createUrl("voucher", array('booking_id'=>$model->id));?>" target="_blank" class="btn btn-danger">مشاهده واچر</a>
+</div>
 
 <?php $this->widget('zii.widgets.CDetailView', array(
     'data'=>$model,
