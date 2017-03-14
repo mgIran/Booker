@@ -162,7 +162,7 @@ class Bookings extends CActiveRecord
         $criteria->compare('cancelRules', $this->cancelRules, true);
         $criteria->compare('confirmationDetails', $this->confirmationDetails, true);
         $criteria->compare('orderId', $this->orderId, true);
-        $criteria->order='id DESC';
+        $criteria->order = 'id DESC';
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
@@ -196,22 +196,32 @@ class Bookings extends CActiveRecord
         $cancelRules = CJSON::decode($this->cancelRules);
         $rules = array();
         foreach ($cancelRules as $rule)
-            $rules[] = 'تعداد روز باقیمانده: ' . $rule['remainDays'] . ' - میزان جریمه: ' . (floatval($rule['ratio']) * 100).'%';
+            $rules[] = 'تعداد روز باقیمانده: ' . $rule['remainDays'] . ' - میزان جریمه: ' . (floatval($rule['ratio']) * 100) . '%';
         return $rules;
     }
 
     public function getConfirmationDetails($field)
     {
-        $arr=CJSON::decode($this->confirmationDetails);
-        return $arr[0][$field];
+        $arr = CJSON::decode($this->confirmationDetails);
+        $array = array();
+        foreach ($arr as $value) {
+            if (is_array($value[$field])) {
+                foreach ($value[$field] as $item)
+                    $array[] = $item;
+            } else
+                $array[] = $value[$field];
+        }
+
+        return $array;
     }
 
     public function getRooms()
     {
-        $arr=CJSON::decode($this->confirmationDetails);
-        $rooms=array();
-        foreach($arr[0]['rooms'] as $room)
-            $rooms[]=$room['description'].' (Type: '.$room['type'].')';
+        $arr = CJSON::decode($this->confirmationDetails);
+        $rooms = array();
+        foreach ($arr as $value)
+            foreach ($value['rooms'] as $room)
+                $rooms[] = $room['description'] . ' (Type: ' . $room['type'] . ')';
         return $rooms;
     }
 }

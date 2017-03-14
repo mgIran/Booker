@@ -93,7 +93,8 @@
         ),
         array(
             'name'=>'Booking ID',
-            'value'=>$model->getConfirmationDetails('confirmNumber'),
+            'value'=>implode('<br>', $model->getConfirmationDetails('confirmNumber')),
+            'type'=>'raw'
         ),
         array(
             'name'=>'مسافرین',
