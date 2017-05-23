@@ -1,6 +1,6 @@
 <?php
 
-class Postman
+class HotelPostman
 {
     protected function getData($method, $data)
     {

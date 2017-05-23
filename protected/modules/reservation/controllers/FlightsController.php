@@ -1,12 +1,12 @@
 <?php
 
-class HotelsController extends Controller
+class FlightsController extends Controller
 {
     public function filters()
     {
         return array(
             'accessControl', // perform access control for CRUD operations
-            'postOnly + getMinMaxPrice, verify, loadMore',
+            'postOnly + verify, loadMore',
             'ajaxOnly + mail, loadMore'
         );
     }
@@ -44,7 +44,7 @@ class HotelsController extends Controller
         if (empty($query)) {
             $countries = Countries::model()->findAll();
             $countries = CHtml::listData($countries, 'lowercaseIso', 'nicename');
-            $postman = new HotelPostman();
+            $postman = new Postman();
             $result = $postman->autoComplete($title);
             foreach ($result['Cities'] as $city)
                 array_push($cities, array(
@@ -68,7 +68,7 @@ class HotelsController extends Controller
         Yii::app()->session['maxPrice'] = null;
         if (isset($_GET['ajax']) and $_GET['ajax'] == 'hotels-list') {
             $rooms = $this->getRoomsInfo(Yii::app()->session['rooms']);
-            $postman = new HotelPostman();
+            $postman = new Postman();
             $result = $postman->search(Yii::app()->session['cityKey'], true, date('Y-m-d', Yii::app()->session['inDate']), date('Y-m-d', Yii::app()->session['outDate']), CJSON::encode($rooms));
 
             $nextPage = null;
@@ -132,7 +132,7 @@ class HotelsController extends Controller
 
     public function actionLoadMore()
     {
-        $postman = new HotelPostman();
+        $postman = new Postman();
         $result = $postman->loadMore($_POST['key']);
 
         $nextPage = null;
@@ -212,7 +212,7 @@ class HotelsController extends Controller
 
     public function actionGetHotelInfo()
     {
-        $postman = new HotelPostman();
+        $postman = new Postman();
         $hotel = $postman->details(Yii::app()->getRequest()->getQuery('hotel_id'), Yii::app()->getRequest()->getQuery('search_id'));
 
         $hotel['facilities'] = $this->translateFacilities($hotel['facilities']);
@@ -236,7 +236,7 @@ class HotelsController extends Controller
 
             $this->performAjaxValidation($orderModel);
 
-            $postman = new HotelPostman();
+            $postman = new Postman();
             Yii::app()->theme = 'frontend';
             $this->layout = '//layouts/inner';
             $this->pageName = 'checkout';
@@ -302,7 +302,7 @@ class HotelsController extends Controller
 
             /* @var $order Order */
             $order = Order::model()->findByPk(Yii::app()->session['orderID']);
-            $postman = new HotelPostman();
+            $postman = new Postman();
 
             $details = $postman->priceDetails($order->travia_id, $order->search_id);
             $hotelDetails = $postman->details($order->travia_id, $order->search_id);
@@ -330,7 +330,7 @@ class HotelsController extends Controller
         $this->layout = '//layouts/empty';
         $order = Order::model()->findByPk($id);
         /* @var $order Order */
-        $postman = new HotelPostman();
+        $postman = new Postman();
         $details = $postman->priceDetails($order->travia_id, $order->search_id);
 
         if ($order->price != $details['price'])
@@ -438,7 +438,7 @@ class HotelsController extends Controller
                             );
                     }
 //var_dump($result, $settle);exit;
-                    $postman = new HotelPostman();
+                    $postman = new Postman();
                     $contactInfo = array(
                         'mobile' => $order->buyer_mobile,
                         'email' => $order->buyer_email
@@ -567,7 +567,7 @@ class HotelsController extends Controller
                             );
                     }
 
-                    $postman = new HotelPostman();
+                    $postman = new Postman();
                     $contactInfo = array(
                         'mobile' => $order->buyer_mobile,
                         'email' => $order->buyer_email
@@ -696,7 +696,7 @@ class HotelsController extends Controller
         $traviaId = Yii::app()->request->getQuery('tid');
         $price = Yii::app()->request->getQuery('price');
         $searchID = Yii::app()->request->getQuery('search_id');
-        $postman = new HotelPostman();
+        $postman = new Postman();
         $details = $postman->priceDetails($traviaId, $searchID);
 
         $str = '';
@@ -924,7 +924,7 @@ class HotelsController extends Controller
         /* @var $cancelRequest CancellationRequests */
         $cancelRequest = CancellationRequests::model()->findByPk($id);
 
-        $postman = new HotelPostman();
+        $postman = new Postman();
         $result = $postman->cancel($cancelRequest->booking->orderId, $cancelRequest->booking->order->travia_id);
 
         if ($result) {
