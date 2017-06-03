@@ -12,7 +12,7 @@
             </ul>
         </div>
         <div class="pull-left rahbod">
-            <a href="https://t.me/rahbod" target="_blank" title="Rahbod"><img src="<?php echo Yii::app()->theme->baseUrl."/images/rahbod.png";?>"></a>
+            <a href="https://t.me/rahbod" target="_blank" title="Rahbod"><img src="<?php echo Yii::app()->theme->baseUrl."/svg/rahbod.svg";?>"></a>
         </div>
     </div>
 </footer>

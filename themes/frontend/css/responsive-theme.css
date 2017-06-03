@@ -1,6 +1,7 @@
 @media (max-width: 767px) {
     .rahbod{
-        display: none;
+        width:100%;
+        text-align: center;
     }
     .footer .copyright{
         text-align: center;
@@ -14,6 +15,7 @@
         position: relative;
         bottom: auto;
         left: auto;
+        right: auto;
         margin: 30px auto;
         text-align: center;
     }
@@ -24,6 +26,20 @@
 
     .nav > li {
         float: none;
+    }
+
+    .search-box .nav-tabs > li{
+        float: right;
+        width: 50%;
+    }
+
+    .search-box .nav-tabs > li > a{
+        width: 100%;
+        padding: 13px 0;
+    }
+
+    .search-box .nav-tabs > li:last-child > a{
+        padding: 13px 0;
     }
 
     .navbar-nav {
@@ -299,10 +315,8 @@
         position: relative;
         bottom:auto;
         left: auto;
+        right: auto;
         margin: 30px auto;
         text-align: center;
-    }
-    .rahbod{
-        display: none;
     }
 }

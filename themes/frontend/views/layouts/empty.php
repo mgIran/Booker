@@ -36,8 +36,5 @@
 </head>
 <body>
     <?php echo $content;?>
-    <div class="rahbod">
-        <a href="https://t.me/rahbod" target="_blank" title="Rahbod"><img src="<?php echo Yii::app()->theme->baseUrl."/images/rahbod.png";?>"></a>
-    </div>
 </body>
 </html>

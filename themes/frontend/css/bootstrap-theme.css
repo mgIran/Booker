@@ -12,6 +12,9 @@
     font-weight: normal;
     font-style: normal;
 }
+*{
+    outline: none !important;
+}
 body{
     background: #000;
     font-family: 'IRANSans';
@@ -22,7 +25,7 @@ body.inner-page{
 }
 .input-field label{
     left: auto !important;
-    right: 0.75rem;
+    right: 25px;
 }
 .select-wrapper span.caret{
     left:25px;
@@ -131,48 +134,43 @@ form p{
     height:100vh;
 }
 .search-box{
-    position: absolute;
+    position: relative;
     z-index: 2;
-    top:10%;
-    right:0;
-    height:80%;
 }
 .search-box .logo{
     position: relative;
     margin-bottom: 5px;
-    height: 60px;
-    color: #ecf0f1;
+    margin-top: 50px;
+    overflow: hidden;
     font-family: 'BYekan';
 }
 .search-box .logo h1{
-    font-size: 2em;
-    margin-bottom: 10px;
-    margin-top: 0;
-    position: absolute;
-    top: -5px;
-    right: 100px;
-}
-.search-box .logo h2{
-    font-size: 1em;
+    font-size: 25px;
     margin: 0;
-    position: absolute;
-    top: 32px;
-    right: 100px;
+    padding-right: 15px;
+    overflow: hidden;
+    color: #ecf0f1;
+    height:70px;
+    line-height: 35px;
+}
+.search-box .logo h1 small{
+    font-size: 14px;
+    margin: 0;
+    display: block;
+    color: #ecf0f1;
 }
 .search-box .logo .icon{
     background: url("../svg/logo.svg") no-repeat center / 90px;
     width: 90px;
-    height: 90px;
-    position: absolute;
-    top: -20px;
-    right: 0;
+    height: 70px;
+    float: right;
 }
 .search-box .box{
     width: 100%;
     position: relative;
     display: block;
     background: #ecf0f1;
-    padding: 40px 50px;
+    padding: 25px 35px;
     color: #ef5350;
     -webkit-box-shadow: 0 0 10px #292929;
     -moz-box-shadow: 0 0 10px #292929;
@@ -185,7 +183,12 @@ form p{
 .search-box #enter-date,
 .search-box #out-date{
     background: url("../svg/datepicker.svg") no-repeat 10px center / 20px auto;
+    border-bottom: 1px solid #9e9e9e;
 }
+.search-box .rooms-count-container input.select-dropdown{
+    height:45px;
+}
+
 .search-box #enter-date:focus,
 .search-box #out-date:focus{
     background: url("../svg/datepicker-red.svg") no-repeat 10px center / 20px auto;
@@ -193,21 +196,57 @@ form p{
 .search-box form > .input-field:first-child{
     margin-top: 0;
 }
-.search-box .nav a{
+.search-box .nav-tabs > li{
+    margin-bottom: 0;
+}
+.search-box .nav-tabs > li > a{
+    font-weight: bolder;
+    width: 150px;
+    text-align: center;
+    margin: 0;
+    border-radius: 0;
+    color: #ef5350;
+    background: rgba(239, 83, 80, 0.15);
+    border:none;
+    padding: 13px;
+
+}
+.search-box .nav-tabs > li > a:hover,
+.search-box .nav-tabs > li > a:focus,
+.search-box .nav-tabs > li > a:active{
+    border: none;
+    margin: 0;
+}
+.search-box .nav-tabs > li.active > a{
+    background: #ef5350;
+    color: #fff;
+    border: none;
+    border-radius: 0;
+}
+.search-box .nav-tabs{
+    border-bottom: 1px solid #ef5350;
+}
+.search-box .nav-footer{
+    margin-right: 0;
+}
+.search-box .navbar-nav.nav-footer > li{
+    margin: 10px 20px;
+}
+.search-box .nav-footer a{
     color: #fff;
 }
-.search-box .nav > li > a{
+.search-box .nav-footer > li > a{
     padding: 10px 0;
     white-space: nowrap;
 }
-.search-box .nav > li > a:focus,
-.search-box .nav > li > a:hover{
+.search-box .nav-footer > li > a:focus,
+.search-box .nav-footer > li > a:hover{
     background: transparent;
     color: #fbc02d;
 }
 .search-box input[type="text"]{
     height: 3rem;
-    padding-right: 0.75rem;
+    padding-right: 10px;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -216,7 +255,10 @@ form p{
     padding-left: 0.75rem;
     padding-right: 0.75rem;
 }
-
+#search-form input[type="text"]{
+    padding-right: 10px;
+    border-bottom: 1px solid #9e9e9e;
+}
 
 
 .inner-page .title-container{
@@ -451,97 +493,6 @@ nav ul li.active,
     }
 }
 
-
-
-.datepicker-plot-area{
-    z-index:2;
-    border:none;
-    border-radius: 0;
-    font: 12px "IRANSans";
-    padding: 0;
-    position: fixed;
-}
-.navigator{
-    background: #26a69a;
-    height:100px;
-}
-.datepicker-plot-area .datepicker-header{
-    float: none;
-    width: 100%;
-    padding: 0;
-    height: 100px;
-}
-.datepicker-plot-area .datepicker-header .btn-next,
-.datepicker-plot-area .datepicker-header .btn-prev,
-.datepicker-plot-area .datepicker-header .btn-switch{
-    background: transparent;
-    color: #fff;
-    height:100px;
-    line-height:100px;
-    font-size: 20px;
-}
-.datepicker-plot-area .datepicker-header .btn-next:hover,
-.datepicker-plot-area .datepicker-header .btn-prev:hover,
-.datepicker-plot-area .datepicker-header .btn-switch:hover{
-    background: transparent;
-}
-.datepicker-plot-area .datepicker-day-view,
-.datepicker-plot-area .datepicker-month-view,
-.datepicker-plot-area .datepicker-year-view{
-    float: none;
-    margin:0;
-    width: 100%;
-}
-.datepicker-plot-area .datepicker-day-view .month-grid-box{
-    float: none;
-    margin: 0;
-    height:auto;
-}
-.datepicker-plot-area .header{
-    border-bottom: none;
-    box-shadow: none;
-    height:50px;
-    background: #1f897f;
-    color: #fff;
-}
-.datepicker-plot-area .datepicker-day-view .month-grid-box .header .header-row{
-    float: none;
-    height:50px;
-    width: 95%;
-    margin: 0 auto;
-}
-.datepicker-plot-area .datepicker-day-view .month-grid-box .header .header-row-cell{
-    color: #fff;
-    font: bold 14px "IRANSans";
-    line-height: 50px;
-    height:50px;
-}
-.datepicker-plot-area .datepicker-day-view .table-days{
-    float: none;
-    margin: 2.5% auto;
-    width:95%;
-}
-.date-item-selected,
-.datepicker-plot-area .datepicker-day-view .table-days td span.selected,
-.datepicker-plot-area .datepicker-month-view .month-item.selected,
-.datepicker-plot-area .datepicker-year-view .year-item.selected{
-    text-shadow: none;
-    background: #26a69a !important;
-}
-.datepicker-plot-area .toolbox{
-    float: none;
-    padding: 5px 0;
-    height:50px;
-}
-.datepicker-plot-area .toolbox .btn-today{
-    height:40px;
-    line-height:40px;
-    margin: 0 15px;
-}
-.date-item-today,
-.datepicker-plot-area .datepicker-day-view .table-days td span.today{
-    background: rgba(38, 166, 154, 0.5);
-}
 .tab a:hover,
 .tab a:active,
 .tab a:focus{
@@ -554,18 +505,6 @@ nav ul li.active,
 label.error{
     visibility: hidden;
     opacity:0;
-}
-.datepicker-overlay{
-    position: fixed;
-    z-index: 50;
-    background: rgba(0,0,0,0.85);
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
-.datepicker-plot-area{
-    z-index:51;
 }
 .kids-age-container{
     padding-right: 0;
@@ -589,13 +528,13 @@ label.error{
 
 .licences,
 .socials{
-    position: fixed;
-    left: 50px;
+    position: absolute;
+    left: 15px;
     bottom: 20px;
 }
 .socials{
     left: auto;
-    right: 50px;
+    right: 15px;
 }
 .licences img{
     width: 80px;
@@ -671,12 +610,12 @@ label.error{
     margin: 0;
 }
 .loading-container.auto-complete-loading.right{
-    left: 85%;
-    right: 10px;
+    left: auto;
+    right: 30px;
 }
 .loading-container.auto-complete-loading.left{
-    right: 85%;
-    left: 10px;
+    right: auto;
+    left: 30px;
 }
 .loading-container.auto-complete-loading .spinner > div{
     width: 8px;
@@ -1596,12 +1535,9 @@ label.error{
     background: #ecf0f1;
 }
 .rahbod{
-    position: absolute;
-    bottom: 20px;
-    right: 50%;
     width: 90px;
-    margin-right: -45px;
-    opacity:0.5;
+    height:60px;
+    line-height:60px;
 }
 .rahbod img{
     width: 90px;
@@ -1613,4 +1549,13 @@ label.error{
     margin-right: 0;
     line-height:70px;
     opacity:0.3;
+}
+.tab-content{
+    padding: 0;
+}
+.tab-pane{
+    padding: 20px;
+}
+.search-box-footer{
+    overflow: hidden;
 }

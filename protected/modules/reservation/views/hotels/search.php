@@ -31,98 +31,96 @@ if(!isset($nextPage))
                 <div class="search-form-container collapsible-body">
                     <div class="search-tools">
                         <?php echo CHtml::beginForm('', 'post', array('id'=>'search-form'));?>
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                            <div class="input-field">
-                                <?php echo CHtml::textField('destination', CHtml::encode(Yii::app()->session['cityName']), array('id'=>'destination', 'class'=>'hotel-destination'));?>
-                                <?php echo CHtml::hiddenField('city_key', Yii::app()->session['cityKey'], array('id'=>'city-key'));?>
-                                <div class="loading-container auto-complete-loading">
-                                    <div class="spinner">
-                                        <div class="bounce1"></div>
-                                        <div class="bounce2"></div>
-                                        <div class="bounce3"></div>
-                                    </div>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 input-field">
+                            <?php echo CHtml::textField('destination', CHtml::encode(Yii::app()->session['cityName']), array('id'=>'destination', 'class'=>'hotel-destination'));?>
+                            <?php echo CHtml::hiddenField('city_key', Yii::app()->session['cityKey'], array('id'=>'city-key'));?>
+                            <div class="loading-container auto-complete-loading">
+                                <div class="spinner">
+                                    <div class="bounce1"></div>
+                                    <div class="bounce2"></div>
+                                    <div class="bounce3"></div>
                                 </div>
-                                <?php echo CHtml::label('شهر مقصد *', 'destination', array('class'=>'active'));?>
                             </div>
+                            <?php echo CHtml::label('شهر مقصد *', 'destination', array('class'=>'active'));?>
                         </div>
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                            <div class="input-field">
-                                <?php $this->widget('application.extensions.PDatePicker.PDatePicker', array(
-                                    'id'=>'enter-date',
-                                    'options'=>array(
-                                        'format'=>'DD MMMM YYYY',
-                                        'minDate'=>(time()-(60*60*24))*1000,
-                                        'default'=>Yii::app()->session['inDate'],
-                                        'onShow'=>"js:function(){
-                                        $('.datepicker-plot-area').width(400).
-                                            css({
-                                                top:(($(window).height()/2)-($('.datepicker-plot-area').height()/2)),
-                                                left:(($(window).width()/2)-($('.datepicker-plot-area').width()/2))
-                                            });
-                                        $('.datepicker-overlay').removeClass('hidden');
-                                        $('.btn-submit-date').css({
-                                            top:$('.datepicker-plot-area:eq(0)').offset().top+$('.datepicker-plot-area:eq(0)').height()-46,
-                                            left:$('.datepicker-plot-area:eq(0)').offset().left+15
-                                        }).removeClass('hidden');
-                                    }",
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 input-field">
+                            <?php Yii::app()->clientScript->registerScript('variables', 'var enter_date, out_date;window.serverToday = "'.date('Y-m-d').'";', CClientScript::POS_HEAD);?>
+                            <?php $this->widget('application.extensions.PDatePicker.PDatePicker', array(
+                                'id'=>'enter-date',
+                                'variableName'=>'enter_date',
+                                'options'=>array(
+                                    'default'=>Yii::app()->session['inDate'],
+                                    'initalHighlight'=>true,
+                                    'autoClose'=>true,
+                                    'alignByRightSide'=>true,
+                                    'autoOpenPartner'=>true,
+                                    'minDate'=>(time()-(60*60*24))*1000,
+                                    'title'=>'تاریخ ورود',
+                                    'format'=>'DD MMMM YYYY',
+                                    'partnerInput'=>'#out-date',
+                                    'partnerRoot'=>'#outDateDatePicker',
+                                    'highlightPartner'=>'#out-date_altField',
+                                    'highlightType'=>'start',
+                                    'today'=>'js:new Date('.date('Y').', '.date('m').' - 1, '.date('d').').valueOf()',
+                                    'onShow'=>"js:function(){}",
+                                    'dayPicker'=>array(
+                                        'onSelect'=>'js:function(){$("#startDateDatePicker").removeClass("picker--opened"),$("#start-date").blur()}',
+                                        'scrollEnabled'=>false
+                                    ),
+                                    'monthPicker'=>false,
+                                    'yearPicker'=>false,
+                                    'targetId'=>'startDateDatePicker',
+                                    'returnInput'=>'js:out_date',
+                                ),
+                                'htmlOptions'=>array(
+                                    'readonly'=>'1'
+                                )
+                            ));?>
+                            <?php echo CHtml::label('تاریخ ورود', 'enter-date');?>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 input-field">
+                            <?php $this->widget('application.extensions.PDatePicker.PDatePicker', array(
+                                'id'=>'out-date',
+                                'variableName'=>'out_date',
+                                'scriptPosition'=>CClientScript::POS_HEAD,
+                                'options'=>array(
+                                    'default'=>Yii::app()->session['outDate'],
+                                    'initalHighlight'=>true,
+                                    'autoClose'=>true,
+                                    'minDate'=>(time()-(60*60*24))*1000,
+                                    'format'=>'DD MMMM YYYY',
+                                    'highlightPartner'=>'#enter-date_altField',
+                                    'highlightType'=>'end',
+                                    'today'=>'js:new Date('.date('Y').', '.date('m').' - 1, '.date('d').').valueOf()',
+                                    'title'=>'تاریخ خروج',
+                                    'partnerRoot'=>'#startDateDatePicker',
+                                    'onShow'=>"js:function(){}",
+                                    'dayPicker'=>array(
+                                        'onSelect'=>'js:function(){$("#outDateDatePicker").removeClass("picker--opened"),$("#out-date").blur()}',
+                                        'scrollEnabled'=>false
+                                    ),
+                                    'targetId'=>'outDateDatePicker',
                                     'onHide'=>"js:function(){
-                                        $('.datepicker-overlay').addClass('hidden');
-                                        $('.btn-submit-date').addClass('hidden');
-                                        var checkInDate=persianDate.unix($('#enter-date_altField').val());
-                                        var checkOutDate=persianDate.unix($('#out-date_altField').val());
+                                        var checkInDate=persianDate.unix($('#enter-date_altField').val()),
+                                            checkOutDate=persianDate.unix($('#out-date_altField').val());
                                         var stayTime=checkOutDate.diff(checkInDate, 'days');
                                         if(stayTime < 0)
                                             stayTime=0;
+                                        $('#stay-time-container').removeClass('hidden');
                                         $('.stay-time').text(stayTime);
                                         $('#stay-time').val(stayTime);
                                     }"
-                                    )
-                                ));?>
-                                <?php echo CHtml::label('تاریخ ورود', 'enter-date');?>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                            <div class="input-field">
-                                <?php $this->widget('application.extensions.PDatePicker.PDatePicker', array(
-                                    'id'=>'out-date',
-                                    'options'=>array(
-                                        'format'=>'DD MMMM YYYY',
-                                        'minDate'=>(time()-(60*60*24))*1000,
-                                        'default'=>Yii::app()->session['outDate'],
-                                        'onShow'=>"js:function(){
-                                        $('.datepicker-plot-area').width(400).
-                                            css({
-                                                top:(($(window).height()/2)-($('.datepicker-plot-area').height()/2)),
-                                                left:(($(window).width()/2)-($('.datepicker-plot-area').width()/2))
-                                            });
-                                        $('.datepicker-overlay').removeClass('hidden');
-                                        $('.btn-submit-date').css({
-                                            top:$('.datepicker-plot-area:eq(1)').offset().top+$('.datepicker-plot-area:eq(1)').height()-46,
-                                            left:$('.datepicker-plot-area:eq(1)').offset().left+15
-                                        }).removeClass('hidden');
-                                    }",
-                                    'onHide'=>"js:function(){
-                                        $('.datepicker-overlay').addClass('hidden');
-                                        $('.btn-submit-date').addClass('hidden');
-                                        var checkInDate=persianDate.unix($('#enter-date_altField').val());
-                                        var checkOutDate=persianDate.unix($('#out-date_altField').val());
-                                        var stayTime=checkOutDate.diff(checkInDate, 'days');
-                                        if(stayTime < 0)
-                                            stayTime=0;
-                                        $('.stay-time').text(stayTime);
-                                        $('#stay-time').val(stayTime);
-                                    }"
-                                    )
-                                ));?>
-                                <?php echo CHtml::label('تاریخ خروج', 'out-date');?>
-                            </div>
+                                ),
+                                'htmlOptions'=>array(
+                                    'readonly'=>'1'
+                                )
+                            ));?>
+                            <?php echo CHtml::label('تاریخ خروج', 'out-date');?>
                         </div>
                         <?php echo CHtml::hiddenField('stay_time', Yii::app()->session['stayTime'], array('id'=>'stay-time'));?>
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                            <div class="input-field">
-                                <?php echo CHtml::label('تعداد اتاق', 'rooms-count', array('class'=>'active'));?>
-                                <?php echo CHtml::dropDownList('rooms-count', Yii::app()->session['roomsCount'], array('1'=>'1','2'=>'2','3'=>'3','4'=>'4'), array('id'=>'rooms-count', 'data-template'=>'pretty'));?>
-                            </div>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 input-field">
+                            <?php echo CHtml::label('تعداد اتاق', 'rooms-count', array('class'=>'active'));?>
+                            <?php echo CHtml::dropDownList('rooms-count', Yii::app()->session['roomsCount'], array('1'=>'1','2'=>'2','3'=>'3','4'=>'4'), array('id'=>'rooms-count', 'data-template'=>'pretty'));?>
                         </div>
                         <div class="room-info clearfix">
                             <?php for($i=0;$i<Yii::app()->session['roomsCount'];$i++):?>
