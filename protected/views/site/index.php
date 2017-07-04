@@ -10,7 +10,7 @@
         <div class="box">
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#domestic-flight-tab">پرواز داخلی</a></li>
-                <li><a data-toggle="tab" href="#non-domestic-flight-tab">پرواز خارجی</a></li>
+<!--                <li><a data-toggle="tab" href="#non-domestic-flight-tab">پرواز خارجی</a></li>-->
                 <li><a data-toggle="tab" href="#hotel-tab">هتل خارجی</a></li>
             </ul>
 
