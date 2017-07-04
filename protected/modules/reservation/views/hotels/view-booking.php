@@ -80,7 +80,7 @@
         ),
         array(
             'name'=>'قیمت (همراه با کمیسیون)',
-            'value'=>number_format($this->getFixedPrice($model->price/10), 0).' تومان',
+            'value'=>number_format($this->getFixedPrice($model->price/10)['price'], 0).' تومان',
         ),
         array(
             'name'=>'قابل استرداد',

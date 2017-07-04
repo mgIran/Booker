@@ -345,14 +345,14 @@
             </div>
         </div>
     </div>
-<!--    <div class="slider">-->
-<!--        <ul class="cb-slideshow">-->
-<!--            <li><span class="slide-item" style="background: url('uploads/s1.jpg') no-repeat center / cover;"></span></li>-->
-<!--            <li><span class="slide-item" style="background: url('uploads/s2.jpg') no-repeat center / cover;"></span></li>-->
-<!--            <li><span class="slide-item" style="background: url('uploads/s3.jpg') no-repeat center / cover;"></span></li>-->
-<!--            <li><span class="slide-item" style="background: url('uploads/s4.jpg') no-repeat center / cover;"></span></li>-->
-<!--        </ul>-->
-<!--    </div>-->
+    <div class="slider">
+        <ul class="cb-slideshow">
+            <li><span class="slide-item" style="background: url('uploads/s1.jpg') no-repeat center / cover;"></span></li>
+            <li><span class="slide-item" style="background: url('uploads/s2.jpg') no-repeat center / cover;"></span></li>
+            <li><span class="slide-item" style="background: url('uploads/s3.jpg') no-repeat center / cover;"></span></li>
+            <li><span class="slide-item" style="background: url('uploads/s4.jpg') no-repeat center / cover;"></span></li>
+        </ul>
+    </div>
     <div class="socials">
         <a href="https://telegram.me/joinchat/Awz6Sz_LeZAxMYufY1ZmIQ" target="_blank" class="telegram"></a>
     </div>

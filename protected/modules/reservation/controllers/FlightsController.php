@@ -379,7 +379,6 @@ class FlightsController extends Controller
         Yii::app()->theme = 'frontend';
         $this->layout = '//layouts/inner';
         $this->pageName = 'bill';
-        $bookingResult = false;
         $bookingID = null;
 
         $order = OrderFlight::model()->findByPk($_POST['SaleOrderId']);
@@ -404,7 +403,7 @@ class FlightsController extends Controller
                     $transaction = new Transactions();
                     $transaction->tracking_code = $_POST['SaleReferenceId'];
                     $transaction->amount = $order->price;
-                    $transaction->order_model = OrderFlight::class;
+                    $transaction->order_model = 'OrderFlight';
                     $transaction->order_id = $order->id;
                     $transaction->date = time();
                     $transaction->description = 'رزرو بلیط هواپیما';

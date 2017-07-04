@@ -20,11 +20,11 @@ class HotelsController extends Controller
     {
         return array(
             array('allow',
-                'actions' => array('masoud','autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout', 'bill', 'pay', 'verify', 'mail', 'loadMore', 'voucher', 'cancellation'),
+                'actions' => array('masoud', 'autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout', 'bill', 'pay', 'verify', 'mail', 'loadMore', 'voucher', 'cancellation'),
                 'users' => array('*'),
             ),
             array('allow',
-                'actions' => array('viewCancellationRequest','viewBooking', 'cancel', 'refuseCancel'),
+                'actions' => array('viewCancellationRequest', 'viewBooking', 'cancel', 'refuseCancel'),
                 'roles' => array('admin'),
             ),
             array('deny',  // deny all users
@@ -95,7 +95,7 @@ class HotelsController extends Controller
                         'tag' => $hotel['images'][0]['tag'],
                         'src' => $hotel['images'][0]['original'],
                     ),
-                    'price' => $this->getFixedPrice($price) / 10,
+                    'price' => $this->getFixedPrice($price / 10)['price'],
                 ));
             }
             $this->render('search', array(
@@ -159,7 +159,7 @@ class HotelsController extends Controller
                     'tag' => $hotel['images'][0]['tag'],
                     'src' => $hotel['images'][0]['original'],
                 ),
-                'price' => $this->getFixedPrice($price) / 10,
+                'price' => $this->getFixedPrice($price/ 10)['price'],
             ));
         }
         $this->beginClip('hotels');
@@ -336,7 +336,7 @@ class HotelsController extends Controller
         if ($order->price != $details['price'])
             Order::model()->updateByPk($id, array('price' => $details['price']));
 
-        $Amount = doubleval($this->getFixedPrice($details['price']));
+        $Amount = doubleval($this->getFixedPrice($details['price']))['price'];
         $CallbackURL = Yii::app()->getBaseUrl(true) . '/reservation/hotels/verify';
         $result = Yii::app()->mellat->PayRequest($Amount, $order->id, $CallbackURL);
         //$result = Yii::app()->mellat->PayRequest(1000, $order->id, $CallbackURL);
@@ -374,11 +374,11 @@ class HotelsController extends Controller
         $order = Order::model()->findByPk($_POST['SaleOrderId']);
         /* @var $order Order */
 
-        $result=null;
-        if($_POST['ResCode'] == 0)
+        $result = null;
+        if ($_POST['ResCode'] == 0)
             $result = Yii::app()->mellat->VerifyRequest($order->id, $_POST['SaleOrderId'], $_POST['SaleReferenceId']);
 
-        if($result != null) {
+        if ($result != null) {
             $RecourceCode = (!is_array($result) ? $result : $result['responseCode']);
             if ($RecourceCode == 0) {
                 // Settle Payment
@@ -390,10 +390,10 @@ class HotelsController extends Controller
                     $transaction = new Transactions();
                     $transaction->tracking_code = $_POST['SaleReferenceId'];
                     $transaction->amount = $order->price;
-                    $transaction->order_model=Order::class;
+                    $transaction->order_model = 'Order';
                     $transaction->order_id = $order->id;
                     $transaction->date = time();
-                    $transaction->description='رزرو هتل';
+                    $transaction->description = 'رزرو هتل';
                     $transaction->save();
 
                     $message =
@@ -406,7 +406,7 @@ class HotelsController extends Controller
                             </tr>
                             <tr>
                                 <td style="font-weight: bold;width: 120px;">مبلغ</td>
-                                <td>' . Controller::parseNumbers(number_format($this->getFixedPrice($transaction->amount), 0)) . ' ریال</td>
+                                <td>' . Controller::parseNumbers(number_format($this->getFixedPrice($transaction->amount)['price'], 0)) . ' ریال</td>
                             </tr>
                             <tr>
                                 <td style="font-weight: bold;width: 120px;">شناسه خرید</td>
@@ -485,9 +485,9 @@ class HotelsController extends Controller
                         } else
                             Yii::app()->user->setFlash('reservation-failed', 'متاسفانه عملیات رزرو انجام نشد. لطفا با بخش پشتیبانی تماس حاصل فرمایید.');
                     } else {
-                        if(!file_exists('errors'))
+                        if (!file_exists('errors'))
                             mkdir('errors');
-                        $fp = fopen('errors/hotel-result-'.date('Y-m-d-H-i', time()).'.json', 'w');
+                        $fp = fopen('errors/hotel-result-' . date('Y-m-d-H-i', time()) . '.json', 'w');
                         fwrite($fp, json_encode($book));
                         fclose($fp);
                         Yii::app()->user->setFlash('reservation-failed', 'متاسفانه عملیات رزرو انجام نشد. لطفا با بخش پشتیبانی تماس حاصل فرمایید.');
@@ -500,15 +500,15 @@ class HotelsController extends Controller
                         'bookingID' => $bookingID,
                         'booking' => $booking
                     ));
-                }else {
+                } else {
                     Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
                     $this->redirect(array('/reservation/hotels/bill'));
                 }
-            }else {
+            } else {
                 Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
                 $this->redirect(array('/reservation/hotels/bill'));
             }
-        }else {
+        } else {
             Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
             $this->redirect(array('/reservation/hotels/bill'));
         }
@@ -538,7 +538,7 @@ class HotelsController extends Controller
             $this->redirect(array('/reservation/hotels/bill'));
         }*/
     }
-    
+
     /*public function actionMasoud()
     {
         Yii::app()->theme = 'frontend';

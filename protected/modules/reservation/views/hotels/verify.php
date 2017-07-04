@@ -40,7 +40,7 @@
                         <tbody>
                         <tr>
                             <td><?php echo JalaliDate::date('d F Y - H:i',$transaction->date);?></td>
-                            <td><?php echo Controller::parseNumbers(number_format($this->getFixedPrice($transaction->amount/10), 0));?> تومان</td>
+                            <td><?php echo Controller::parseNumbers(number_format($this->getFixedPrice($transaction->amount/10)['price'], 0));?> تومان</td>
                             <td><?php echo CHtml::encode($transaction->order_id);?></td>
                             <td><?php echo CHtml::encode($transaction->tracking_code);?></td>
                         </tr>

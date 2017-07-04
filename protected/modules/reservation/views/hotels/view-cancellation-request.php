@@ -68,7 +68,7 @@ elseif ($model->status == 'refused')
         ),
         array(
             'name'=>'قیمت (همراه با کمیسیون)',
-            'value'=>number_format($this->getFixedPrice($model->booking->price/10), 0).' تومان',
+            'value'=>number_format($this->getFixedPrice($model->booking->price/10)['price'], 0).' تومان',
         ),
         array(
             'name'=>'قابل استرداد',
