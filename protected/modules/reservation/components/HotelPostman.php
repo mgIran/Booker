@@ -4,21 +4,30 @@ class HotelPostman
 {
     protected function getData($method, $data)
     {
-        $key = 'WPtYSK9PJGOI23';
         $url = 'http://api.travia.info/v1/hotel/' . $method;
-        $headers = array(
-            'Content-Type:application/json',
-            'Authorization: Basic ' . base64_encode(":" . $key)
-        );
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $response = curl_exec($ch);
-        return CJSON::decode($response);
+        $key = 'WPtYSK9PJGOI23';
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => $data,
+            CURLOPT_HTTPHEADER => array(
+                "authorization: Basic ".base64_encode(":" . $key),
+                "cache-control: no-cache",
+                "content-type: application/json"
+            ),
+        ));
+        $response = curl_exec($curl);
+        $result = CJSON::decode($response);
+        curl_close($curl);
+        return $result;
     }
 
     protected function hasError($result)
@@ -26,7 +35,7 @@ class HotelPostman
         if (isset($result['error']) or in_array('Internal Server Error', $result) or is_null($result)) {
             if(!file_exists('errors'))
                 mkdir('errors');
-            $fp = fopen('errors/result-'.date('Y-m-d-H-i', time()).'.json', 'w');
+            $fp = fopen('errors/hotel-result-'.date('Y-m-d-H-i', time()).'.json', 'w');
             fwrite($fp, json_encode($result));
             fclose($fp);
             return true;
@@ -111,7 +120,7 @@ class HotelPostman
 
         if(!file_exists('bookings'))
             mkdir('bookings');
-        $fp = fopen('bookings/result-'.date('Y-m-d-H-i', time()).'.json', 'w');
+        $fp = fopen('bookings/hotel-result-'.date('Y-m-d-H-i', time()).'.json', 'w');
         fwrite($fp, json_encode($result));
         fclose($fp);
 

@@ -4,21 +4,30 @@ class FlightPostman
 {
     protected function getData($method, $data)
     {
-        $key = 'WPtYSK9PJGOI23';
         $url = 'http://api.travia.info/v1/flight/' . $method;
-        $headers = array(
-            'Content-Type:application/json',
-            'Authorization: Basic ' . base64_encode(":" . $key)
-        );
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $response = curl_exec($ch);
-        return CJSON::decode($response);
+        $key = 'WPtYSK9PJGOI23';
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "gzip",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 300,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => $data,
+            CURLOPT_HTTPHEADER => [
+                "authorization: Basic OldQdFlTSzlQSkdPSTIz",
+                "cache-control: no-cache",
+                //"postman-token: e91f2dc1-4721-61cd-f587-61598d450ad5"
+            ],
+        ]);
+        $response = curl_exec($curl);
+        $result = CJSON::decode($response);
+        curl_close($curl);
+        return $result;
     }
 
     protected function hasError($result)
@@ -26,7 +35,7 @@ class FlightPostman
         if (isset($result['error']) or in_array('Internal Server Error', $result) or is_null($result)) {
             if(!file_exists('errors'))
                 mkdir('errors');
-            $fp = fopen('errors/result-'.date('Y-m-d-H-i', time()).'.json', 'w');
+            $fp = fopen('errors/flight-result-'.date('Y-m-d-H-i', time()).'.json', 'w');
             fwrite($fp, json_encode($result));
             fclose($fp);
             return true;
@@ -36,7 +45,7 @@ class FlightPostman
 
     public function autoComplete($query)
     {
-        $data = '{"autoCompleteRq":{"query":"' . $query . '","domestic":false}}';
+        $data = '{"autoCompleteRq":{"query":"' . $query . '"}}';
         $result = $this->getData('autocomplete', $data);
 
         if ($this->hasError($result))
@@ -45,46 +54,38 @@ class FlightPostman
         return $result['autoCompleteRs'];
     }
 
-    public function search($destinationCode, $isCity, $inDate, $outDate, $rooms, $limit = 100)
+    public function search($domestic, $origin, $destination, $date, $rDate = null, $adult, $child, $infant, $class, $fromIsCity, $toIsCity)
     {
-        if ($isCity)
-            $data = '{"searchRq":{"destinationCode":"' . $destinationCode . '","isCity":' . (($isCity) ? 'true' : 'false') . ',"inDate":"' . $inDate . '","outDate":"' . $outDate . '","rooms":' . $rooms . ',"nationality":"IR","domestic":false,"limit":' . $limit . '}}';
-        else
-            $data = '{"searchRq":{"destinationCode":"' . $destinationCode . '","isCity":' . (($isCity) ? 'true' : 'false') . ',"inDate":"' . $inDate . '","outDate":"' . $outDate . '","rooms":' . $rooms . ',"nationality":"IR","domestic":false}}';
+        $data = '{"searchRq":{ "domestic":' . $domestic . ', "origin":"' . $origin . '", "destination":"' . $destination . '", "date":"' . $date . '", "rDate":"' . ($rDate?$rDate:'') . '", "adult":"' . $adult . '", "child":"' . $child. '", "infant":"' . $infant. '", "class":"' . $class. '", "fromIsCity":"' . $fromIsCity. '", "toIsCity":"' . $toIsCity. '" }}';
         $result = $this->getData('search', $data);
 
-        if ($this->hasError($result))
-            throw new CHttpException(212, 'در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!');
+        if ($this->hasError($result)) {
+            if($result['error']['name'] == 'No Data')
+                return array();
+            else
+                throw new CHttpException(212, 'در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!');
+        }
 
         return $result['searchRs'];
     }
 
-    public function loadMore($page)
+    public function priceDetails($oneWayTraviaID, $returnTraviaID=null, $searchID)
     {
-        $data = '{"searchRq":{"page":"' . $page . '","domestic":false}}';
-        $result = $this->getData('search', $data);
-
-        if ($this->hasError($result))
-            throw new CHttpException(212, 'در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!');
-
-        return $result['searchRs'];
-    }
-
-    public function details($traviaID, $searchID)
-    {
-        $data = '{"detailsRq":{"traviaId":"' . $traviaID . '","searchId":"' . $searchID . '"}}';
-        $result = $this->getData('details', $data);
-
-        if ($this->hasError($result))
-            throw new CHttpException(212, 'در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!');
-
-        return $result['detailsRs'];
-    }
-
-    public function priceDetails($traviaID, $searchID)
-    {
-        $data = '{"priceDetailsRq":{"traviaId":"' . $traviaID . '","searchId":"' . $searchID . '"}}';
-        $result = $this->getData('pricedetails', $data);
+        $data = '{"priceDetailsRq":{
+            "flights":{
+                "oneWay":{
+                    "traviaId": "' . $oneWayTraviaID . '"
+                }';
+        if ($returnTraviaID)
+            $data .= ',
+                "return":{
+                    "traviaId": "' . $returnTraviaID . '"
+                }
+            ';
+        $data .= '},
+            "searchId": "' . $searchID . '"
+        }}';
+        $result = $this->getData('pricedetail', $data);
 
         if ($this->hasError($result))
             throw new CHttpException(212, 'در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید!');
@@ -92,26 +93,31 @@ class FlightPostman
         return $result['priceDetailsRs'];
     }
 
-    public function book($traviaID, $searchID, $roomPeople, $contactInfo)
+    public function book($searchID, $oneWayTraviaID, $returnTraviaID, $passengers, $contactInfo)
     {
-        $roomPeople = CJSON::encode($roomPeople);
-        $data =
-            '{"bookRq":
-                {
-                    "traviaId":"' . $traviaID . '",
-                    "searchId":"' . $searchID . '",
-                    "roomPeople":' . $roomPeople . ',
-                    "contactInfo":{
-                        "mobile":"' . $contactInfo['mobile'] . '",
-                        "email":"' . $contactInfo['email'] . '"
-                    }
+        $passengers = CJSON::encode($passengers);
+        $data ='{"bookRq":{
+            "searchId":"' . $searchID . '",
+            "flights":{
+                "oneWay": {
+                    "traviaId": "'.$oneWayTraviaID.'"
+                },
+                "return": {
+                    "traviaId": "'.$returnTraviaID.'"
                 }
-            }';
+            },
+            "passengers":' . $passengers . ',
+            "contactInfo":{
+                "mobile":"' . $contactInfo['mobile'] . '",
+                "email":"' . $contactInfo['email'] . '"
+            },
+            "test":true
+        }}';
         $result = $this->getData('book', $data);
 
         if(!file_exists('bookings'))
             mkdir('bookings');
-        $fp = fopen('bookings/result-'.date('Y-m-d-H-i', time()).'.json', 'w');
+        $fp = fopen('bookings/flight-result-'.date('Y-m-d-H-i', time()).'.json', 'w');
         fwrite($fp, json_encode($result));
         fclose($fp);
 

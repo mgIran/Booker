@@ -41,10 +41,168 @@ $(document).ready(function() {
                 $(this).parents('.input-field').find('.auto-complete-loading').removeClass('left').addClass('right');
             $(this).parents('.input-field').find('.auto-complete-loading').show();
         }).on('typeahead:asyncreceive', function (a, b, c) {
-            console.log('asyncreceive');
             $(this).parents('.input-field').find('.auto-complete-loading').hide();
         }).on('typeahead:selected', function (e, datum) {
             $('#city-key').val(datum.key);
+        });
+    }
+
+    if($('#non-dom-flight-departure').length!=0) {
+        var flightDepartureSource = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            remote: {
+                url: flightAutoCompleteUrl,
+                wildcard: '%QUERY'
+            }
+        });
+        $('#non-dom-flight-departure').typeahead({
+            minLength: 2,
+            limit: 20,
+            hint: false
+        }, {
+            name: 'non-dom-flight-departure',
+            display: 'name',
+            source: flightDepartureSource,
+            templates: {
+                empty: [
+                    '<div class="auto-complete-message">',
+                    'نتیجه ای یافت نشد.',
+                    '</div>'
+                ].join('\n')
+            }
+        }).on('focus', function () {
+            $(this).parents('.input-field').find('label').addClass('active');
+        }).on('blur', function () {
+            if ($(this).val() == '')
+                $(this).parents('.input-field').find('label').removeClass('active');
+        }).on('typeahead:asyncrequest', function () {
+            if ($(this).css('direction') == 'rtl')
+                $(this).parents('.input-field').find('.auto-complete-loading').removeClass('right').addClass('left');
+            else if ($(this).css('direction') == 'ltr')
+                $(this).parents('.input-field').find('.auto-complete-loading').removeClass('left').addClass('right');
+            $(this).parents('.input-field').find('.auto-complete-loading').show();
+        }).on('typeahead:asyncreceive', function (a, b, c) {
+            $(this).parents('.input-field').find('.auto-complete-loading').hide();
+        }).on('typeahead:selected', function (e, datum) {
+            $('#non-dom-flight-departure-iata').val(datum.iata);
+            $('#non-dom-flight-from-is-city').val(datum.isCity);
+        });
+    }
+
+    if($('#non-dom-flight-arrival').length!=0) {
+        var flightArrivalSource = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            remote: {
+                url: flightAutoCompleteUrl,
+                wildcard: '%QUERY'
+            }
+        });
+        $('#non-dom-flight-arrival').typeahead({
+            minLength: 2,
+            limit: 20,
+            hint: false
+        }, {
+            name: 'non-dom-flight-arrival',
+            display: 'name',
+            source: flightArrivalSource,
+            templates: {
+                empty: [
+                    '<div class="auto-complete-message">',
+                    'نتیجه ای یافت نشد.',
+                    '</div>'
+                ].join('\n')
+            }
+        }).on('focus', function () {
+            $(this).parents('.input-field').find('label').addClass('active');
+        }).on('blur', function () {
+            if ($(this).val() == '')
+                $(this).parents('.input-field').find('label').removeClass('active');
+        }).on('typeahead:asyncrequest', function () {
+            if ($(this).css('direction') == 'rtl')
+                $(this).parents('.input-field').find('.auto-complete-loading').removeClass('right').addClass('left');
+            else if ($(this).css('direction') == 'ltr')
+                $(this).parents('.input-field').find('.auto-complete-loading').removeClass('left').addClass('right');
+            $(this).parents('.input-field').find('.auto-complete-loading').show();
+        }).on('typeahead:asyncreceive', function (a, b, c) {
+            $(this).parents('.input-field').find('.auto-complete-loading').hide();
+        }).on('typeahead:selected', function (e, datum) {
+            $('#non-dom-flight-arrival-iata').val(datum.iata);
+            $('#non-dom-flight-to-is-city').val(datum.isCity);
+        });
+    }
+
+    if($('#dom-flight-departure').length!=0 || $('#dom-flight-arrival').length!=0) {
+        var domesticAirports = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            identify: function (obj) {
+                return obj.title;
+            },
+            prefetch: domesticAirportsUrl
+        });
+
+        function domesticAirportsDefaults(q, sync) {
+            if (q === '') {
+                sync(domesticAirports.get('تهران - فرودگاه مهرآباد', 'مشهد - فرودگاه مشهد', 'شیراز - فرودگاه شیراز', 'اصفهان - فرودگاه اصفهان', 'جزیره کیش - فرودگاه جزیره کیش'));
+            }
+
+            else {
+                domesticAirports.search(q, sync);
+            }
+        }
+    }
+
+    if($('#dom-flight-departure').length!=0) {
+        $('#dom-flight-departure').typeahead({
+            minLength: 0,
+            limit: 20,
+            hint: false
+        }, {
+            name: 'flight-departure-domestic',
+            display: 'title',
+            source: domesticAirportsDefaults,
+            templates: {
+                empty: [
+                    '<div class="auto-complete-message">',
+                    'نتیجه ای یافت نشد.',
+                    '</div>'
+                ].join('\n')
+            }
+        }).on('focus', function () {
+            $(this).parents('.input-field').find('label').addClass('active');
+        }).on('blur', function () {
+            if ($(this).val() == '')
+                $(this).parents('.input-field').find('label').removeClass('active');
+        }).on('typeahead:selected', function (e, datum) {
+            $('#dom-flight-departure-iata').val(datum.iata);
+        });
+    }
+
+    if($('#dom-flight-arrival').length!=0) {
+        $('#dom-flight-arrival').typeahead({
+            minLength: 0,
+            limit: 20,
+            hint: false
+        }, {
+            name: 'dom-flight-arrival',
+            display: 'title',
+            source: domesticAirportsDefaults,
+            templates: {
+                empty: [
+                    '<div class="auto-complete-message">',
+                    'نتیجه ای یافت نشد.',
+                    '</div>'
+                ].join('\n')
+            }
+        }).on('focus', function () {
+            $(this).parents('.input-field').find('label').addClass('active');
+        }).on('blur', function () {
+            if ($(this).val() == '')
+                $(this).parents('.input-field').find('label').removeClass('active');
+        }).on('typeahead:selected', function (e, datum) {
+            $('#dom-flight-arrival-iata').val(datum.iata);
         });
     }
 
@@ -264,4 +422,20 @@ function waitAnimate() {
             });
         });
     });
+}
+
+function getHoursAndMinutes(minute) {
+    var hours = parseInt(minute / 60),
+        minutes = minute % 60;
+
+    return {hour: hours, minute: minutes};
+}
+
+function getTimeFromString(str){
+    var matches = str.match(/(\d{2}:){2}/);
+    return matches[0].substr(0, matches[0].length-1);
+}
+function getDateFromString(str){
+    var matches = str.match(/\d{4}-\d{2}-\d{2}/);
+    return matches[0].replace('-', '/').replace('-', '/');
 }

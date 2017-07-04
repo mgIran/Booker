@@ -390,8 +390,10 @@ class HotelsController extends Controller
                     $transaction = new Transactions();
                     $transaction->tracking_code = $_POST['SaleReferenceId'];
                     $transaction->amount = $order->price;
+                    $transaction->order_model=Order::class;
                     $transaction->order_id = $order->id;
                     $transaction->date = time();
+                    $transaction->description='رزرو هتل';
                     $transaction->save();
 
                     $message =
@@ -413,6 +415,10 @@ class HotelsController extends Controller
                             <tr>
                                 <td style="font-weight: bold;width: 120px;">کد رهگیری</td>
                                 <td>' . $transaction->tracking_code . '</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;width: 120px;">توضیحات</td>
+                                <td>' . $transaction->description . '</td>
                             </tr>
                         </table>';
                     Mailer::mail($order->buyer_email, 'رسید پرداخت اینترنتی', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP']);
@@ -458,12 +464,14 @@ class HotelsController extends Controller
                             $booking->save();
 
                             $message = '<p style="text-align: right;">کاربر گرامی<br>فرم تاییدیه رزرو هتل در فایل ضمیمه همین نامه خدمتتان ارسال گردیده است. لطفا این فرم را چاپ کرده و هنگام ورود به هتل آن را به متصدیان هتل ارائه دهید.</p>';
-                            $message .= '<p style="text-align: right;"><b>کد رهگیری : </b>B24-' . $booking->orderId . '</p>';
+                            $message .= '<p style="text-align: right;"><b>کد رهگیری : </b>B24H-' . $booking->orderId . '</p>';
                             $message .= '<p style="text-align: right;color: #ef5350;">لطفا این کد را جهت سایر عملیات ها نزد خود نگهداری کنید.</p>';
+                            $message .= '<p style="text-align: right;font-size:12px;margin-top: 30px;">با تشکر از خرید شما</p>';
+                            $message .= '<p style="text-align: right;font-size:12px">بوکر 24</p>';
                             $html2pdf = Yii::app()->ePdf->HTML2PDF();
                             $html2pdf->WriteHTML($this->renderPartial('pdf', array('booking' => $booking), true));
                             $pdfContent = $html2pdf->Output('', EYiiPdf::OUTPUT_TO_STRING);
-                            Mailer::mail($order->buyer_email, 'فرم تاییدیه رزرو هتل', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP'],
+                            Mailer::mail($order->buyer_email, 'فرم تاییدیه رزرو هتل - بوکر 24', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP'],
                                 array(
                                     'method' => 'string',
                                     'string' => $pdfContent,
@@ -479,7 +487,7 @@ class HotelsController extends Controller
                     } else {
                         if(!file_exists('errors'))
                             mkdir('errors');
-                        $fp = fopen('errors/result-'.date('Y-m-d-H-i', time()).'.json', 'w');
+                        $fp = fopen('errors/hotel-result-'.date('Y-m-d-H-i', time()).'.json', 'w');
                         fwrite($fp, json_encode($book));
                         fclose($fp);
                         Yii::app()->user->setFlash('reservation-failed', 'متاسفانه عملیات رزرو انجام نشد. لطفا با بخش پشتیبانی تماس حاصل فرمایید.');

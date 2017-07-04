@@ -7,7 +7,7 @@ class FlightsController extends Controller
         return array(
             'accessControl', // perform access control for CRUD operations
             'postOnly + verify, loadMore',
-            'ajaxOnly + mail, loadMore'
+            'ajaxOnly + mail, loadMore, booking'
         );
     }
 
@@ -20,11 +20,11 @@ class FlightsController extends Controller
     {
         return array(
             array('allow',
-                'actions' => array('masoud','autoComplete', 'search', 'view', 'getMinMaxPrice', 'getHotelInfo', 'imagesCarousel', 'getCancelRule', 'checkout', 'bill', 'pay', 'verify', 'mail', 'loadMore', 'voucher', 'cancellation'),
+                'actions' => array('autoComplete', 'search', 'checkout', 'bill', 'pay', 'verify', 'mail', 'loadMore', 'ticket', 'cancellation', 'domesticAirports', 'booking'),
                 'users' => array('*'),
             ),
             array('allow',
-                'actions' => array('viewCancellationRequest','viewBooking', 'cancel', 'refuseCancel'),
+                'actions' => array('viewCancellationRequest', 'viewBooking', 'cancel', 'refuseCancel'),
                 'roles' => array('admin'),
             ),
             array('deny',  // deny all users
@@ -35,97 +35,113 @@ class FlightsController extends Controller
 
     public function actionAutoComplete($title)
     {
-        Yii::app()->getModule('cityNames');
-        $criteria = new CDbCriteria();
-        $criteria->addCondition('city_name REGEXP :title OR country_name REGEXP :title');
-        $criteria->params[':title'] = $this->searchArabicAndPersian($title);
-        $query = CityNames::model()->findAll($criteria);
-        $cities = array();
-        if (empty($query)) {
-            $countries = Countries::model()->findAll();
-            $countries = CHtml::listData($countries, 'lowercaseIso', 'nicename');
-            $postman = new Postman();
-            $result = $postman->autoComplete($title);
-            foreach ($result['Cities'] as $city)
-                array_push($cities, array(
-                    'name' => $city['name'] . ' , ' . $countries[$city['country']],
-                    'key' => $city['key']
-                ));
-        } else {
-            /* @var $city CityNames */
-            foreach ($query as $city)
-                array_push($cities, array(
-                    'name' => $city->city_name . ' , ' . $city->country_name,
-                    'key' => $city->city_key
-                ));
-        }
-        echo CJSON::encode($cities);
+        $airports = array();
+        $countries = Countries::model()->findAll();
+        $countries = CHtml::listData($countries, 'iso', 'nicename');
+        $postman = new FlightPostman();
+        $results = $postman->autoComplete($title);
+        foreach ($results as $result)
+            array_push($airports, array(
+                'name' => $result['city'] . ', ' . $result['airport'] . ' (' . $result['IATA'] . ') ' . $countries[$result['country_code']],
+                'iata' => $result['IATA'],
+                'isCity' => $result['is_city'],
+            ));
+
+        echo CJSON::encode($airports);
     }
 
     public function actionSearch()
     {
-        Yii::app()->session['minPrice'] = null;
-        Yii::app()->session['maxPrice'] = null;
-        if (isset($_GET['ajax']) and $_GET['ajax'] == 'hotels-list') {
-            $rooms = $this->getRoomsInfo(Yii::app()->session['rooms']);
-            $postman = new Postman();
-            $result = $postman->search(Yii::app()->session['cityKey'], true, date('Y-m-d', Yii::app()->session['inDate']), date('Y-m-d', Yii::app()->session['outDate']), CJSON::encode($rooms));
+        Yii::app()->getModule('airports');
+        if (isset($_GET['ajax'])) {
+            $rDate = Yii::app()->session['dirType'] == 'two-way' ? date('Y-m-d', Yii::app()->session['rDate']) : null;
+            $postman = new FlightPostman();
+            $result = $postman->search(
+                Yii::app()->session['domestic'] ? 'true' : 'false',
+                Yii::app()->session['origin'],
+                Yii::app()->session['destination'],
+                date('Y-m-d', Yii::app()->session['date']),
+                $rDate,
+                Yii::app()->session['adult'],
+                Yii::app()->session['child'],
+                Yii::app()->session['infant'],
+                Yii::app()->session['class'],
+                Yii::app()->session['fromIsCity'],
+                Yii::app()->session['toIsCity']
+            );
+            //$result = json_decode(file_get_contents('flight-result-2017-06-17-14-27.json'), true);
 
             $nextPage = null;
             if (isset($result['nextPage']))
                 $nextPage = $result['nextPage'];
 
-            $hotels = array();
-            foreach ($result['results'] as $hotel) {
-                $price = null;
-                $traviaID = '';
-                foreach ($hotel['services'] as $service) {
-                    if (is_null($price)) {
-                        $price = $service['price'];
-                        $traviaID = $service['traviaId'];
-                    } elseif ($service['price'] < $price)
-                        $price = $service['price'];
-                }
-                array_push($hotels, array(
-                    'name' => $hotel['name'],
-                    'star' => $hotel['star'],
-                    'rooms' => $hotel['services'],
-                    'traviaID' => $traviaID,
-                    'image' => array(
-                        'tag' => $hotel['images'][0]['tag'],
-                        'src' => $hotel['images'][0]['original'],
-                    ),
-                    'price' => $this->getFixedPrice($price) / 10,
+            $flights = array();
+            if (isset($result['flights'])) {
+                if (Yii::app()->session['domestic']) {
+                    $flights['oneWay'] = $result['flights'][0]['oneWay'];
+                    $flights['return'] = isset($result['flights'][0]['return']) ? $result['flights'][0]['return'] : array();
+                } else
+                    $flights = $result['flights'];
+            }
+
+            if (Yii::app()->session['domestic']) {
+                $this->render('domestic-search', array(
+                    'oneWayDataProvider' => new CArrayDataProvider($flights['oneWay'], array('keyField' => 'traviaId', 'pagination' => false)),
+                    'returnDataProvider' => new CArrayDataProvider($flights['return'], array('keyField' => 'traviaId', 'pagination' => false)),
+                    'searchID' => $result['searchId'],
+                    'nextPage' => $nextPage,
+                ));
+            } else {
+                $this->render('non-domestic-search', array(
+                    'flightsDataProvider' => new CArrayDataProvider($flights, array('keyField' => false, 'pagination' => false)),
+                    'searchID' => $result['searchId'],
+                    'nextPage' => $nextPage,
                 ));
             }
-            $this->render('search', array(
-                'hotelsDataProvider' => new CArrayDataProvider($hotels, array('keyField' => 'traviaID', 'pagination' => false)),
-                'country' => $result['country'],
-                'searchID' => $result['searchId'],
-                'nextPage' => $nextPage,
-                //'city' => $result['city'],
-            ));
             Yii::app()->end();
         }
 
-        if (isset($_POST['destination'])) {
+        if (isset($_POST['dom-flight-departure'])) {
             Yii::app()->session->clear();
-            Yii::app()->session['cityName'] = $_POST['destination'];
-            Yii::app()->session['cityKey'] = $_POST['city_key'];
-            Yii::app()->session['inDate'] = $_POST['enter-date_altField'];
-            Yii::app()->session['outDate'] = $_POST['out-date_altField'];
-            Yii::app()->session['stayTime'] = $_POST['stay_time'];
-            Yii::app()->session['roomsCount'] = $_POST['rooms-count'];
-            Yii::app()->session['rooms'] = $_POST['rooms'];
-        }
+            Yii::app()->session['domestic'] = $_POST['flight-domestic-dropdown'] == 1 ? true : false;
+            Yii::app()->session['dirType'] = $_POST['flight-dir-type-dropdown'];
+            if ($_POST['flight-domestic-dropdown'] == 1) {
+                Yii::app()->session['origin'] = $_POST['dom_flight_departure_iata'];
+                Yii::app()->session['destination'] = $_POST['dom_flight_arrival_iata'];
+                Yii::app()->session['fromIsCity'] = 0;
+                Yii::app()->session['toIsCity'] = 0;
+            } else {
+                Yii::app()->session['origin'] = $_POST['non_dom_flight_departure_iata'];
+                Yii::app()->session['destination'] = $_POST['non_dom_flight_arrival_iata'];
+                Yii::app()->session['fromIsCity'] = $_POST['non_dom_flight_from_is_city'];
+                Yii::app()->session['toIsCity'] = $_POST['non_dom_flight_arrival_iata'];
+            }
+            Yii::app()->session['date'] = $_POST['departure-date_altField'];
+            if ($_POST['flight-dir-type-dropdown'] == 'two-way')
+                Yii::app()->session['rDate'] = $_POST['return-date_altField'];
+            Yii::app()->session['adult'] = $_POST['flight_adult_count'];
+            Yii::app()->session['child'] = $_POST['flight_child_count'];
+            Yii::app()->session['infant'] = $_POST['flight_infant_count'];
+            Yii::app()->session['class'] = $_POST['flight_class'];
+        } elseif (isset($_POST['search_id']))
+            $this->redirect('checkout?sid=' . $_POST['search_id'] . '&oid=' . $_POST['one_way_id'] . '&rid=' . ($_POST['travel_type'] == 'two-way' ? $_POST['return_id'] : '-1'));
 
-        if (isset(Yii::app()->session['cityName'])) {
+        if (isset(Yii::app()->session['origin'])) {
             Yii::app()->theme = 'frontend';
             $this->layout = '//layouts/inner';
             $this->pageName = 'search';
-            $this->render('search', array(
-                'hotelsDataProvider' => new CArrayDataProvider(array()),
-            ));
+            if (Yii::app()->session['domestic']) {
+                $this->render('domestic-search', array(
+                    'oneWayDataProvider' => new CArrayDataProvider(array()),
+                    'returnDataProvider' => new CArrayDataProvider(array()),
+                    'searchID' => null
+                ));
+            } else {
+                $this->render('non-domestic-search', array(
+                    'flightsDataProvider' => new CArrayDataProvider(array()),
+                    'searchID' => null
+                ));
+            }
         } else
             $this->redirect('/');
     }
@@ -159,7 +175,7 @@ class FlightsController extends Controller
                     'tag' => $hotel['images'][0]['tag'],
                     'src' => $hotel['images'][0]['original'],
                 ),
-                'price' => $this->getFixedPrice($price) / 10,
+                'price' => $this->getFixedPrice($price / 10)['price'],
             ));
         }
         $this->beginClip('hotels');
@@ -178,116 +194,115 @@ class FlightsController extends Controller
         ));
     }
 
-    public function actionView($country, $hotel, $hotelID, $searchID)
-    {
-        Yii::app()->theme = 'frontend';
-        $this->layout = '//layouts/inner';
-        $this->pageName = 'details-view';
-        if (isset(Yii::app()->session['rooms']))
-            $this->render('view', array(
-                'id' => $hotelID,
-                'searchID' => $searchID,
-            ));
-        else
-            $this->redirect(['/']);
-    }
-
-    protected function getRoomsInfo($roomsArray)
-    {
-        $rooms = array();
-        foreach ($roomsArray as $room) {
-            if ($room['kids'] != 0)
-                $rooms[] = array(
-                    'adult' => $room['adults'],
-                    'child' => $room['kids'],
-                    'childAge' => array_values($room['kids_age'])
-                );
-            else
-                $rooms[] = array(
-                    'adult' => $room['adults'],
-                );
-        }
-        return $rooms;
-    }
-
-    public function actionGetHotelInfo()
-    {
-        $postman = new Postman();
-        $hotel = $postman->details(Yii::app()->getRequest()->getQuery('hotel_id'), Yii::app()->getRequest()->getQuery('search_id'));
-
-        $hotel['facilities'] = $this->translateFacilities($hotel['facilities']);
-        $this->renderPartial('_view', array(
-            'hotel' => $hotel,
-        ));
-    }
-
     public function actionCheckout()
     {
-        $traviaID = Yii::app()->getRequest()->getQuery('tid');
+        $oneWayID = Yii::app()->getRequest()->getQuery('oid');
+        $returnID = Yii::app()->getRequest()->getQuery('rid');
         $searchID = Yii::app()->getRequest()->getQuery('sid');
-        if ($traviaID) {
+
+        if ($oneWayID and $returnID and $searchID) {
             Yii::app()->getModule('pages');
             /* @var $buyTerms Pages */
             $buyTerms = Pages::model()->findByPk(4);
             $purifier = new CHtmlPurifier();
             $buyTerms = $purifier->purify($buyTerms->summary);
-            $orderModel = new Order();
-            $passengersModel = new Passengers();
+            $orderModel = new OrderFlight();
+            $passengersModel = new PassengersFlight();
 
             $this->performAjaxValidation($orderModel);
 
-            $postman = new Postman();
+            $postman = new FlightPostman();
             Yii::app()->theme = 'frontend';
             $this->layout = '//layouts/inner';
             $this->pageName = 'checkout';
 
-            $details = $postman->priceDetails($traviaID, $searchID);
-            $hotelDetails = $postman->details($traviaID, $searchID);
+            $details = $postman->priceDetails($oneWayID, $returnID == -1 ? null : $returnID, $searchID);
 
-            if (isset($_POST['Order'])) {
-                $orderModel->attributes = $_POST['Order'];
+            if (isset($_POST['OrderFlight'])) {
+                $orderModel->attributes = $_POST['OrderFlight'];
                 $orderModel->date = time();
-                $orderModel->travia_id = $traviaID;
+                $orderModel->one_way_travia_id = $oneWayID;
+                $orderModel->return_travia_id = $returnID == -1 ? null : $returnID;
                 $orderModel->search_id = $searchID;
-                $orderModel->price = $details['price'];
-                $hasError = false;
+                $orderModel->price = $this->getFixedPrice($details['totalPrice'] / 10)['price'];
+                $orderModel->commission = $this->getFixedPrice($details['totalPrice'] / 10)['commission'];
+                $adultHasError = $childHasError = $infantHasError = false;
                 if ($orderModel->save()) {
-                    $roomNum = 0;
-                    foreach ($_POST['Passengers'] as $room) {
-                        foreach ($room as $passenger) {
-                            $model = new Passengers();
-                            $model->attributes = $passenger;
-                            $model->room_num = $roomNum;
+                    // Save adult passengers
+                    foreach ($_POST['Passengers']['adult'] as $person) {
+                        $model = new PassengersFlight();
+                        $model->attributes = $person;
+                        $model->order_id = $orderModel->id;
+                        $model->birth_date = $person['birth_day'];
+                        $model->type = 'ADT';
+                        if (!$model->save()) {
+                            $adultHasError = true;
+                            Yii::app()->user->setFlash('errors', $this->implodeErrors($model));
+                            $orderModel->delete();
+                            break;
+                        }
+                    }
+
+                    if (!$adultHasError and isset($_POST['Passengers']['child'])) {
+                        // Save child passengers
+                        foreach ($_POST['Passengers']['child'] as $person) {
+                            $model = new PassengersFlight();
+                            $model->attributes = $person;
                             $model->order_id = $orderModel->id;
+                            $model->birth_date = $person['birth_day'];
+                            $model->type = 'CNN';
                             if (!$model->save()) {
-                                $hasError = true;
+                                $childHasError = true;
                                 Yii::app()->user->setFlash('errors', $this->implodeErrors($model));
                                 $orderModel->delete();
                                 break;
                             }
                         }
-                        $roomNum++;
-                        if ($hasError)
-                            break;
                     }
-                    if (!$hasError) {
+
+                    if (!$childHasError and isset($_POST['Passengers']['infant'])) {
+                        // Save infant passengers
+                        foreach ($_POST['Passengers']['infant'] as $person) {
+                            $model = new PassengersFlight();
+                            $model->attributes = $person;
+                            $model->order_id = $orderModel->id;
+                            $model->birth_date = $person['birth_day'];
+                            $model->type = 'INF';
+                            if (!$model->save()) {
+                                $infantHasError = true;
+                                Yii::app()->user->setFlash('errors', $this->implodeErrors($model));
+                                $orderModel->delete();
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!$adultHasError and !$childHasError and !$infantHasError) {
                         Yii::app()->session['orderID'] = $orderModel->id;
                         $this->redirect('bill');
                     }
                 }
             }
 
+            // Calculate price
+            $oneWayPrice = 0;
+            $returnPrice = 0;
+            foreach ($details['flights']['oneWay']['fares'] as $fare)
+                $oneWayPrice += doubleval($fare['count'] * $fare['basePrice']);
+            if (isset($details['flights']['return'])) {
+                foreach ($details['flights']['return']['fares'] as $fare)
+                    $returnPrice += doubleval($fare['count'] * $fare['basePrice']);
+            }
+
+            Yii::app()->getModule('airports');
+
             $this->render('checkout', array(
                 'buyTerms' => $buyTerms,
                 'orderModel' => $orderModel,
                 'passengersModel' => $passengersModel,
                 'details' => $details,
-                'hotelDetails' => array(
-                    'name' => $hotelDetails['name'],
-                    'star' => $hotelDetails['star'],
-                    'city' => $hotelDetails['city'],
-                    'image' => $hotelDetails['images'][0],
-                ),
+                'oneWayPrice' => $oneWayPrice,
+                'returnPrice' => $returnPrice,
             ));
         } else
             $this->redirect(['/']);
@@ -300,25 +315,31 @@ class FlightsController extends Controller
             $this->layout = '//layouts/inner';
             $this->pageName = 'bill';
 
-            /* @var $order Order */
-            $order = Order::model()->findByPk(Yii::app()->session['orderID']);
-            $postman = new Postman();
+            /* @var $order OrderFlight */
+            $order = OrderFlight::model()->findByPk(Yii::app()->session['orderID']);
+            $postman = new FlightPostman();
 
-            $details = $postman->priceDetails($order->travia_id, $order->search_id);
-            $hotelDetails = $postman->details($order->travia_id, $order->search_id);
+            $details = $postman->priceDetails($order->one_way_travia_id, $order->return_travia_id, $order->search_id);
+            if ($order->price != $this->getFixedPrice($details['totalPrice'] / 10)['price'])
+                OrderFlight::model()->updateByPk(Yii::app()->session['orderID'], array('price' => $this->getFixedPrice($details['totalPrice'] / 10)['price']));
 
-            if ($order->price != $details['price'])
-                Order::model()->updateByPk(Yii::app()->session['orderID'], array('price' => $details['price']));
+            // Calculate price
+            $oneWayPrice = 0;
+            $returnPrice = 0;
+            foreach ($details['flights']['oneWay']['fares'] as $fare)
+                $oneWayPrice += doubleval($fare['count'] * $fare['basePrice']);
+            if (isset($details['flights']['return'])) {
+                foreach ($details['flights']['return']['fares'] as $fare)
+                    $returnPrice += doubleval($fare['count'] * $fare['basePrice']);
+            }
+
+            Yii::app()->getModule('airports');
 
             $this->render('bill', array(
                 'order' => $order,
                 'details' => $details,
-                'hotelDetails' => array(
-                    'name' => $hotelDetails['name'],
-                    'star' => $hotelDetails['star'],
-                    'city' => $hotelDetails['city'],
-                    'image' => $hotelDetails['images'][0],
-                ),
+                'oneWayPrice' => $oneWayPrice,
+                'returnPrice' => $returnPrice,
             ));
         } else
             $this->redirect(array('/site'));
@@ -328,16 +349,16 @@ class FlightsController extends Controller
     {
         Yii::app()->theme = 'frontend';
         $this->layout = '//layouts/empty';
-        $order = Order::model()->findByPk($id);
-        /* @var $order Order */
-        $postman = new Postman();
-        $details = $postman->priceDetails($order->travia_id, $order->search_id);
+        $order = OrderFlight::model()->findByPk($id);
+        /* @var $order OrderFlight */
+        $postman = new FlightPostman();
+        $details = $postman->priceDetails($order->one_way_travia_id, $order->return_travia_id, $order->search_id);
 
-        if ($order->price != $details['price'])
-            Order::model()->updateByPk($id, array('price' => $details['price']));
+        if ($order->price != $this->getFixedPrice($details['totalPrice'] / 10)['price'])
+            OrderFlight::model()->updateByPk($id, array('price' => $this->getFixedPrice($details['totalPrice'] / 10)['price']));
 
-        $Amount = doubleval($this->getFixedPrice($details['price']));
-        $CallbackURL = Yii::app()->getBaseUrl(true) . '/reservation/hotels/verify';
+        $Amount = doubleval($this->getFixedPrice($details['totalPrice'])['price']);
+        $CallbackURL = Yii::app()->getBaseUrl(true) . '/reservation/flights/verify';
         $result = Yii::app()->mellat->PayRequest($Amount, $order->id, $CallbackURL);
         //$result = Yii::app()->mellat->PayRequest(1000, $order->id, $CallbackURL);
         if (!$result['error']) {
@@ -345,18 +366,8 @@ class FlightsController extends Controller
             $this->render('ext.MellatPayment.views._redirect', array('ReferenceId' => $result['responseCode']));
         } else {
             Yii::app()->user->setFlash('failed', Yii::app()->mellat->getResponseText($result['responseCode']));
-            $this->redirect(array('/reservation/hotels/bill'));
+            $this->redirect(array('/reservation/flights/bill'));
         }
-
-        /*$wsdl = "https://ikc.shaparak.ir/XToken/Tokens.xml";
-        $client = new nusoap_client($wsdl, true);
-        $client->soap_defencoding = 'UTF-8';
-        $params['amount'] = $this->getFixedPrice($details['price']); // قیمت
-        $params['merchantId'] = "B0E2"; // مرچند کد
-        $params['invoiceNo'] = time(); // شناسه فاکتور
-        $params['paymentId'] = $order->id; // شناسه خرید
-        $params['revertURL'] = "http://www.booker24.net/reservation/hotels/verify"; // آدرس بازگشت
-        $result = $client->call("MakeToken", array($params));*/
 
         $this->render('pay', array(
             'bankResponse' => $result,
@@ -371,27 +382,32 @@ class FlightsController extends Controller
         $bookingResult = false;
         $bookingID = null;
 
-        $order = Order::model()->findByPk($_POST['SaleOrderId']);
-        /* @var $order Order */
+        $order = OrderFlight::model()->findByPk($_POST['SaleOrderId']);
+        /* @var $order OrderFlight */
 
-        $result=null;
-        if($_POST['ResCode'] == 0)
+        $result = null;
+        if ($_POST['ResCode'] == 0)
             $result = Yii::app()->mellat->VerifyRequest($order->id, $_POST['SaleOrderId'], $_POST['SaleReferenceId']);
 
-        if($result != null) {
+        if ($result != null) {
             $RecourceCode = (!is_array($result) ? $result : $result['responseCode']);
             if ($RecourceCode == 0) {
                 // Settle Payment
                 $settle = Yii::app()->mellat->SettleRequest($order->id, $_POST['SaleOrderId'], $_POST['SaleReferenceId']);
                 if ($settle) {
                     Yii::app()->user->setFlash('success', 'پرداخت با موفقیت انجام شد.');
-                    Order::model()->updateByPk($order->id, array('payment_tracking_code' => $_POST['SaleReferenceId']));
+                    OrderFlight::model()->updateByPk($order->id, array(
+                        'payment_tracking_code' => $_POST['SaleReferenceId'],
+                        'status' => OrderFlight::STATUS_PAID,
+                    ));
 
                     $transaction = new Transactions();
                     $transaction->tracking_code = $_POST['SaleReferenceId'];
                     $transaction->amount = $order->price;
+                    $transaction->order_model = OrderFlight::class;
                     $transaction->order_id = $order->id;
                     $transaction->date = time();
+                    $transaction->description = 'رزرو بلیط هواپیما';
                     $transaction->save();
 
                     $message =
@@ -404,7 +420,7 @@ class FlightsController extends Controller
                             </tr>
                             <tr>
                                 <td style="font-weight: bold;width: 120px;">مبلغ</td>
-                                <td>' . Controller::parseNumbers(number_format($this->getFixedPrice($transaction->amount), 0)) . ' ریال</td>
+                                <td>' . Controller::parseNumbers(number_format($transaction->amount * 10, 0)) . ' ریال</td>
                             </tr>
                             <tr>
                                 <td style="font-weight: bold;width: 120px;">شناسه خرید</td>
@@ -414,459 +430,286 @@ class FlightsController extends Controller
                                 <td style="font-weight: bold;width: 120px;">کد رهگیری</td>
                                 <td>' . $transaction->tracking_code . '</td>
                             </tr>
+                            <tr>
+                                <td style="font-weight: bold;width: 120px;">توضیحات</td>
+                                <td>' . $transaction->description . '</td>
+                            </tr>
                         </table>';
                     Mailer::mail($order->buyer_email, 'رسید پرداخت اینترنتی', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP']);
-
-                    $roomPassengers = array();
-                    foreach ($order->passengers as $passenger) {
-                        if ($passenger->type == 'child')
-                            $roomPassengers[$passenger->room_num][] = array(
-                                'name' => $passenger->name,
-                                'family' => $passenger->family,
-                                'gender' => $passenger->gender,
-                                'passportNo' => $passenger->passport_num,
-                                'type' => 'child',
-                                'age' => $passenger->age,
-                            );
-                        elseif ($passenger->type == 'adult')
-                            $roomPassengers[$passenger->room_num][] = array(
-                                'name' => $passenger->name,
-                                'family' => $passenger->family,
-                                'gender' => $passenger->gender,
-                                'passportNo' => $passenger->passport_num,
-                                'type' => 'adult',
-                            );
-                    }
-//var_dump($result, $settle);exit;
-                    $postman = new Postman();
-                    $contactInfo = array(
-                        'mobile' => $order->buyer_mobile,
-                        'email' => $order->buyer_email
-                    );
-                    $book = $postman->book($order->travia_id, $order->search_id, $roomPassengers, $contactInfo);
-                    $booking = null;
-                    if (!isset($book['error'])) {
-                        $book = $book['bookRs'];
-                        if ($book['status'] == 'succeeded') {
-                            Order::model()->updateByPk($order->id, array('order_id' => $book['orderId']));
-                            $booking = new Bookings();
-                            $book['cancelRules'] = CJSON::encode($book['cancelRules']);
-                            $book['nonrefundable'] = ($book['nonrefundable'] == true) ? '1' : '0';
-                            $book['confirmationDetails'] = CJSON::encode($book['confirmationDetails']);
-                            $booking->attributes = $book;
-                            $booking->order_id = $order->id;
-                            $booking->save();
-
-                            $message = '<p style="text-align: right;">کاربر گرامی<br>فرم تاییدیه رزرو هتل در فایل ضمیمه همین نامه خدمتتان ارسال گردیده است. لطفا این فرم را چاپ کرده و هنگام ورود به هتل آن را به متصدیان هتل ارائه دهید.</p>';
-                            $message .= '<p style="text-align: right;"><b>کد رهگیری : </b>B24-' . $booking->orderId . '</p>';
-                            $message .= '<p style="text-align: right;color: #ef5350;">لطفا این کد را جهت سایر عملیات ها نزد خود نگهداری کنید.</p>';
-                            $html2pdf = Yii::app()->ePdf->HTML2PDF();
-                            $html2pdf->WriteHTML($this->renderPartial('pdf', array('booking' => $booking), true));
-                            $pdfContent = $html2pdf->Output('', EYiiPdf::OUTPUT_TO_STRING);
-                            Mailer::mail($order->buyer_email, 'فرم تاییدیه رزرو هتل', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP'],
-                                array(
-                                    'method' => 'string',
-                                    'string' => $pdfContent,
-                                    'filename' => 'HotelVoucher.pdf',
-                                    'type' => 'application/pdf'
-                                )
-                            );
-                            Yii::app()->user->setFlash('reservation-success', 'عملیات رزرو با موفقیت انجام شد. جهت دریافت فرم تاییدیه رزرو هتل به پست الکترونیکی "' . CHtml::encode($order->buyer_email) . '" مراجعه فرمایید.');
-                            $bookingResult = true;
-                            $bookingID = $booking->id;
-                        } else
-                            Yii::app()->user->setFlash('reservation-failed', 'متاسفانه عملیات رزرو انجام نشد. لطفا با بخش پشتیبانی تماس حاصل فرمایید.');
-                    } else {
-                        if(!file_exists('errors'))
-                            mkdir('errors');
-                        $fp = fopen('errors/result-'.date('Y-m-d-H-i', time()).'.json', 'w');
-                        fwrite($fp, json_encode($book));
-                        fclose($fp);
-                        Yii::app()->user->setFlash('reservation-failed', 'متاسفانه عملیات رزرو انجام نشد. لطفا با بخش پشتیبانی تماس حاصل فرمایید.');
-                    }
 
                     $this->render('verify', array(
                         'order' => $order,
                         'transaction' => $transaction,
-                        'bookingResult' => $bookingResult,
-                        'bookingID' => $bookingID,
-                        'booking' => $booking
                     ));
-                }else {
+                } else {
                     Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
-                    $this->redirect(array('/reservation/hotels/bill'));
+                    $this->redirect(array('/reservation/flights/bill'));
                 }
-            }else {
-                Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
-                $this->redirect(array('/reservation/hotels/bill'));
-            }
-        }else {
-            Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
-            $this->redirect(array('/reservation/hotels/bill'));
-        }
-
-        /*$token = trim($_POST['token']); // همان توکنی که در مرحله رزرو ساخته شد
-        $resultCode = trim($_POST['resultCode']); // کد برگشت که برای تراکنش موفق عدد 100 میباشد
-        $paymentId = trim($_POST['paymentId']); // همان شناسه خرید که در مرحله ساخت توکن استفاده کردیم
-        $referenceId = trim($_POST['referenceId']); // شناسه مرجع که بانک میسازه و قابل پیگیری هست
-
-        if ($resultCode == '100') {
-            /*$wsdl = "https://ikc.shaparak.ir/XVerify/Verify.xml";
-            $client = new nusoap_client($wsdl, true);
-            $client->soap_defencoding = 'UTF-8';
-            $params['token'] = $token;
-            $params['merchantId'] = 'B0E2'; // مرچند کد
-            $params['referenceNumber'] = $referenceId;
-            $params['sha1Key'] = '22338240992352910814917221751200141041845518824222260'; //sha1Key که از بانک باید گرفته شود
-            $result = $client->call("KicccPaymentsVerification", array($params));
-            if ($result['KicccPaymentsVerificationResult'] == $this->getFixedPrice($order->price)) {
-
             } else {
                 Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
-                $this->redirect(array('/reservation/hotels/bill'));
+                $this->redirect(array('/reservation/flights/bill'));
             }
         } else {
             Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
-            $this->redirect(array('/reservation/hotels/bill'));
-        }*/
-    }
-    
-    /*public function actionMasoud()
-    {
-        Yii::app()->theme = 'frontend';
-        $this->layout = '//layouts/inner';
-        $this->pageName = 'bill';
-        $bookingResult = false;
-        $bookingID = null;
-
-        $order = Order::model()->findByPk('172');
-
-        if(true) {
-            if (true) {
-                if (true) {
-                    Yii::app()->user->setFlash('success', 'پرداخت با موفقیت انجام شد.');
-
-                    $roomPassengers = array();
-                    foreach ($order->passengers as $passenger) {
-                        if ($passenger->type == 'child')
-                            $roomPassengers[$passenger->room_num][] = array(
-                                'name' => $passenger->name,
-                                'family' => $passenger->family,
-                                'gender' => $passenger->gender,
-                                'passportNo' => $passenger->passport_num,
-                                'type' => 'child',
-                                'age' => $passenger->age,
-                            );
-                        elseif ($passenger->type == 'adult')
-                            $roomPassengers[$passenger->room_num][] = array(
-                                'name' => $passenger->name,
-                                'family' => $passenger->family,
-                                'gender' => $passenger->gender,
-                                'passportNo' => $passenger->passport_num,
-                                'type' => 'adult',
-                            );
-                    }
-
-                    $postman = new Postman();
-                    $contactInfo = array(
-                        'mobile' => $order->buyer_mobile,
-                        'email' => $order->buyer_email
-                    );
-                    $book = $postman->book($order->travia_id, $order->search_id, $roomPassengers, $contactInfo);
-                    $booking = null;
-                    if (!isset($book['error'])) {
-                        $book = $book['bookRs'];
-                        if ($book['status'] == 'succeeded') {
-                            Order::model()->updateByPk($order->id, array('order_id' => $book['orderId']));
-                            $booking = new Bookings();
-                            $book['cancelRules'] = CJSON::encode($book['cancelRules']);
-                            $book['nonrefundable'] = ($book['nonrefundable'] == true) ? '1' : '0';
-                            $book['confirmationDetails'] = CJSON::encode($book['confirmationDetails']);
-                            $booking->attributes = $book;
-                            $booking->order_id = $order->id;
-                            $booking->save();
-
-                            $message = '<p style="text-align: right;">کاربر گرامی<br>فرم تاییدیه رزرو هتل در فایل ضمیمه همین نامه خدمتتان ارسال گردیده است. لطفا این فرم را چاپ کرده و هنگام ورود به هتل آن را به متصدیان هتل ارائه دهید.</p>';
-                            $message .= '<p style="text-align: right;"><b>کد رهگیری : </b>B24-' . $booking->orderId . '</p>';
-                            $message .= '<p style="text-align: right;color: #ef5350;">لطفا این کد را جهت سایر عملیات ها نزد خود نگهداری کنید.</p>';
-                            $html2pdf = Yii::app()->ePdf->HTML2PDF();
-                            $html2pdf->WriteHTML($this->renderPartial('pdf', array('booking' => $booking), true));
-                            $pdfContent = $html2pdf->Output('', EYiiPdf::OUTPUT_TO_STRING);
-                            Mailer::mail($order->buyer_email, 'فرم تاییدیه رزرو هتل', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP'],
-                                array(
-                                    'method' => 'string',
-                                    'string' => $pdfContent,
-                                    'filename' => 'HotelVoucher.pdf',
-                                    'type' => 'application/pdf'
-                                )
-                            );
-                            
-                            Mailer::mail('gharagozlu.masoud@gmail.com', 'فرم تاییدیه رزرو هتل', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP'],
-                                array(
-                                    'method' => 'string',
-                                    'string' => $pdfContent,
-                                    'filename' => 'HotelVoucher.pdf',
-                                    'type' => 'application/pdf'
-                                )
-                            );
-                            Yii::app()->user->setFlash('reservation-success', 'عملیات رزرو با موفقیت انجام شد. جهت دریافت فرم تاییدیه رزرو هتل به پست الکترونیکی "' . CHtml::encode($order->buyer_email) . '" مراجعه فرمایید.');
-                            $bookingResult = true;
-                            $bookingID = $booking->id;
-                        } else
-                            Yii::app()->user->setFlash('reservation-failed', 'متاسفانه عملیات رزرو انجام نشد. لطفا با بخش پشتیبانی تماس حاصل فرمایید.');
-                    } else {
-                        if(!file_exists('errors'))
-                            mkdir('errors');
-                        $fp = fopen('errors/result-'.date('Y-m-d-H-i', time()).'.json', 'w');
-                        fwrite($fp, json_encode($book));
-                        fclose($fp);
-                        Yii::app()->user->setFlash('reservation-failed', 'متاسفانه عملیات رزرو انجام نشد. لطفا با بخش پشتیبانی تماس حاصل فرمایید.');
-                    }
-                    
-                    var_dump(array(
-                        'bookingResult' => $bookingResult,
-                        'bookingID' => $bookingID,
-                        'booking' => $booking
-                    ));exit;
-                }else {
-                    Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
-                    $this->redirect(array('/reservation/hotels/bill'));
-                }
-            }else {
-                Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
-                $this->redirect(array('/reservation/hotels/bill'));
-            }
-        }else {
-            Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
-            $this->redirect(array('/reservation/hotels/bill'));
+            $this->redirect(array('/reservation/flights/bill'));
         }
-    }*/
+    }
+
+//    public function actionVerify2()
+//    {
+//        Yii::app()->theme = 'frontend';
+//        $this->layout = '//layouts/inner';
+//        $this->pageName = 'bill';
+//
+//        $order = OrderFlight::model()->findByPk(17);
+//        /* @var $order OrderFlight */
+//
+//        if (true) {
+//            if (true) {
+//                // Settle Payment
+//                if (true) {
+//                    Yii::app()->user->setFlash('success', 'پرداخت با موفقیت انجام شد.');
+//                    OrderFlight::model()->updateByPk($order->id, array(
+//                        'payment_tracking_code' => 123456,
+//                        'status' => OrderFlight::STATUS_PAID,
+//                    ));
+//
+//                    $transaction = new Transactions();
+//                    $transaction->tracking_code = 123456;
+//                    $transaction->amount = $order->price;
+//                    $transaction->order_model = OrderFlight::class;
+//                    $transaction->order_id = $order->id;
+//                    $transaction->date = time();
+//                    $transaction->description = 'رزرو بلیط هواپیما';
+//                    $transaction->save();
+//
+//                    $message =
+//                        '<p style="text-align: right;">با سلام<br>کاربر گرامی، تراکنش شما با موفقیت انجام شد. جزئیات تراکنش به شرح ذیل می باشد:</p>
+//                        <div style="width: 100%;height: 1px;background: #ccc;margin-bottom: 15px;"></div>
+//                        <table style="font-size: 9pt;text-align: right;">
+//                            <tr>
+//                                <td style="font-weight: bold;width: 120px;">زمان</td>
+//                                <td>' . JalaliDate::date('d F Y - H:i', $transaction->date) . '</td>
+//                            </tr>
+//                            <tr>
+//                                <td style="font-weight: bold;width: 120px;">مبلغ</td>
+//                                <td>' . Controller::parseNumbers(number_format($transaction->amount * 10, 0)) . ' ریال</td>
+//                            </tr>
+//                            <tr>
+//                                <td style="font-weight: bold;width: 120px;">شناسه خرید</td>
+//                                <td>' . $transaction->order_id . '</td>
+//                            </tr>
+//                            <tr>
+//                                <td style="font-weight: bold;width: 120px;">کد رهگیری</td>
+//                                <td>' . $transaction->tracking_code . '</td>
+//                            </tr>
+//                            <tr>
+//                                <td style="font-weight: bold;width: 120px;">توضیحات</td>
+//                                <td>' . $transaction->description . '</td>
+//                            </tr>
+//                        </table>';
+//                    Mailer::mail($order->buyer_email, 'رسید پرداخت اینترنتی', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP']);
+//
+//                    $this->render('verify', array(
+//                        'order' => $order,
+//                        'transaction' => $transaction,
+//                    ));
+//                } else {
+//                    Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
+//                    $this->redirect(array('/reservation/hotels/bill'));
+//                }
+//            } else {
+//                Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
+//                $this->redirect(array('/reservation/hotels/bill'));
+//            }
+//        } else {
+//            Yii::app()->user->setFlash('failed', 'عملیات پرداخت ناموفق بود.');
+//            $this->redirect(array('/reservation/hotels/bill'));
+//        }
+//    }
+
+    public function actionBooking()
+    {
+        if (isset($_POST['order_id']) and isset($_POST['transaction_id'])) {
+            /* @var OrderFlight $order */
+            /* @var Transactions $transaction */
+            $order = OrderFlight::model()->find('id = :id AND status = :status', [
+                ':id' => $_POST['order_id'],
+                ':status' => OrderFlight::STATUS_PAID
+            ]);
+            $transaction = Transactions::model()->findByPk($_POST['transaction_id']);
+
+            if ($order and $transaction) {
+                //Create passengers array for book method
+                $passengers = [];
+                foreach ($order->passengers as $passenger)
+                    $passengers[] = [
+                        "type" => $passenger->type,
+                        "gender" => $passenger->gender,
+                        "nameEn" => $passenger->name_en,
+                        "familyEn" => $passenger->family_en,
+                        "passportNo" => $passenger->passport_num,
+                        "passportExpire" => "",
+                        "nameFa" => $passenger->name_fa,
+                        "familyFa" => $passenger->family_fa,
+                        "birthDate" => date('Y-m-d', $passenger->birth_date),
+                        "nationality" => "IR",
+                        "nationalId" => $passenger->national_id
+                    ];
+
+                // Create contact info array for book method
+                $contactInfo = [
+                    "mobile" => $order->buyer_mobile,
+                    "email" => $order->buyer_email
+
+                ];
+
+                // Booking
+                $postman = new FlightPostman();
+                $book = $postman->book($order->search_id, $order->one_way_travia_id, $order->return_travia_id, $passengers, $contactInfo);
+
+                if (!isset($book['error'])) {
+                    $book = $book['bookRs'];
+                    OrderFlight::model()->updateByPk($order->id, array('status' => OrderFlight::STATUS_CLOSE));
+                    $booking = new BookingsFlight();
+                    $book['passengers'] = CJSON::encode($book['passengers']);
+                    $book['flights'] = CJSON::encode($book['flights']);
+                    $booking->attributes = $book;
+                    $booking->order_id = $order->id;
+                    $booking->save();
+
+                    echo CJSON::encode([
+                        'status' => 'success',
+                        'bookingID' => $booking->id,
+                    ]);
+                } else {
+                    if (!file_exists('errors'))
+                        mkdir('errors');
+                    $fp = fopen('errors/flight-result-' . date('Y-m-d-H-i', time()) . '.json', 'w');
+                    fwrite($fp, json_encode($book));
+                    fclose($fp);
+
+                    echo CJSON::encode([
+                        'status' => 'failed',
+                        'message' => 'متاسفانه عملیات رزرو انجام نشد. لطفا با بخش پشتیبانی تماس حاصل فرمایید. می توانید از طریق <a href="' . Yii::app()->createUrl('contactUs') . '" target="_blank">این صفحه</a> با بخش پشتیبانی در تماس باشید.'
+                    ]);
+                }
+            } else {
+                echo CJSON::encode([
+                    'status' => 'failed',
+                    'message' => 'درخواست شما معتبر نیست!'
+                ]);
+            }
+        } else
+            echo CJSON::encode([
+                'status' => 'failed',
+                'message' => 'درخواست شما معتبر نیست!'
+            ]);
+    }
 
     public function actionMail()
     {
-        $orderID = Yii::app()->request->getQuery('order_id');
-        $bookingID = Yii::app()->request->getQuery('booking_id');
-        $order = Order::model()->findByPk($orderID);
-        $booking = Bookings::model()->findByPk($bookingID);
-        $message = '<p style="text-align: right;">کاربر گرامی<br>فرم تاییدیه رزرو هتل در فایل ضمیمه همین نامه خدمتتان ارسال گردیده است. لطفا این فرم را چاپ کرده و هنگام ورود به هتل آن را به متصدیان هتل ارائه دهید.</p>';
+        /* @var HTML2PDF $html2pdf */
+        /* @var OrderFlight $order */
+        Yii::app()->getModule('airports');
+        $order = OrderFlight::model()->findByPk($_POST['order_id']);
+        $booking = BookingsFlight::model()->findByPk($_POST['booking_id']);
+
+        // Render PDF file
         $html2pdf = Yii::app()->ePdf->HTML2PDF();
-        $html2pdf->WriteHTML($this->renderPartial('pdf', array('booking' => $booking), true));
+        $lg = Array();
+        $lg['a_meta_charset'] = 'UTF-8';
+//        $lg['a_meta_dir'] = 'rtl';
+        $lg['a_meta_language'] = 'fa';
+        $lg['w_page'] = 'page';
+        $html2pdf->pdf->setLanguageArray($lg);
+        $html2pdf->pdf->SetMargins(5, 5, 5);
+        foreach (CJSON::decode($booking->passengers) as $key => $passenger) {
+            $html2pdf->pdf->AddPage();
+            $html2pdf->pdf->SetFont('zarbold', '', 11);
+            $html2pdf->pdf->SetTextColor(0, 0, 0);
+            $html2pdf->pdf->WriteHTML($this->renderPartial('pdf', array(
+                'booking' => $booking,
+                'html2pdf' => $html2pdf,
+                'passenger' => $passenger,
+                'key' => $key
+            ), true), true, 0, true, 0);
+            $html2pdf->pdf->SetFont('zarbold', '', 8);
+            $html2pdf->pdf->SetTextColor(153, 153, 153);
+            $html2pdf->pdf->Line(5, 280, 205, 280, ['width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(153, 153, 153)]);
+            $html2pdf->pdf->Text(5, 287, 'Site: Booker24.net');
+            $html2pdf->pdf->Text(71, 287, 'Email: info@booker24.net');
+            $html2pdf->pdf->Text(137, 287, 'Phone: +984533243543');
+        }
         $pdfContent = $html2pdf->Output('', EYiiPdf::OUTPUT_TO_STRING);
-        if (Mailer::mail($order->buyer_email, 'فرم تاییدیه رزرو هتل', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP'],
+
+        // Send mail
+        $message = '<p style="text-align: right;">کاربر گرامی<br>بلیط در فایل ضمیمه همین نامه خدمتتان ارسال گردیده است. لطفا آن را چاپ کرده و هنگام مراجعه به فرودگاه ،آن را به متصدیان ارائه دهید.</p>';
+        $message .= '<p style="text-align: right;"><b>کد رهگیری : </b>B24F-' . $booking->orderId . '</p>';
+        $message .= '<p style="text-align: right;color: #ef5350;">لطفا این کد را جهت سایر عملیات ها نزد خود نگهداری کنید.</p>';
+        $message .= '<p style="text-align: right;font-size:12px;margin-top: 30px;">با تشکر از خرید شما</p>';
+        $message .= '<p style="text-align: right;font-size:12px">بوکر 24</p>';
+
+        if (Mailer::mail($order->buyer_email, 'بلیط هواپیما - بوکر 24', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP'],
             array(
                 'method' => 'string',
                 'string' => $pdfContent,
-                'filename' => 'HotelVoucher.pdf',
+                'filename' => 'FlightTicket.pdf',
                 'type' => 'application/pdf'
             )
         )
         )
-            echo CJSON::encode(array('status' => true));
+            echo CJSON::encode([
+                'status' => 'success',
+                'html' => '
+                    <div class="overflow-fix" style="padding: 15px;">
+                        <a href="' . $this->createUrl('/site') . '" class="btn waves-effect waves-light green lighten-1 col-md-2 pull-left">صفحه اصلی</a>
+                        <a href="' . $this->createUrl('/reservation/flights/ticket', array('booking_id' => $booking->id)) . '" style="margin-left: 10px;" target="_blank" class="btn waves-effect waves-light amber darken-2 pull-left">دانلود بلیط</a>
+                    </div>
+                '
+            ]);
         else
-            echo CJSON::encode(array('status' => false));
+            echo CJSON::encode([
+                'status' => 'failed',
+                'mailError' => true,
+                'message' => 'با عرض پوزش در ارسال ایمیل خطایی رخ داده است.'
+            ]);
     }
 
-    public function actionVoucher()
+    public function actionTicket()
     {
+        /* @var HTML2PDF $html2pdf */
+        /* @var BookingsFlight $booking */
+        Yii::app()->getModule('airports');
         $bookingID = Yii::app()->request->getQuery('booking_id');
-        $booking = Bookings::model()->findByPk($bookingID);
+        $booking = BookingsFlight::model()->findByPk($bookingID);
+        // Render PDF file
         $html2pdf = Yii::app()->ePdf->HTML2PDF();
-        $html2pdf->WriteHTML($this->renderPartial('pdf', array('booking' => $booking), true));
+        $lg = Array();
+        $lg['a_meta_charset'] = 'UTF-8';
+//        $lg['a_meta_dir'] = 'rtl';
+        $lg['a_meta_language'] = 'fa';
+        $lg['w_page'] = 'page';
+        $html2pdf->pdf->setLanguageArray($lg);
+        $html2pdf->pdf->SetMargins(5, 5, 5);
+        foreach (CJSON::decode($booking->passengers) as $key => $passenger) {
+            $html2pdf->pdf->AddPage();
+            $html2pdf->pdf->SetFont('zarbold', '', 11);
+            $html2pdf->pdf->SetTextColor(0, 0, 0);
+            $html2pdf->pdf->WriteHTML($this->renderPartial('pdf', array(
+                'booking' => $booking,
+                'html2pdf' => $html2pdf,
+                'passenger' => $passenger,
+                'key' => $key
+            ), true), true, 0, true, 0);
+            $html2pdf->pdf->SetFont('zarbold', '', 8);
+            $html2pdf->pdf->SetTextColor(153, 153, 153);
+            $html2pdf->pdf->Line(5, 280, 205, 280, ['width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(153, 153, 153)]);
+            $html2pdf->pdf->Text(5, 287, 'Site: Booker24.net');
+            $html2pdf->pdf->Text(71, 287, 'Email: info@booker24.net');
+            $html2pdf->pdf->Text(137, 287, 'Phone: +984533243543');
+        }
         $html2pdf->Output();
-    }
-
-    public function getStayingTime($in, $out)
-    {
-        $diff = $out - $in;
-        return floor($diff / (60 * 60 * 24));
-    }
-
-    public function actionGetMinMaxPrice()
-    {
-        echo CJSON::encode(array(
-            'prices' => array(
-                'minPrice' => Yii::app()->session['minPrice'],
-                'maxPrice' => Yii::app()->session['maxPrice'],
-            )
-        ));
-    }
-
-    public function actionGetCancelRule()
-    {
-        $traviaId = Yii::app()->request->getQuery('tid');
-        $price = Yii::app()->request->getQuery('price');
-        $searchID = Yii::app()->request->getQuery('search_id');
-        $postman = new Postman();
-        $details = $postman->priceDetails($traviaId, $searchID);
-
-        $str = '';
-        foreach ($details['cancelRules'] as $cancelRule) {
-            $str .= 'از تاریخ ';
-            $date = strtotime($details['checkIn']);
-            $date = $date - ($cancelRule['remainDays'] * 60 * 60 * 24);
-            $date = JalaliDate::date('d F Y', $date);
-            $str .= $date . ' تا تاریخ ' . JalaliDate::date('d F Y', strtotime($details['checkIn']));
-            $str .= ' هزینه کنسل کردن ';
-            $ratio = floatval($cancelRule['ratio']);
-            $price = $price * $ratio;
-            $str .= number_format($price, 0) . ' تومان می باشد.<br>';
-        }
-        echo CJSON::encode(array(
-            'status' => 'success',
-            'rules' => $str
-        ));
-    }
-
-    public function getCancelRuleString($cancelRules, $checkIn, $price)
-    {
-        $str = '<ul>';
-        foreach ($cancelRules as $key => $cancelRule) {
-            if ($str == '<ul>') {
-                $str .= '<li>از امروز تا تاریخ ';
-                $date = strtotime($checkIn);
-                $date = $date - ($cancelRule['remainDays'] * 60 * 60 * 24);
-                $date = JalaliDate::date('d F Y', $date);
-                $str .= $date . ' تا تاریخ ' . JalaliDate::date('d F Y', strtotime($checkIn));
-                $str .= ' هزینه کنسل کردن ';
-                $ratio = floatval($cancelRule['ratio']);
-                $price = $price * $ratio;
-                $str .= number_format($price, 0) . ' تومان می باشد.</li>';
-            } else {
-                $str .= '<li>از تاریخ ';
-                $date = strtotime($checkIn);
-                $date = $date - ($cancelRule['remainDays'] * 60 * 60 * 24);
-                $prevDate = $date - ($cancelRules[$key - 1]['remainDays'] * 60 * 60 * 24);
-                $date = JalaliDate::date('d F Y', $date);
-                $prevDate = JalaliDate::date('d F Y', $prevDate);
-                $str .= $prevDate . ' تا تاریخ ' . $date . ' هزینه کنسل کردن ';
-                $ratio = floatval($cancelRule['ratio']);
-                $price = $price * $ratio;
-                $str .= number_format($price, 0) . ' تومان می باشد.</li>';
-            }
-        }
-        return $str;
-    }
-
-    public function translateFacilities($facilities)
-    {
-        $translates = array(
-            'Business Centre' => 'اتاق جلسات تجاري',
-            'Elevator / Lift' => 'آسانسور',
-            'Car Rental' => 'اجاره ماشين',
-            'Express Check In / Check Out' => 'پذيرش و خروج سريع مسافر',
-            'Lounge' => 'سالن اجتماعات',
-            'Shop(s)' => 'فروشگاه ها',
-            'Bar' => 'خدمات نوشيدني',
-            'Wireless Internet Access' => 'دسترسي به اينترنت بيسيم',
-            'Laundry Service' => 'خدمات خشكشويي',
-            '24 Hour Front Desk' => 'خدمات 24 ساعته پذيرش',
-            '24 Hour Room Service' => 'خدمات 24 ساعته به اتاق',
-            'Disco / Night Clubs' => 'كلوپ',
-            'Hairdresser' => 'آريشگاه',
-            'Pay Parking' => 'پاركينگ',
-            'Private beach (chargeable)' => 'ساحل اختصاصي ( شارژ)',
-            'Cable / Satellite Television' => 'گيرنده تلوزيون',
-            'Free Wireless Internet access' => 'اينترنت بيسيم رايگان',
-            'Sauna' => 'سونا',
-            'Internet Access' => 'دسترسي اينترنت',
-            'Safety Deposit Box' => 'صندوق امانات',
-            'Restaurant' => 'رستوران',
-            'Air Conditioned' => 'سيستم سرمايشي و گرمايشي اتاق',
-            'Private balcony / terrace' => 'بالكن و تراس خصوصي',
-            'Massage' => 'ماساژ',
-            'Solarium' => 'حمام آفتاب',
-            'Pool' => 'استخر',
-            'Spa' => 'آب درماني',
-            'Tv' => 'تلويزون',
-            'Outdoor pool' => 'استخر عمومي',
-            'Airport shuttle' => 'سرويس فرودگاه',
-            'Family rooms' => 'اتاق خانوادگي',
-            'Fitness centre' => 'سالن بدنسازي',
-            'Non-smoking rooms' => 'اتاق غير سيگاري ها',
-            'Daily maid service' => 'خدمات روزانه  خدمتكاري',
-            'Golf course' => 'زمين گلف',
-            'Tennis court' => 'زمين تنيس',
-            'Spa and wellness centre' => 'مركز آبگرم و آب درماني',
-            'Facilities for disabled guests' => 'امكانات براي مهمانان معلول',
-            'Garden' => 'باغ',
-            "Children's playground" => 'زمين بازي كودكان',
-            'Pets are not allowed' => 'عدم پذيرش حيوان خانگي',
-            'Languages spoken' => 'زبان مكالمه اي',
-            'Pets allowed' => 'پذيرش حيوان خانگي',
-            'Ironing service' => 'خدمات اتو',
-            'Wake-up service' => 'خدمات بيدار كردن',
-            'Exchange' => 'صرافي',
-            'Wedding Services' => 'خدمات جشن عروسي',
-            'Water Sports' => 'ورزشهاي آبي',
-            'Turkish Bath' => 'حمام تركي',
-            'Tour Desk' => 'قسمت ارائه تورها',
-            'Tennis' => 'زمين تنيس',
-            'Television in lobby' => 'تلويزيون در لابي',
-            'Television' => 'تلويزيون',
-            'Swimming Pool Nearby' => 'استخر داخلي',
-            'Swimming Pool' => 'استخر',
-            'Steam Bath' => 'سوناي بخار',
-            'Souvenirs / Gift Shop' => 'فروشگاه هدايا',
-            'Snack Bar' => 'بوفه خوراكي',
-            'Shop Arcade' => 'قسمت بازي هاي آنلاين',
-            'Self Laundry' => 'خدمات لباس شويي',
-            'Room Service' => 'خدمات پذيرايي به اتاق',
-            'Poolside Bar' => 'نوشيدني كنار استخر',
-            'Parasols' => 'چتر استخر',
-            'Outdoor Swimming Pool' => 'استخر محوطه',
-            'Meeting Rooms' => 'اتاق جلسات',
-            'Market' => 'فروشگاه',
-            'Library' => 'كتابخانه',
-            'Internet Corner' => 'اينرنت',
-            'Indoor Pool' => 'استخر سرپوشيده',
-            'High-Speed Internet' => 'اينترنت پرسرعت',
-            'Health Club' => 'باشگاه تندرستي و سلامتي',
-            'Gym' => 'كنسول بازي',
-            'Fitness Center' => 'باشگاه بدنسازي',
-            'Executive / Club Floor' => 'باشگاه همكف',
-            'Dry cleaning / laundry service' => 'خشكشويي و خدمات لباسشويي',
-            'Concierge Desk' => 'دربان',
-            'Child Care Service' => 'خدمات نگهداي كودك',
-            'Breakfast available (Surcharg)' => 'صبحانه قابل درخواست ( باهزينه )',
-            'Blackout drapes/curtains' => 'پرده',
-            'Bicycle Rentals' => 'كرايه دوچرخه',
-            'Beauty Salon' => 'سالن آرايش و زيبايي',
-            'Bar / Lounge' => 'سالن نوشيدني',
-            '24 Hour business center' => 'خدمات تجاري 24 ساعته',
-            '24 Hour Check-In' => 'پذيرش 24 ساعته'
-        );
-
-        $output = array();
-        foreach ($facilities as $facility) {
-            $addedToOutput = false;
-            foreach ($translates as $key => $translate) {
-                if (strtolower($facility) == strtolower($key)) {
-                    $output[] = $translate;
-                    $addedToOutput = true;
-                }
-            }
-            if (!$addedToOutput)
-                $output[] = $facility;
-        }
-        rsort($output);
-        return $output;
-    }
-
-    public function getChildsCount($rooms)
-    {
-        $childs = 0;
-        foreach ($rooms as $room)
-            if ($room['child'] !== 0)
-                $childs += count(explode(',', $room['child']));
-        return $childs;
-    }
-
-    public function getAdultsCount($rooms)
-    {
-        $adults = 0;
-        foreach ($rooms as $room)
-            $adults += $room['adult'];
-        return $adults;
     }
 
     public function actionCancellation()
@@ -967,9 +810,23 @@ class FlightsController extends Controller
         $this->redirect(array('/reservation/hotels/viewCancellationRequest/' . $cancelRequest->id));
     }
 
+    public function actionDomesticAirports()
+    {
+        Yii::app()->getModule('airports');
+        $airports = Airports::model()->findAll('country_code = :code AND airport != :airport', [':code' => 'IR', ':airport' => 'All Airports']);
+        $array = [];
+        foreach ($airports as $airport)
+            $array[] = [
+                'iata' => $airport->IATA,
+                'title' => $airport->city_fa . ' - ' . $airport->airport_fa
+            ];
+        header('Content-Type: application/json');
+        echo json_encode($array);
+    }
+
     /**
      * Performs the AJAX validation.
-     * @param Order $model the model to be validated
+     * @param OrderFlight $model the model to be validated
      */
     protected function performAjaxValidation($model)
     {

@@ -80,6 +80,16 @@ class Controller extends CController
                     )
                 ),
                 array(
+                    'label' => 'فرودگاه ها<span class="caret"></span>',
+                    'url' => '#',
+                    'itemOptions' => array('class' => 'dropdown', 'tabindex' => "-1"),
+                    'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => "dropdown"),
+                    'items' => array(
+                        array('label' => 'مدیریت فرودگاه ها', 'url' => Yii::app()->createUrl('/airports/manage/admin')),
+                        array('label' => 'افزودن فرودگاه جدید', 'url' => Yii::app()->createUrl('/airports/manage/create')),
+                    )
+                ),
+                array(
                     'label' => 'صفحات متنی',
                     'url' => Yii::app()->createUrl('/pages/manage/admin/?slug=base'),
                 ),
@@ -196,7 +206,12 @@ class Controller extends CController
 
         $commission = ($price * $commission) / 100;
         $tax = ($price * $tax) / 100;
-        return $price + $commission + $tax;
+        $price = $price + $commission + $tax;
+        return [
+            'tax' => $tax,
+            'commission' => $commission,
+            'price' => $price,
+        ];
     }
 
     public function searchArabicAndPersian($value)

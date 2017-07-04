@@ -28,7 +28,8 @@ body.inner-page{
     right: 25px;
 }
 .select-wrapper span.caret{
-    left:25px;
+    left:15px;
+    top: 10px;
     right:auto;
     border-left: none;
     border-right: none;
@@ -45,7 +46,8 @@ input,select,textarea{
     height:36px;
     position: relative;
 }
-.dropdown-content li > a, .dropdown-content li > span{
+.dropdown-content li > a,
+.dropdown-content li > span{
     text-align: right;
     color: #ef5350;
     padding: 0 16px;
@@ -181,8 +183,14 @@ form p{
     margin: 0 0 15px;
 }
 .search-box #enter-date,
-.search-box #out-date{
-    background: url("../svg/datepicker.svg") no-repeat 10px center / 20px auto;
+.search-box #out-date,
+.search-box #dom-departure-date,
+.search-box #dom-return-date,
+.search-box #non-dom-departure-date,
+.search-box #non-dom-return-date,
+#flight-search-form #departure-date,
+#flight-search-form #return-date{
+    background: url("../svg/datepicker.svg") no-repeat 5px center / 20px auto;
     border-bottom: 1px solid #9e9e9e;
 }
 .search-box .rooms-count-container input.select-dropdown{
@@ -190,8 +198,14 @@ form p{
 }
 
 .search-box #enter-date:focus,
-.search-box #out-date:focus{
-    background: url("../svg/datepicker-red.svg") no-repeat 10px center / 20px auto;
+.search-box #out-date:focus,
+.search-box #dom-departure-date:focus,
+.search-box #dom-return-date:focus,
+.search-box #non-dom-departure-date:focus,
+.search-box #non-dom-return-date:focus,
+#flight-search-form #departure-date:focus,
+#flight-search-form #return-date:focus{
+    background: url("../svg/datepicker-red.svg") no-repeat 5px center / 20px auto;
 }
 .search-box form > .input-field:first-child{
     margin-top: 0;
@@ -216,6 +230,7 @@ form p{
 .search-box .nav-tabs > li > a:active{
     border: none;
     margin: 0;
+    background: rgba(239, 83, 80, 0.3);
 }
 .search-box .nav-tabs > li.active > a{
     background: #ef5350;
@@ -590,8 +605,8 @@ label.error{
     overflow: hidden;
 }
 .tt-suggestion {
-    padding: 10px 20px;
-    font-size: 13px;
+    padding: 10px 15px;
+    font-size: 12px;
     line-height: 26px;
     color: #9e9e9e;
     text-align: left;
@@ -1070,7 +1085,8 @@ label.error{
     margin-top: 0;
     margin-bottom: 0;
 }
-#price-range{
+#price-range,
+#time-range{
     margin-top: 5px;
 }
 .filter-hotel.fixable{
@@ -1558,4 +1574,299 @@ label.error{
 }
 .search-box-footer{
     overflow: hidden;
+}
+.switch label{
+    font-size: 12px;
+}
+.switch-container{
+    margin-bottom: 10px;
+}
+.switch-container .switch{
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 70px;
+}
+.switch label .lever::after{
+    left: auto;
+    right: -5px;
+    -webkit-transition: right 0.3s ease, background .3s ease, box-shadow 0.1s ease;
+    -moz-transition: right 0.3s ease, background .3s ease, box-shadow 0.1s ease;
+    -ms-transition: right 0.3s ease, background .3s ease, box-shadow 0.1s ease;
+    -o-transition: right 0.3s ease, background .3s ease, box-shadow 0.1s ease;
+    transition: right 0.3s ease, background .3s ease, box-shadow 0.1s ease;
+}
+.switch label input[type="checkbox"]:checked + .lever::after{
+    left: auto;
+    right: 24px;
+}
+.disable-span{
+    position: absolute;
+    width: 100%;
+    height:100%;
+    top:0;
+    right:0;
+    z-index:5;
+    background: #ccc;
+    opacity: 0.3;
+}
+.input-field.disable{
+    opacity:0.3;
+}
+.input-field.disable *{
+    cursor: default;
+}
+#flight-search-form .tt-menu{
+    width: 180%;
+}
+#flight-search-form .tt-suggestion{
+    text-align: right;
+}
+.hotel-steps .nav-wizard > li,
+.flight-steps .nav-wizard > li{
+    width: 20%;
+}
+.flight-item .route{
+    font-size: 18px;
+    line-height: 30px;
+    font-weight: bold;
+    text-align: center;
+    margin: 30px 0;
+}
+.flight-item .route span{
+    display: inline-block;
+    vertical-align: middle;
+}
+.flight-item .route small{
+    display: block;
+    font-weight: lighter;
+}
+.flight-item .route i{
+    line-height: 30px;
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 10px;
+}
+.flight-item .label{
+    display: inline-block;
+    padding: 8px 10px;
+}
+.flight-item .label.label-primary{
+    background: rgba(51,122,183, 0.2);
+    color: #337ab7;
+}
+.flight-item .label.label-default{
+    background: rgba(119,119,119, 0.2);
+    color: #777;
+}
+.flight-item .label.label-success{
+    background: rgba(92,184,92, 0.2);
+    color: #5cb85c;
+}
+.flight-item small.red-text{
+    line-height:27px;
+}
+.flight-item .gray-text{
+    color: #999;
+}
+.flight-item .price{
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 15px 0;
+}
+.flight-item .left-col{
+    padding: 29px 15px;
+}
+.flight-item .right-col{
+    border-left:1px solid #f1f1f1;
+}
+.flight-item img{
+    width: 30px;
+    height:30px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 5px;
+}
+#flights-container .title-row{
+    padding: 15px 0;
+}
+#flights-container .title-row h5{
+    margin: 0 15px 0 0;
+    line-height:36px;
+    float: right;
+}
+#flights-container .title-row #show-all-one-way,
+#flights-container .title-row #show-all-return,
+#flights-container .title-row #show-all{
+    margin-left: 15px;
+}
+#return-flights{
+    margin-top: 50px;
+}
+#confirm-form-container{
+    margin-top: 50px;
+    overflow: hidden;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+input[type="text"]{
+    box-sizing: border-box;
+}
+.select-wrapper.x-small{
+    height:36px;
+    width: 100px;
+}
+.select-wrapper.x-small input.select-dropdown{
+    height:36px;
+    line-height:36px;
+    font-size: 12px;
+    margin-bottom: 0;
+}
+.select-wrapper.x-small span.caret{
+    font-size: 7px;
+    left: 8px;
+}
+#flight-search-form .x-small input[type="text"]{
+    padding-right: 5px;
+}
+.x-small .dropdown-content li > a,
+.x-small .dropdown-content li > span{
+    font-size: 12px;
+}
+.hidden-filter{
+    display: none;
+}
+td, th{
+    text-align: right;
+    padding: 15px;
+}
+.package-item .flight-details-link{
+    margin-left: 15px;
+}
+.package-item table{
+    font-size: 12px;
+}
+.package-item img{
+    margin-left: 10px;
+    display: inline-block;
+    vertical-align: middle;
+}
+#details-modal .general-info{
+    background-color: #f0f0f0;
+    padding: 10px 0;
+}
+#details-modal .general-info{
+    margin-bottom: 15px;
+}
+#details-modal .flight-row{
+    padding: 5px 15px;
+    line-height:20px;
+}
+#details-modal .stop{
+    padding: 25px 15px;
+}
+#details-modal .total-info{
+    padding: 15px;
+    border-top: 2px solid #ccc;
+}
+#details-modal .leg-item{
+    padding-bottom: 30px;
+    background: #F9F9F9;
+    position: relative;
+}
+#details-modal .total-flight-time{
+    position: absolute;
+    right: 15px;
+    top: 55px;
+}
+#details-modal .total-flight-time small{
+    display: block;
+    line-height:30px;
+    direction: rtl;
+}
+.package-item h5{
+    font-size: 16px;
+    margin-top: 30px;
+    margin-bottom: 0;
+}
+.package-item .package-info{
+    margin-bottom: 30px;
+    margin-top: 15px;
+    font-weight: bold;
+}
+.package-item tr.selected{
+
+}
+.non-domestic-airlines .dropdown-content li > a,
+.non-domestic-airlines .dropdown-content li > span{
+    font-size: 12px;
+}
+.flight-information tr img{
+    width: 25px;
+    height:25px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+.flight-information .table td.title-td{
+    background: #F5F5F5;
+    width: 120px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+.flight-information .table td,
+.flight-information .table th{
+    padding: 18px 10px 15px;
+    font-size: 12px;
+}
+.flight-information .table .total-tr td{
+    background: #F5F5F5;
+    font-size: 14px;
+    font-weight: bold;
+    padding-left: 30px;
+}
+.final-steps li{
+    font-weight: bold;
+    list-style: none;
+    color: #888;
+}
+.final-steps li.doing{
+    color: #428bca;
+}
+.final-steps li.done{
+    color: #4caf50;
+}
+.final-steps li.error{
+    color: #ef5350;
+}
+.final-steps li.doing i{
+    background: url("../svg/loading.svg") no-repeat right center;
+    background-size: 18px;
+    height:20px;
+    display: inline-block;
+    margin-right: 20px;
+    vertical-align: middle;
+    font-size: 11px;
+    font-style: normal;
+    padding-right: 23px;
+    line-height: 20px;
+}
+.final-steps li.done i{
+    background: url("../svg/checked.svg") no-repeat right center;
+    background-size: 18px;
+    height:20px;
+    width: 20px;
+    display: inline-block;
+    margin-right: 20px;
+    vertical-align: middle;
+}
+.final-steps li.error i{
+    background: url("../svg/error.svg") no-repeat right center;
+    background-size: 15px;
+    height:20px;
+    width: 20px;
+    display: inline-block;
+    margin-right: 20px;
+    vertical-align: middle;
 }

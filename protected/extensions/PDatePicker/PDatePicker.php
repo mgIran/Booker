@@ -6,7 +6,8 @@ class PDatePicker extends CInputWidget
     public $id;
     public $options;
     public $htmlOptions;
-    public $variableName;
+    public $variableName = false;
+    public $type = 'default';
     public $inTimeout = false;
     public $scriptPosition = CClientScript::POS_READY;
 
@@ -14,11 +15,16 @@ class PDatePicker extends CInputWidget
     {
         if (Yii::getPathOfAlias('PDatePicker') === false) Yii::setPathOfAlias('PDatePicker', realpath(dirname(__FILE__) . '/..'));
         $cs = Yii::app()->clientScript;
-        $cs->registerCssFile($this->getAssetsUrl() . '/css/persian-datepicker-0.4.5.min.css');
         $cs->registerScriptFile($this->getAssetsUrl() . '/js/moment.min.js');
         $cs->registerScriptFile($this->getAssetsUrl() . '/js/moment-jalaali.js');
         $cs->registerScriptFile($this->getAssetsUrl() . '/js/persian-date.js');
-        $cs->registerScriptFile($this->getAssetsUrl() . '/js/persian-datepicker-0.4.5.js');
+        if ($this->type == 'default') {
+            $cs->registerCssFile($this->getAssetsUrl() . '/css/persian-datepicker-0.4.5.min.css');
+            $cs->registerScriptFile($this->getAssetsUrl() . '/js/persian-datepicker-0.4.5.js');
+        } else {
+            $cs->registerCssFile($this->getAssetsUrl() . '/css/persian-datepicker-0.4.5-source.css');
+            $cs->registerScriptFile($this->getAssetsUrl() . '/js/persian-datepicker-0.4.5.min-source.js');
+        }
 
         if (!isset($this->options['altField'])) {
             $this->options['altField'] = '#' . $this->id . '_altField';
@@ -34,7 +40,11 @@ class PDatePicker extends CInputWidget
             unset($this->options['default']);
         }
 
-        $js = "$this->variableName = $('#$this->id').persianDatepicker(" . CJavaScript::encode($this->options) . ");";
+        $js = "";
+        if ($this->variableName)
+            $js .= "$this->variableName = ";
+
+        $js .= "$('#$this->id').persianDatepicker(" . CJavaScript::encode($this->options) . ");";
 
         if ($this->scriptPosition == CClientScript::POS_HEAD)
             $js = 'jQuery(function($) {' . $js . '});';
@@ -43,7 +53,10 @@ class PDatePicker extends CInputWidget
         $cs->registerScript(__CLASS__ . $this->id . '-default-value', $defaultJs, CClientScript::POS_LOAD);
 
         echo CHtml::textField($this->id, '', $this->htmlOptions);
-        echo CHtml::hiddenField($this->id . '_altField', $defaultValue, array('unixDate' => is_null($defaultValue) ? null : $defaultValue * 1000));
+
+        $altFieldName = (!isset($this->options['altFieldName'])) ? $this->id . '_altField' : $this->options['altFieldName'];
+
+        echo CHtml::hiddenField($altFieldName, $defaultValue, array('id' => $this->id . '_altField', 'unixDate' => is_null($defaultValue) ? null : $defaultValue * 1000));
     }
 
     public function getAssetsUrl()

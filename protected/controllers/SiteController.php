@@ -26,25 +26,55 @@ class SiteController extends Controller
 	 * when an action is not explicitly requested by users.
 	 */
 	public function actionIndex()
-	{
-		Yii::app()->theme = 'frontend';
-		$this->layout = '//layouts/empty';
+    {
+        Yii::app()->theme = 'frontend';
+        $this->layout = '//layouts/empty';
 
-		if (isset($_POST['destination'])) {
-			Yii::app()->session->clear();
-			Yii::app()->session['cityName'] = $_POST['destination'];
-			Yii::app()->session['cityKey'] = $_POST['city_key'];
-			Yii::app()->session['inDate'] = $_POST['enter-date_altField'];
-			Yii::app()->session['outDate'] = $_POST['out-date_altField'];
-			Yii::app()->session['stayTime'] = $_POST['stay_time'];
-			Yii::app()->session['roomsCount'] = $_POST['rooms-count'];
-			Yii::app()->session['rooms'] = $_POST['rooms'];
+        if (isset($_POST['method'])) {
+            if ($_POST['method'] == 'hotel') {
+                Yii::app()->session->clear();
+                Yii::app()->session['cityName'] = $_POST['destination'];
+                Yii::app()->session['cityKey'] = $_POST['city_key'];
+                Yii::app()->session['inDate'] = $_POST['enter-date_altField'];
+                Yii::app()->session['outDate'] = $_POST['out-date_altField'];
+                Yii::app()->session['stayTime'] = $_POST['stay_time'];
+                Yii::app()->session['roomsCount'] = $_POST['rooms-count'];
+                Yii::app()->session['rooms'] = $_POST['rooms'];
 
-			$this->redirect('reservation/hotels/search');
-		}
+                $this->redirect('reservation/hotels/search');
+            } elseif ($_POST['method'] == 'flight') {
+                Yii::app()->session->clear();
+                Yii::app()->session['domestic'] = $_POST['flight-is-domestic'] == 1 ? true : false;
+                if ($_POST['flight-is-domestic'] == 1) {
+                    Yii::app()->session['dirType'] = $_POST['dom-flight-dir-type'];
+                    Yii::app()->session['origin'] = $_POST['dom_flight_departure_iata'];
+                    Yii::app()->session['destination'] = $_POST['dom_flight_arrival_iata'];
+                    Yii::app()->session['fromIsCity'] = 0;
+                    Yii::app()->session['toIsCity'] = 0;
+                    Yii::app()->session['date'] = $_POST['dom-departure-date_altField'];
+                    if ($_POST['dom-flight-dir-type'] == 'two-way')
+                        Yii::app()->session['rDate'] = $_POST['dom-return-date_altField'];
+                } else {
+                    Yii::app()->session['dirType'] = $_POST['non-dom-flight-dir-type'];
+                    Yii::app()->session['origin'] = $_POST['non_dom_flight_departure_iata'];
+                    Yii::app()->session['destination'] = $_POST['non_dom_flight_arrival_iata'];
+                    Yii::app()->session['fromIsCity'] = $_POST['non_dom_flight_from_is_city'];
+                    Yii::app()->session['toIsCity'] = $_POST['non_dom_flight_to_is_city'];
+                    Yii::app()->session['date'] = $_POST['non-dom-departure-date_altField'];
+                    if ($_POST['non-dom-flight-dir-type'] == 'two-way')
+                        Yii::app()->session['rDate'] = $_POST['non-dom-return-date_altField'];
+                }
+                Yii::app()->session['adult'] = $_POST['flight_adult_count'];
+                Yii::app()->session['child'] = $_POST['flight_child_count'];
+                Yii::app()->session['infant'] = $_POST['flight_infant_count'];
+                Yii::app()->session['class'] = $_POST['flight_class'];
 
-		$this->render('index');
-	}
+                $this->redirect('reservation/flights/search');
+            }
+        }
+
+        $this->render('index');
+    }
 
 	/**
 	 * This is the action to handle external exceptions.

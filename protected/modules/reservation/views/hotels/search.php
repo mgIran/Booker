@@ -10,14 +10,13 @@ if(!isset($nextPage))
 <?php Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl.'/css/bootstrap-nav-wizard.css');?>
 <div class="container" id="scroll-destination">
     <div class="content page-box">
-        <div class="steps">
+        <div class="steps hotel-steps">
             <ul class="nav nav-wizard">
-                <li class="done col-lg-2"><a>جستجوی هتل</a></li>
-                <li class="active col-lg-2"><a>انتخاب هتل</a></li>
-                <li class="col-lg-2"><a>انتخاب اتاق</a></li>
-                <li class="col-lg-2"><a>ورود اطلاعات</a></li>
-                <li class="col-lg-2"><a>پرداخت</a></li>
-                <li class="col-lg-2"><a>دریافت واچر</a></li>
+                <li class="done"><a>جستجوی هتل</a></li>
+                <li class="active"><a>انتخاب هتل</a></li>
+                <li><a>ورود اطلاعات</a></li>
+                <li><a>پرداخت</a></li>
+                <li><a>دریافت واچر</a></li>
             </ul>
         </div>
         <ul class="collapsible" data-collapsible="accordion">

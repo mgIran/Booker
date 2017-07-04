@@ -7,11 +7,10 @@
  * @property string $id
  * @property string $tracking_code
  * @property string $amount
+ * @property string $order_model
  * @property string $order_id
  * @property string $date
- *
- * The followings are the available model relations:
- * @property Order $order
+ * @property string $description
  */
 class Transactions extends CActiveRecord
 {
@@ -31,12 +30,13 @@ class Transactions extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('tracking_code', 'length', 'max'=>255),
+			array('tracking_code, description', 'length', 'max'=>255),
 			array('amount, order_id', 'length', 'max'=>10),
+            array('order_model', 'length', 'max'=>20),
 			array('date', 'length', 'max'=>50),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, tracking_code, amount, order_id, date', 'safe', 'on'=>'search'),
+			array('id, tracking_code, amount, order_model, order_id, date, description', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -47,9 +47,7 @@ class Transactions extends CActiveRecord
 	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
-		return array(
-			'order' => array(self::BELONGS_TO, 'Order', 'order_id'),
-		);
+		return array();
 	}
 
 	/**
@@ -61,8 +59,10 @@ class Transactions extends CActiveRecord
 			'id' => 'شناسه',
 			'tracking_code' => 'کد رهگیری',
 			'amount' => 'مبلغ',
+            'order_model' => 'Order Model',
 			'order_id' => 'سفارش',
 			'date' => 'تاریخ',
+			'description' => 'توضیحات',
 		);
 	}
 
@@ -87,8 +87,10 @@ class Transactions extends CActiveRecord
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('tracking_code',$this->tracking_code,true);
 		$criteria->compare('amount',$this->amount,true);
+        $criteria->compare('order_model',$this->order_model,true);
 		$criteria->compare('order_id',$this->order_id,true);
 		$criteria->compare('date',$this->date,true);
+        $criteria->compare('description',$this->description,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
