@@ -4,6 +4,10 @@
 /* @var $details array */
 /* @var $oneWayPrice double */
 /* @var $returnPrice double */
+$totalPrice = 0;
+$totalPrice += $this->getFixedPrice($oneWayPrice/10, true, $details['flights']['oneWay']['type'])['price'];
+if(isset($details['flights']['return']))
+    $totalPrice += $this->getFixedPrice($returnPrice/10, true, $details['flights']['return']['type'])['price'];
 ?>
 <?php Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl.'/css/bootstrap-nav-wizard.css');?>
 <div class="container">
@@ -74,8 +78,6 @@
                                         <th>نام</th>
                                         <th>نام خانوادگی</th>
                                         <th>کد ملی</th>
-                                        <th>تاریخ تولد</th>
-                                        <th>شماره گذرنامه</th>
                                         <th>جنسیت</th>
                                         <th>نوع مسافر</th>
                                     </tr>
@@ -86,8 +88,6 @@
                                             <td><?php echo CHtml::encode($passenger->name_fa).'('.CHtml::encode($passenger->name_en).')';?></td>
                                             <td><?php echo CHtml::encode($passenger->family_fa).'('.CHtml::encode($passenger->family_en).')';?></td>
                                             <td><?php echo CHtml::encode($passenger->national_id);?></td>
-                                            <td><?php echo JalaliDate::date('Y/m/d', $passenger->birth_date);?></td>
-                                            <td><?php echo CHtml::encode($passenger->passport_num);?></td>
                                             <td>
                                                 <?php if($passenger->type=='ADT'):?>
                                                     <?php echo ($passenger->gender=='male')?'مرد':'زن';?>
@@ -117,7 +117,7 @@
                             <thead>
                             <tr>
                                 <th></th>
-                                <th>تاریخ</th>
+                                <th>تاریخ و ساعت</th>
                                 <th>مبدا</th>
                                 <th>مقصد</th>
                                 <th>ایرلاین</th>
@@ -134,7 +134,7 @@
                                 <td><?php echo Airports::getFieldByIATA($details['flights']['oneWay']['legs'][0]['origin'], 'city_fa').' - '.Airports::getFieldByIATA($details['flights']['oneWay']['legs'][0]['origin'], 'airport_fa');?></td>
                                 <td><?php echo Airports::getFieldByIATA($details['flights']['oneWay']['legs'][0]['destination'], 'city_fa').' - '.Airports::getFieldByIATA($details['flights']['oneWay']['legs'][0]['destination'], 'airport_fa');?></td>
                                 <td><img src="<?php echo Yii::app()->baseUrl.'/uploads/airlines-logo/dom/'.$details['flights']['oneWay']['legs'][0]['carrier'].'.png';?>"><?php echo $details['flights']['oneWay']['legs'][0]['carrierName'];?></td>
-                                <td><?php echo number_format($this->getFixedPrice($oneWayPrice/10)['price']);?> تومان</td>
+                                <td><?php echo number_format($this->getFixedPrice($oneWayPrice/10, true, $details['flights']['oneWay']['type'])['price']);?> تومان</td>
                             </tr>
                             <?php if(isset($details['flights']['return'])):?>
                                 <tr>
@@ -143,7 +143,7 @@
                                     <td><?php echo Airports::getFieldByIATA($details['flights']['return']['legs'][0]['origin'], 'city_fa').' - '.Airports::getFieldByIATA($details['flights']['return']['legs'][0]['origin'], 'airport_fa');?></td>
                                     <td><?php echo Airports::getFieldByIATA($details['flights']['return']['legs'][0]['destination'], 'city_fa').' - '.Airports::getFieldByIATA($details['flights']['return']['legs'][0]['destination'], 'airport_fa');?></td>
                                     <td><img src="<?php echo Yii::app()->baseUrl.'/uploads/airlines-logo/dom/'.$details['flights']['return']['legs'][0]['carrier'].'.png';?>"><?php echo $details['flights']['return']['legs'][0]['carrierName'];?></td>
-                                    <td><?php echo number_format($this->getFixedPrice($returnPrice/10)['price']);?> تومان</td>
+                                    <td><?php echo number_format($this->getFixedPrice($returnPrice/10, true, $details['flights']['return']['type'])['price']);?> تومان</td>
                                 </tr>
                             <?php endif;?>
                             </tbody>
@@ -152,7 +152,7 @@
 
                     <h5 class="pull-right">
                         مبلغ قابل پرداخت:
-                        <span class="red-text"><?php echo number_format(($this->getFixedPrice($details['totalPrice']/10)['price']), 0);?></span>
+                        <span class="red-text"><?php echo number_format($totalPrice, 0);?></span>
                         <small class="red-text" style="margin-right: 10px;">تومان </small>
                     </h5>
 

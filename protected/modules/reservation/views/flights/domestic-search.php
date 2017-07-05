@@ -107,7 +107,7 @@ if(!isset($nextPage))
                                         ));?>
                                         <?php echo CHtml::label('تاریخ رفت', 'departure-date');?>
                                     </div>
-                                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 input-field">
+                                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 input-field disable">
                                         <?php $this->widget('application.extensions.PDatePicker.PDatePicker', array(
                                             'id'=>'return-date',
                                             'variableName'=>'return_date',
@@ -129,7 +129,8 @@ if(!isset($nextPage))
                                                 'targetId'=>'returnDateDatePicker'
                                             ),
                                             'htmlOptions'=>array(
-                                                'readonly'=>'1'
+                                                'readonly'=>'1',
+                                                'disabled'=>true
                                             )
                                         ));?>
                                         <?php echo CHtml::label('تاریخ برگشت', 'return-date');?>
@@ -146,13 +147,12 @@ if(!isset($nextPage))
                                         <?php echo CHtml::dropDownList('flight_infant_count', '0', array('0'=>'بدون نوزاد','1'=>'1 نوزاد', '2'=>'2 نوزاد', '3'=>'3 نوزاد', '4'=>'4 نوزاد'), array('data-template'=>'normal'));?>
                                     </div>
                                     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 input-field">
-                                        <?php echo CHtml::dropDownList('flight_class', '', array('0'=>'همه','First'=>'First', 'Business'=>'Business', 'Comfort'=>'Comfort', 'Economy'=>'Economy'), array('prompt'=>'کلاس پرواز', 'data-template'=>'normal'));?>
+                                        <?php echo CHtml::dropDownList('flight-dir-type-dropdown', 'one-way', array('two-way'=>'رفت و برگشت', 'one-way'=>'یکطرفه'), array('class'=>'pull-right', 'prompt'=>'نوع سفر', 'data-template'=>'normal'));?>
                                     </div>
                                 </div>
                                 <div class="buttons-block">
                                     <div class="pull-right">
                                         <small class="red-text pull-right" style="line-height: 36px;margin-left: 10px;">نوع پرواز: </small><?php echo CHtml::dropDownList('flight-domestic-dropdown', 'داخلی', array(1=>'داخلی', 0=>'خارجی'), array('class'=>'pull-right x-small','data-template'=>'normal'))?>
-                                        <small class="red-text pull-right" style="line-height: 36px;margin-left: 10px;margin-right: 30px;">نوع سفر: </small><?php echo CHtml::dropDownList('flight-dir-type-dropdown', 'رفت و برگشت', array('two-way'=>'رفت و برگشت', 'one-way'=>'یکطرفه'), array('class'=>'pull-right x-small','data-template'=>'normal'))?>
                                     </div>
                                     <?php echo CHtml::tag('button', array('class'=>'btn waves-effect waves-light green lighten-1 col-md-2 pull-left', 'id'=>'flight-search-btn', 'type'=>'submit'), 'جستجو');?>
                                     <p class="message error pull-left" style="margin-left: 15px;line-height: 36px;"></p>
@@ -501,9 +501,6 @@ if(!isset($nextPage))
         }else if($('#departure-date_altField').val()==$('#return-date_altField').val()){
             $('.message').text('تاریخ رفت و برگشت نمی تواند یکسان باشد.');
             return false;
-        }else if($('select#flight_class').val()==''){
-            $('.message').text('کلاس پرواز را انتخاب کنید.');
-            return false;
         }
     });
 
@@ -608,3 +605,4 @@ if(!isset($nextPage))
     var flightAutoCompleteUrl= '".Yii::app()->request->hostInfo.Yii::app()->request->baseUrl."/reservation/flights/autoComplete/%QUERY';
     var domesticAirportsUrl = '".Yii::app()->request->hostInfo.Yii::app()->request->baseUrl."/reservation/flights/domesticAirports?v=7';
 ", CClientScript::POS_HEAD);?>
+<?php Yii::app()->clientScript->registerScript('hidden-picker',"$('#returnDateDatePicker').addClass('picker--hidden');", CClientScript::POS_LOAD);?>

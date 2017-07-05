@@ -67,7 +67,7 @@ class SiteController extends Controller
                 Yii::app()->session['adult'] = $_POST['flight_adult_count'];
                 Yii::app()->session['child'] = $_POST['flight_child_count'];
                 Yii::app()->session['infant'] = $_POST['flight_infant_count'];
-                Yii::app()->session['class'] = $_POST['flight_class'];
+                Yii::app()->session['class'] = '0';
 
                 $this->redirect('reservation/flights/search');
             }

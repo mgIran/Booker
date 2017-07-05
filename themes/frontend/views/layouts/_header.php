@@ -9,7 +9,7 @@
             </button>
             <a href="<?php echo $this->createUrl('/site');?>" class="navbar-brand">
                 <i class="icon"></i>
-                <h1 class="hidden-md hidden-sm">بوکر<small>رزرو آنلاین هتل های خارجی</small></h1>
+                <h1 class="hidden-md hidden-sm"><small>رزرو آنلاین خدمات مسافرتی و جهانگردی</small></h1>
             </a>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse">

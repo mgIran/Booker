@@ -5,7 +5,7 @@
 /* @var $dirType string */
 ?>
 
-<div class="overflow-fix card-panel flight-item" data-traviaID="<?php echo $data['traviaId'];?>" data-price="<?php echo $this->getFixedPrice($data['totalPrice']/10)['price'];?>" data-depart="<?php echo date('G', strtotime($data['legs'][0]['departureTime']));?>" data-type="<?php echo $data['type'];?>" data-airline="<?php echo $data['legs'][0]['carrier'];?>" data-airlinename="<?php echo $data['legs'][0]['carrierName'];?>">
+<div class="overflow-fix card-panel flight-item" data-traviaID="<?php echo $data['traviaId'];?>" data-price="<?php echo $this->getFixedPrice($data['totalPrice']/10, true, $data['type'])['price'];?>" data-depart="<?php echo date('G', strtotime($data['legs'][0]['departureTime']));?>" data-type="<?php echo $data['type'];?>" data-airline="<?php echo $data['legs'][0]['carrier'];?>" data-airlinename="<?php echo $data['legs'][0]['carrierName'];?>">
     <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12 right-col">
         <small class="gray-text">شماره پرواز: <?php echo $data['legs'][0]['flightNo'];?></small>
         <?php if($data['legs'][0]['carrierName']):?>
@@ -27,7 +27,7 @@
     </div>
     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-center left-col">
         قیمت
-        <span class="red-text price"><?php echo number_format($this->getFixedPrice($data['totalPrice']/10)['price']);?> تومان</span>
+        <span class="red-text price"><?php echo number_format($this->getFixedPrice($data['totalPrice']/10, true, $data['type'])['price']);?> تومان</span>
         <?php echo CHtml::button('انتخاب پرواز', array(
             'class'=>'btn waves-effect waves-light red lighten-1 select-flight',
             'data-dirtype'=>$dirType,

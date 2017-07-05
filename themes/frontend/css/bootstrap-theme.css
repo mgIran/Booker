@@ -153,13 +153,14 @@ form p{
     overflow: hidden;
     color: #ecf0f1;
     height:70px;
-    line-height: 35px;
+    text-align: left;
 }
 .search-box .logo h1 small{
-    font-size: 14px;
+    font-size: 16px;
     margin: 0;
     display: block;
     color: #ecf0f1;
+    line-height: 70px;
 }
 .search-box .logo .icon{
     background: url("../svg/logo.svg") no-repeat center / 90px;
@@ -374,13 +375,12 @@ nav ul li.active,
     height:83px;
     vertical-align: middle;
     margin-right: 10px;
-    padding-top: 8px;
 }
 .navbar-default .navbar-brand h1 small{
     display: block;
     font-size: 40%;
     color: #333;
-    margin-top: 5px;
+    line-height: 83px;
 }
 .navbar-brand .icon{
     background: url("../svg/logo-black.svg") no-repeat center;

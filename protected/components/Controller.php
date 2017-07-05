@@ -196,10 +196,15 @@ class Controller extends CController
         return 0;
     }
 
-    public function getFixedPrice($price)
+    public function getFixedPrice($price, $isFlight = false, $flightType = 'charter')
     {
         Yii::app()->getModule('setting');
-        $commission = SiteSetting::model()->findByAttributes(array('name' => 'commission'));
+        $commission = null;
+        if ($isFlight) {
+            $type = $flightType == 'charter' ? 'charter' : 'system';
+            $commission = SiteSetting::model()->findByAttributes(array('name' => 'flight_' . $type . '_commission'));
+        } else
+            $commission = SiteSetting::model()->findByAttributes(array('name' => 'commission'));
         $commission = $commission->value;
         $tax = SiteSetting::model()->findByAttributes(array('name' => 'tax'));
         $tax = $tax->value;

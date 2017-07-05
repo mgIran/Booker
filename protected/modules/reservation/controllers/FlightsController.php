@@ -122,7 +122,7 @@ class FlightsController extends Controller
             Yii::app()->session['adult'] = $_POST['flight_adult_count'];
             Yii::app()->session['child'] = $_POST['flight_child_count'];
             Yii::app()->session['infant'] = $_POST['flight_infant_count'];
-            Yii::app()->session['class'] = $_POST['flight_class'];
+            Yii::app()->session['class'] = '0';
         } elseif (isset($_POST['search_id']))
             $this->redirect('checkout?sid=' . $_POST['search_id'] . '&oid=' . $_POST['one_way_id'] . '&rid=' . ($_POST['travel_type'] == 'two-way' ? $_POST['return_id'] : '-1'));
 
@@ -203,7 +203,7 @@ class FlightsController extends Controller
         if ($oneWayID and $returnID and $searchID) {
             Yii::app()->getModule('pages');
             /* @var $buyTerms Pages */
-            $buyTerms = Pages::model()->findByPk(4);
+            $buyTerms = Pages::model()->findByPk(5);
             $purifier = new CHtmlPurifier();
             $buyTerms = $purifier->purify($buyTerms->summary);
             $orderModel = new OrderFlight();
@@ -218,14 +218,32 @@ class FlightsController extends Controller
 
             $details = $postman->priceDetails($oneWayID, $returnID == -1 ? null : $returnID, $searchID);
 
+            // Calculate price
+            $oneWayPrice = 0;
+            $returnPrice = 0;
+            foreach ($details['flights']['oneWay']['fares'] as $fare)
+                $oneWayPrice += doubleval($fare['count'] * $fare['basePrice']);
+            if (isset($details['flights']['return'])) {
+                foreach ($details['flights']['return']['fares'] as $fare)
+                    $returnPrice += doubleval($fare['count'] * $fare['basePrice']);
+            }
+
             if (isset($_POST['OrderFlight'])) {
+                $totalPrice = $totalCommission = 0;
+                $totalPrice += $this->getFixedPrice($oneWayPrice/10, true, $details['flights']['oneWay']['type'])['price'];
+                $totalCommission += $this->getFixedPrice($oneWayPrice/10, true, $details['flights']['oneWay']['type'])['commission'];
+                if(isset($details['flights']['return'])) {
+                    $totalPrice += $this->getFixedPrice($returnPrice / 10, true, $details['flights']['return']['type'])['price'];
+                    $totalCommission += $this->getFixedPrice($returnPrice/10, true, $details['flights']['return']['type'])['commission'];
+                }
+
                 $orderModel->attributes = $_POST['OrderFlight'];
                 $orderModel->date = time();
                 $orderModel->one_way_travia_id = $oneWayID;
                 $orderModel->return_travia_id = $returnID == -1 ? null : $returnID;
                 $orderModel->search_id = $searchID;
-                $orderModel->price = $this->getFixedPrice($details['totalPrice'] / 10)['price'];
-                $orderModel->commission = $this->getFixedPrice($details['totalPrice'] / 10)['commission'];
+                $orderModel->price = $totalPrice;
+                $orderModel->commission = $totalCommission;
                 $adultHasError = $childHasError = $infantHasError = false;
                 if ($orderModel->save()) {
                     // Save adult passengers
@@ -233,7 +251,7 @@ class FlightsController extends Controller
                         $model = new PassengersFlight();
                         $model->attributes = $person;
                         $model->order_id = $orderModel->id;
-                        $model->birth_date = $person['birth_day'];
+                        $model->birth_date = isset($person['birth_day'])?$person['birth_day']:null;
                         $model->type = 'ADT';
                         if (!$model->save()) {
                             $adultHasError = true;
@@ -284,16 +302,6 @@ class FlightsController extends Controller
                 }
             }
 
-            // Calculate price
-            $oneWayPrice = 0;
-            $returnPrice = 0;
-            foreach ($details['flights']['oneWay']['fares'] as $fare)
-                $oneWayPrice += doubleval($fare['count'] * $fare['basePrice']);
-            if (isset($details['flights']['return'])) {
-                foreach ($details['flights']['return']['fares'] as $fare)
-                    $returnPrice += doubleval($fare['count'] * $fare['basePrice']);
-            }
-
             Yii::app()->getModule('airports');
 
             $this->render('checkout', array(
@@ -320,8 +328,6 @@ class FlightsController extends Controller
             $postman = new FlightPostman();
 
             $details = $postman->priceDetails($order->one_way_travia_id, $order->return_travia_id, $order->search_id);
-            if ($order->price != $this->getFixedPrice($details['totalPrice'] / 10)['price'])
-                OrderFlight::model()->updateByPk(Yii::app()->session['orderID'], array('price' => $this->getFixedPrice($details['totalPrice'] / 10)['price']));
 
             // Calculate price
             $oneWayPrice = 0;
@@ -332,6 +338,13 @@ class FlightsController extends Controller
                 foreach ($details['flights']['return']['fares'] as $fare)
                     $returnPrice += doubleval($fare['count'] * $fare['basePrice']);
             }
+
+            $totalPrice = 0;
+            $totalPrice += $this->getFixedPrice($oneWayPrice/10, true, $details['flights']['oneWay']['type'])['price'];
+            if(isset($details['flights']['return']))
+                $totalPrice += $this->getFixedPrice($returnPrice / 10, true, $details['flights']['return']['type'])['price'];
+            if ($order->price != $totalPrice)
+                OrderFlight::model()->updateByPk(Yii::app()->session['orderID'], array('price' => $totalPrice));
 
             Yii::app()->getModule('airports');
 
@@ -354,10 +367,26 @@ class FlightsController extends Controller
         $postman = new FlightPostman();
         $details = $postman->priceDetails($order->one_way_travia_id, $order->return_travia_id, $order->search_id);
 
-        if ($order->price != $this->getFixedPrice($details['totalPrice'] / 10)['price'])
-            OrderFlight::model()->updateByPk($id, array('price' => $this->getFixedPrice($details['totalPrice'] / 10)['price']));
+        // Calculate price
+        $oneWayPrice = 0;
+        $returnPrice = 0;
+        foreach ($details['flights']['oneWay']['fares'] as $fare)
+            $oneWayPrice += doubleval($fare['count'] * $fare['basePrice']);
+        if (isset($details['flights']['return'])) {
+            foreach ($details['flights']['return']['fares'] as $fare)
+                $returnPrice += doubleval($fare['count'] * $fare['basePrice']);
+        }
 
-        $Amount = doubleval($this->getFixedPrice($details['totalPrice'])['price']);
+        $totalPrice = 0;
+        $totalPrice += $this->getFixedPrice($oneWayPrice/10, true, $details['flights']['oneWay']['type'])['price'];
+        if(isset($details['flights']['return']))
+            $totalPrice += $this->getFixedPrice($returnPrice / 10, true, $details['flights']['return']['type'])['price'];
+
+        if ($order->price != $totalPrice)
+            OrderFlight::model()->updateByPk($id, array('price' => $totalPrice));
+
+        $Amount = doubleval($totalPrice*10);
+//        $Amount = 1000;
         $CallbackURL = Yii::app()->getBaseUrl(true) . '/reservation/flights/verify';
         $result = Yii::app()->mellat->PayRequest($Amount, $order->id, $CallbackURL);
         //$result = Yii::app()->mellat->PayRequest(1000, $order->id, $CallbackURL);
@@ -460,7 +489,7 @@ class FlightsController extends Controller
 //        $this->layout = '//layouts/inner';
 //        $this->pageName = 'bill';
 //
-//        $order = OrderFlight::model()->findByPk(17);
+//        $order = OrderFlight::model()->findByPk(21);
 //        /* @var $order OrderFlight */
 //
 //        if (true) {

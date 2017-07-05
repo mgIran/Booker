@@ -51,7 +51,7 @@ $flights = CJSON::decode($booking->flights);
                                 foreach($flights['oneWay']['fares'] as $fare)
                                     $oneWayPrice += $fare['totalPrice'] * $fare['count'];
                                 ?>
-                                <td>مبلغ قابل پرداخت: <?php echo number_format($this->getFixedPrice($oneWayPrice/10)['price']);?> تومان</td>
+                                <td>مبلغ قابل پرداخت: <?php echo number_format($this->getFixedPrice($oneWayPrice/10, true, $flights['oneWay']['type'])['price']);?> تومان</td>
                                 <td style="background-color: #F0F0F0;">شماره بلیط: <?php echo $flights['oneWay']['ticketIds'][$key];?></td>
                                 <td>رفرنس: <?php echo $flights['oneWay']['pnr'];?></td>
                                 <td style="background-color: #F0F0F0;">خط هوایی: <?php echo $flights['oneWay']['legs'][0]['carrierName'];?></td>
@@ -90,7 +90,7 @@ $flights = CJSON::decode($booking->flights);
                                 foreach($flights['return']['fares'] as $fare)
                                     $returnPrice += $fare['totalPrice'] * $fare['count'];
                                 ?>
-                                <td>مبلغ قابل پرداخت: <?php echo number_format($this->getFixedPrice($returnPrice/10)['price']);?> تومان</td>
+                                <td>مبلغ قابل پرداخت: <?php echo number_format($this->getFixedPrice($returnPrice/10, true, $flights['return']['type'])['price']);?> تومان</td>
                                 <td style="background-color: #F0F0F0;">شماره بلیط: <?php echo $flights['return']['ticketIds'][$key];?></td>
                                 <td>رفرنس: <?php echo $flights['return']['pnr'];?></td>
                                 <td style="background-color: #F0F0F0;">خط هوایی: <?php echo $flights['return']['legs'][0]['carrierName'];?></td>

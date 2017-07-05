@@ -7,6 +7,10 @@
 /* @var $buyTerms string */
 /* @var $oneWayPrice double */
 /* @var $returnPrice double */
+$totalPrice = 0;
+$totalPrice += $this->getFixedPrice($oneWayPrice/10, true, $details['flights']['oneWay']['type'])['price'];
+if(isset($details['flights']['return']))
+    $totalPrice += $this->getFixedPrice($returnPrice/10, true, $details['flights']['return']['type'])['price'];
 ?>
 <?php Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl.'/css/bootstrap-nav-wizard.css');?>
 <div class="container">
@@ -28,7 +32,7 @@
                         <thead>
                         <tr>
                             <th></th>
-                            <th>تاریخ</th>
+                            <th>تاریخ و ساعت</th>
                             <th>مبدا</th>
                             <th>مقصد</th>
                             <th>ایرلاین</th>
@@ -45,7 +49,7 @@
                             <td><?php echo Airports::getFieldByIATA($details['flights']['oneWay']['legs'][0]['origin'], 'city_fa').' - '.Airports::getFieldByIATA($details['flights']['oneWay']['legs'][0]['origin'], 'airport_fa');?></td>
                             <td><?php echo Airports::getFieldByIATA($details['flights']['oneWay']['legs'][0]['destination'], 'city_fa').' - '.Airports::getFieldByIATA($details['flights']['oneWay']['legs'][0]['destination'], 'airport_fa');?></td>
                             <td><img src="<?php echo Yii::app()->baseUrl.'/uploads/airlines-logo/dom/'.$details['flights']['oneWay']['legs'][0]['carrier'].'.png';?>"><?php echo $details['flights']['oneWay']['legs'][0]['carrierName'];?></td>
-                            <td><?php echo number_format($this->getFixedPrice($oneWayPrice/10)['price']);?> تومان</td>
+                            <td><?php echo number_format($this->getFixedPrice($oneWayPrice/10, true, $details['flights']['oneWay']['type'])['price']);?> تومان</td>
                             <?php if(!Yii::app()->session['domestic']):?>
                                 <td><a href="#">جزئیات...</a></td>
                             <?php endif;?>
@@ -57,7 +61,7 @@
                             <td><?php echo Airports::getFieldByIATA($details['flights']['return']['legs'][0]['origin'], 'city_fa').' - '.Airports::getFieldByIATA($details['flights']['return']['legs'][0]['origin'], 'airport_fa');?></td>
                             <td><?php echo Airports::getFieldByIATA($details['flights']['return']['legs'][0]['destination'], 'city_fa').' - '.Airports::getFieldByIATA($details['flights']['return']['legs'][0]['destination'], 'airport_fa');?></td>
                             <td><img src="<?php echo Yii::app()->baseUrl.'/uploads/airlines-logo/dom/'.$details['flights']['return']['legs'][0]['carrier'].'.png';?>"><?php echo $details['flights']['return']['legs'][0]['carrierName'];?></td>
-                            <td><?php echo number_format($this->getFixedPrice($returnPrice/10)['price']);?> تومان</td>
+                            <td><?php echo number_format($this->getFixedPrice($returnPrice/10, true, $details['flights']['return']['type'])['price']);?> تومان</td>
                             <?php if(!Yii::app()->session['domestic']):?>
                                 <td><a href="#">جزئیات...</a></td>
                             <?php endif;?>
@@ -65,7 +69,7 @@
                         <?php endif;?>
                         <tr class="total-tr">
                             <td colspan="5" class="text-left">قابل پرداخت</td>
-                            <td colspan="2"><?php echo number_format($this->getFixedPrice($details['totalPrice']/10)['price']);?> تومان</td>
+                            <td colspan="2"><?php echo number_format($totalPrice);?> تومان</td>
                         </tr>
                         </tbody>
                     </table>
@@ -88,7 +92,6 @@
                     <li>این اطلاعات مربوط به شماست که فرآیند خرید را انجام می دهید.</li>
                     <li>تیم پشتیبانی بوکر 24 در صورت نیاز از طریق اطلاعات وارد شده در این قسمت با شما تماس خواهد گرفت.</li>
                     <li class="red-text">لطفا پست الکترونیکی را با دقت وارد کنید زیرا صورت حساب و بلیط به این آدرس ارسال خواهد شد.</li>
-                    <li class="red-text">لطفا همه اطلاعات را به زبان انگلیسی وارد کنید.</li>
                     <li class="red-text">پر کردن همه فیلد ها الزامی است.</li>
                 </ul>
 
@@ -168,30 +171,30 @@
                                     <?php echo CHtml::textField('Passengers[adult]['.$j.'][family_en]', '', array('id'=>'Passengers_adult_'.$j.'_family_en','maxlength'=>50)); ?>
                                     <?php echo CHtml::label('نام خانوادگی انگلیسی','Passengers_adult_'.$j.'_family_en'); ?>
                                 </div>
-                                <div class="input-field col-md-3">
-                                    <?php echo CHtml::textField('Passengers[adult]['.$j.'][passport_num]', '', array('id'=>'Passengers_adult_'.$j.'_passport_num','maxlength'=>50)); ?>
-                                    <?php echo CHtml::label('شماره گذرنامه','Passengers_adult_'.$j.'_passport_num'); ?>
-                                </div>
+<!--                                <div class="input-field col-md-3">-->
+<!--                                    --><?php //echo CHtml::textField('Passengers[adult]['.$j.'][passport_num]', '', array('id'=>'Passengers_adult_'.$j.'_passport_num','maxlength'=>50)); ?>
+<!--                                    --><?php //echo CHtml::label('شماره گذرنامه','Passengers_adult_'.$j.'_passport_num'); ?>
+<!--                                </div>-->
                                 <div class="input-field col-md-3">
                                     <?php echo CHtml::textField('Passengers[adult]['.$j.'][national_id]', '', array('id'=>'Passengers_adult_'.$j.'_national_id','maxlength'=>50)); ?>
                                     <?php echo CHtml::label('کد ملی','Passengers_adult_'.$j.'_national_id'); ?>
                                 </div>
-                                <div class="input-field col-md-3">
-                                    <?php $this->widget('application.extensions.PDatePicker.PDatePicker', array(
-                                        'id'=>'Passengers_adult_'.$j.'_birth_date',
-                                        'type'=>'source',
-                                        'options'=>array(
-                                            'altFieldName'=>'Passengers[adult]['.$j.'][birth_day]',
-                                            'autoClose'=>true,
-                                            'format'=>'DD MMMM YYYY',
-                                            'today'=>'js:new Date('.date('Y').', '.date('m').' - 1, '.date('d').').valueOf()',
-                                        ),
-                                        'htmlOptions'=>array(
-                                            'readonly'=>'1'
-                                        )
-                                    ));?>
-                                    <?php echo CHtml::label('تاریخ تولد', 'Passengers_adult_'.$j.'_birth_date');?>
-                                </div>
+<!--                                <div class="input-field col-md-3">-->
+<!--                                    --><?php //$this->widget('application.extensions.PDatePicker.PDatePicker', array(
+//                                        'id'=>'Passengers_adult_'.$j.'_birth_date',
+//                                        'type'=>'source',
+//                                        'options'=>array(
+//                                            'altFieldName'=>'Passengers[adult]['.$j.'][birth_day]',
+//                                            'autoClose'=>true,
+//                                            'format'=>'DD MMMM YYYY',
+//                                            'today'=>'js:new Date('.date('Y').', '.date('m').' - 1, '.date('d').').valueOf()',
+//                                        ),
+//                                        'htmlOptions'=>array(
+//                                            'readonly'=>'1'
+//                                        )
+//                                    ));?>
+<!--                                    --><?php //echo CHtml::label('تاریخ تولد', 'Passengers_adult_'.$j.'_birth_date');?>
+<!--                                </div>-->
                                 <div class="col-md-3">
                                     <?php echo CHtml::label('جنسیت','',array('class'=>'gender-label')); ?>
 
