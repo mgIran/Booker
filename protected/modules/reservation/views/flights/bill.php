@@ -129,21 +129,53 @@ if(isset($details['flights']['return']))
                             </thead>
                             <tbody>
                             <tr>
-                                <td class="title-td">پرواز رفت</td>
+                                <td class="title-td" rowspan="2">پرواز رفت</td>
                                 <td><?php echo JalaliDate::date('Y/m/d - H:i', strtotime($details['flights']['oneWay']['legs'][0]['departureTime']));?></td>
                                 <td><?php echo Airports::getFieldByIATA($details['flights']['oneWay']['legs'][0]['origin'], 'city_fa').' - '.Airports::getFieldByIATA($details['flights']['oneWay']['legs'][0]['origin'], 'airport_fa');?></td>
                                 <td><?php echo Airports::getFieldByIATA($details['flights']['oneWay']['legs'][0]['destination'], 'city_fa').' - '.Airports::getFieldByIATA($details['flights']['oneWay']['legs'][0]['destination'], 'airport_fa');?></td>
                                 <td><img src="<?php echo Yii::app()->baseUrl.'/uploads/airlines-logo/dom/'.$details['flights']['oneWay']['legs'][0]['carrier'].'.png';?>"><?php echo $details['flights']['oneWay']['legs'][0]['carrierName'];?></td>
                                 <td><?php echo number_format($this->getFixedPrice($oneWayPrice/10, true, $details['flights']['oneWay']['type'])['price']);?> تومان</td>
                             </tr>
+                            <tr>
+                                <td colspan="5">
+                                    <?php foreach($details['flights']['oneWay']['fares'] as $fare):?>
+                                        <?php $type = '';if($fare['type']=='ADT')
+                                            $type = 'بزرگسال';
+                                        elseif($fare['type']=='CHD')
+                                            $type = 'کودک';
+                                        elseif($fare['type']=='INF')
+                                            $type = 'نوزاد';
+                                        ?>
+                                        <?php if($fare['count']!=0):?>
+                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12"><b>قیمت <?php echo $type;?>: </b><?php echo number_format($this->getFixedPrice($fare['basePrice']/10, true, $details['flights']['oneWay']['type'])['price']).' <small>('.$fare['count'].' نفر)</small>';?></div>
+                                        <?php endif;?>
+                                    <?php endforeach;?>
+                                </td>
+                            </tr>
                             <?php if(isset($details['flights']['return'])):?>
                                 <tr>
-                                    <td class="title-td">پرواز برگشت</td>
+                                    <td class="title-td" rowspan="2">پرواز برگشت</td>
                                     <td><?php echo JalaliDate::date('Y/m/d - H:i', strtotime($details['flights']['return']['legs'][0]['departureTime']));?></td>
                                     <td><?php echo Airports::getFieldByIATA($details['flights']['return']['legs'][0]['origin'], 'city_fa').' - '.Airports::getFieldByIATA($details['flights']['return']['legs'][0]['origin'], 'airport_fa');?></td>
                                     <td><?php echo Airports::getFieldByIATA($details['flights']['return']['legs'][0]['destination'], 'city_fa').' - '.Airports::getFieldByIATA($details['flights']['return']['legs'][0]['destination'], 'airport_fa');?></td>
                                     <td><img src="<?php echo Yii::app()->baseUrl.'/uploads/airlines-logo/dom/'.$details['flights']['return']['legs'][0]['carrier'].'.png';?>"><?php echo $details['flights']['return']['legs'][0]['carrierName'];?></td>
                                     <td><?php echo number_format($this->getFixedPrice($returnPrice/10, true, $details['flights']['return']['type'])['price']);?> تومان</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5">
+                                        <?php foreach($details['flights']['return']['fares'] as $fare):?>
+                                            <?php $type = '';if($fare['type']=='ADT')
+                                                $type = 'بزرگسال';
+                                            elseif($fare['type']=='CHD')
+                                                $type = 'کودک';
+                                            elseif($fare['type']=='INF')
+                                                $type = 'نوزاد';
+                                            ?>
+                                            <?php if($fare['count']!=0):?>
+                                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12"><b>قیمت <?php echo $type;?>: </b><?php echo number_format($this->getFixedPrice($fare['basePrice']/10, true, $details['flights']['return']['type'])['price']).' <small>('.$fare['count'].' نفر)</small>';?></div>
+                                            <?php endif;?>
+                                        <?php endforeach;?>
+                                    </td>
                                 </tr>
                             <?php endif;?>
                             </tbody>

@@ -4,8 +4,11 @@ class FlightPostman
 {
     protected function getData($method, $data)
     {
-        $url = 'http://api.travia.info/v1/flight/' . $method;
-        $key = 'WPtYSK9PJGOI23';
+        if(Yii::app()->session['domestic'])
+            $url = 'http://api.travia.global/v1/flight/' . $method;
+        else
+            $url = 'http://api.travia.info/v1/flight/' . $method;
+        $key = 'WPtYSK9PJGOI23';    
 
         $curl = curl_init();
 
@@ -110,9 +113,11 @@ class FlightPostman
             "contactInfo":{
                 "mobile":"' . $contactInfo['mobile'] . '",
                 "email":"' . $contactInfo['email'] . '"
-            },
-            "test":true
-        }}';
+            }';
+        if(Yii::app()->session['domestic'])
+            $data .= '}}';
+        else
+            $data .= ',"test":true}}';
         $result = $this->getData('book', $data);
 
         if(!file_exists('bookings'))

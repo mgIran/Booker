@@ -69,35 +69,21 @@ class FlightsController extends Controller
                 Yii::app()->session['fromIsCity'],
                 Yii::app()->session['toIsCity']
             );
-            //$result = json_decode(file_get_contents('flight-result-2017-06-17-14-27.json'), true);
 
             $nextPage = null;
             if (isset($result['nextPage']))
                 $nextPage = $result['nextPage'];
 
             $flights = array();
-            if (isset($result['flights'])) {
-                if (Yii::app()->session['domestic']) {
-                    $flights['oneWay'] = $result['flights'][0]['oneWay'];
-                    $flights['return'] = isset($result['flights'][0]['return']) ? $result['flights'][0]['return'] : array();
-                } else
-                    $flights = $result['flights'];
-            }
+            if (isset($result['flights']))
+                $flights = $result['flights'];
 
-            if (Yii::app()->session['domestic']) {
-                $this->render('domestic-search', array(
-                    'oneWayDataProvider' => new CArrayDataProvider($flights['oneWay'], array('keyField' => 'traviaId', 'pagination' => false)),
-                    'returnDataProvider' => new CArrayDataProvider($flights['return'], array('keyField' => 'traviaId', 'pagination' => false)),
-                    'searchID' => $result['searchId'],
-                    'nextPage' => $nextPage,
-                ));
-            } else {
-                $this->render('non-domestic-search', array(
-                    'flightsDataProvider' => new CArrayDataProvider($flights, array('keyField' => false, 'pagination' => false)),
-                    'searchID' => $result['searchId'],
-                    'nextPage' => $nextPage,
-                ));
-            }
+            $this->render('search', array(
+                'flightsDataProvider' => new CArrayDataProvider($flights, array('keyField' => false, 'pagination' => false)),
+                'searchID' => isset($result['searchId'])?$result['searchId']:null,
+                'nextPage' => $nextPage,
+            ));
+
             Yii::app()->end();
         }
 
@@ -110,11 +96,15 @@ class FlightsController extends Controller
                 Yii::app()->session['destination'] = $_POST['dom_flight_arrival_iata'];
                 Yii::app()->session['fromIsCity'] = 0;
                 Yii::app()->session['toIsCity'] = 0;
+                Yii::app()->session['originName'] = $_POST['dom-flight-departure'];
+                Yii::app()->session['destinationName'] = $_POST['dom-flight-arrival'];
             } else {
                 Yii::app()->session['origin'] = $_POST['non_dom_flight_departure_iata'];
                 Yii::app()->session['destination'] = $_POST['non_dom_flight_arrival_iata'];
                 Yii::app()->session['fromIsCity'] = $_POST['non_dom_flight_from_is_city'];
                 Yii::app()->session['toIsCity'] = $_POST['non_dom_flight_arrival_iata'];
+                Yii::app()->session['originName'] = $_POST['non-dom-flight-departure'];
+                Yii::app()->session['destinationName'] = $_POST['non-dom-flight-arrival'];
             }
             Yii::app()->session['date'] = $_POST['departure-date_altField'];
             if ($_POST['flight-dir-type-dropdown'] == 'two-way')
@@ -130,18 +120,22 @@ class FlightsController extends Controller
             Yii::app()->theme = 'frontend';
             $this->layout = '//layouts/inner';
             $this->pageName = 'search';
-            if (Yii::app()->session['domestic']) {
-                $this->render('domestic-search', array(
-                    'oneWayDataProvider' => new CArrayDataProvider(array()),
-                    'returnDataProvider' => new CArrayDataProvider(array()),
-                    'searchID' => null
-                ));
-            } else {
-                $this->render('non-domestic-search', array(
-                    'flightsDataProvider' => new CArrayDataProvider(array()),
-                    'searchID' => null
-                ));
-            }
+//            if (Yii::app()->session['domestic']) {
+//                $this->render('domestic-search', array(
+//                    'oneWayDataProvider' => new CArrayDataProvider(array()),
+//                    'returnDataProvider' => new CArrayDataProvider(array()),
+//                    'searchID' => null
+//                ));
+//            } else {
+//                $this->render('non-domestic-search', array(
+//                    'flightsDataProvider' => new CArrayDataProvider(array()),
+//                    'searchID' => null
+//                ));
+//            }
+            $this->render('search', array(
+                'flightsDataProvider' => new CArrayDataProvider(array()),
+                'searchID' => null
+            ));
         } else
             $this->redirect('/');
     }

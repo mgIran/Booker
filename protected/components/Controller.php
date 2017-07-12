@@ -206,14 +206,10 @@ class Controller extends CController
         } else
             $commission = SiteSetting::model()->findByAttributes(array('name' => 'commission'));
         $commission = $commission->value;
-        $tax = SiteSetting::model()->findByAttributes(array('name' => 'tax'));
-        $tax = $tax->value;
 
         $commission = ($price * $commission) / 100;
-        $tax = ($price * $tax) / 100;
-        $price = $price + $commission + $tax;
+        $price = $price + $commission;
         return [
-            'tax' => $tax,
             'commission' => $commission,
             'price' => $price,
         ];

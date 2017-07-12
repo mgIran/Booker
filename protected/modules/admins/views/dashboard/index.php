@@ -4,7 +4,6 @@
 /* @var $bookings CActiveDataProvider*/
 /* @var $sumTransactions Transactions*/
 /* @var $commissionPercent string*/
-/* @var $taxPercent string*/
 ?>
 <?php if(Yii::app()->user->hasFlash('success')):?>
     <div class="alert alert-success fade in">
@@ -33,7 +32,6 @@
     <div class="panel-body">
         <label>مجموع تراکنش ها:</label><?php echo number_format($sumTransactions->amount/10).' تومان';?><br />
         <label>مجموع کمیسیون سایت:</label><?php echo number_format((($sumTransactions->amount/10)*$commissionPercent)/100).' تومان';?><br />
-        <label>مجموع مالیات:</label><?php echo number_format((($sumTransactions->amount/10)*$taxPercent)/100).' تومان';?><br />
     </div>
 </div>
 <div class="clearfix"></div>

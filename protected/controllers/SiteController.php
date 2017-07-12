@@ -54,6 +54,8 @@ class SiteController extends Controller
                     Yii::app()->session['date'] = $_POST['dom-departure-date_altField'];
                     if ($_POST['dom-flight-dir-type'] == 'two-way')
                         Yii::app()->session['rDate'] = $_POST['dom-return-date_altField'];
+                    Yii::app()->session['originName'] = $_POST['dom-flight-departure'];
+                    Yii::app()->session['destinationName'] = $_POST['dom-flight-arrival'];
                 } else {
                     Yii::app()->session['dirType'] = $_POST['non-dom-flight-dir-type'];
                     Yii::app()->session['origin'] = $_POST['non_dom_flight_departure_iata'];
@@ -63,6 +65,8 @@ class SiteController extends Controller
                     Yii::app()->session['date'] = $_POST['non-dom-departure-date_altField'];
                     if ($_POST['non-dom-flight-dir-type'] == 'two-way')
                         Yii::app()->session['rDate'] = $_POST['non-dom-return-date_altField'];
+                    Yii::app()->session['originName'] = $_POST['non-dom-flight-departure'];
+                    Yii::app()->session['destinationName'] = $_POST['non-dom-flight-arrival'];
                 }
                 Yii::app()->session['adult'] = $_POST['flight_adult_count'];
                 Yii::app()->session['child'] = $_POST['flight_child_count'];

@@ -50,14 +50,12 @@ class DashboardController extends Controller
 
         Yii::app()->getModule('setting');
         $commissionPercent=SiteSetting::model()->find('name = :name', array(':name'=>'commission'))->value;
-        $taxPercent=SiteSetting::model()->find('name = :name', array(':name'=>'tax'))->value;
 
         $this->render('index', array(
             'cancellationRequests' => $cancellationRequests,
             'bookings' => $bookings,
             'sumTransactions' => $sumTransactions,
             'commissionPercent' => $commissionPercent,
-            'taxPercent' => $taxPercent,
         ));
     }
 }

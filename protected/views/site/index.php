@@ -10,7 +10,7 @@
         <div class="box">
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#domestic-flight-tab">پرواز داخلی</a></li>
-<!--                <li><a data-toggle="tab" href="#non-domestic-flight-tab">پرواز خارجی</a></li>-->
+                <li><a data-toggle="tab" href="#non-domestic-flight-tab">پرواز خارجی</a></li>
                 <li><a data-toggle="tab" href="#hotel-tab">هتل خارجی</a></li>
             </ul>
 
@@ -117,7 +117,7 @@
                     <?php echo CHtml::beginForm('', 'post', array('id'=>'flight-search-form'));?>
                         <?php echo CHtml::hiddenField('method', 'flight');?>
                         <?php echo CHtml::hiddenField('flight-is-domestic', '0', array('id'=>'non-dom-flight-is-domestic'));?>
-                        <?php echo CHtml::hiddenField('non-dom-flight-dir-type', 'two-way');?>
+                        <?php echo CHtml::hiddenField('non-dom-flight-dir-type', 'one-way');?>
                         <div class="row">
                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 input-field">
                                 <?php echo CHtml::textField('non-dom-flight-departure', '', array('id'=>'non-dom-flight-departure', 'class'=>'non-dom-flight-departure'));?>
@@ -178,7 +178,7 @@
                                 ));?>
                                 <?php echo CHtml::label('تاریخ رفت', 'non-dom-departure-date');?>
                             </div>
-                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 input-field">
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 input-field disable">
                                 <?php $this->widget('application.extensions.PDatePicker.PDatePicker', array(
                                     'id'=>'non-dom-return-date',
                                     'variableName'=>'non_dom_return_date',
@@ -200,7 +200,8 @@
                                         'targetId'=>'nonDomReturnDateDatePicker'
                                     ),
                                     'htmlOptions'=>array(
-                                        'readonly'=>'1'
+                                        'readonly'=>'1',
+                                        'disabled'=>true
                                     )
                                 ));?>
                                 <?php echo CHtml::label('تاریخ برگشت', 'non-dom-return-date');?>
@@ -217,13 +218,10 @@
                                 <?php echo CHtml::dropDownList('flight_infant_count', '0', array('0'=>'بدون نوزاد','1'=>'1 نوزاد', '2'=>'2 نوزاد', '3'=>'3 نوزاد', '4'=>'4 نوزاد'), array('data-template'=>'normal'));?>
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 input-field">
-                                <?php echo CHtml::dropDownList('flight_class', '', array('0'=>'همه','First'=>'First', 'Business'=>'Business', 'Comfort'=>'Comfort', 'Economy'=>'Economy'), array('id'=>'non-dom-flight-class','prompt'=>'کلاس پرواز', 'data-template'=>'normal'));?>
+                                <?php echo CHtml::dropDownList('non-dom-flight-dir-type-dropdown', 'one-way', array('two-way'=>'رفت و برگشت', 'one-way'=>'یکطرفه'), array('class'=>'pull-right','data-template'=>'normal','prompt'=>'نوع سفر'));?>
                             </div>
                         </div>
                         <div class="buttons-block">
-                            <div class="pull-right">
-                                <small class="red-text pull-right" style="line-height: 36px;margin-left: 10px;">نوع سفر: </small><?php echo CHtml::dropDownList('non-dom-flight-dir-type-dropdown', 'رفت و برگشت', array('two-way'=>'رفت و برگشت', 'one-way'=>'یکطرفه'), array('class'=>'pull-right x-small','data-template'=>'normal'))?>
-                            </div>
                             <?php echo CHtml::tag('button', array('class'=>'btn waves-effect waves-light green lighten-1 pull-left col-lg-2 col-md-3 col-sm-4 col-xs-12', 'id'=>'non-dom-flight-search-btn', 'type'=>'submit'), 'جستجو');?>
                             <p class="pull-left input-field message" id="non-dom-flight-message" style="margin: 0 0 0 15px;line-height: 36px;"></p>
                         </div>
@@ -469,4 +467,7 @@
         }
     });
 ");?>
-<?php Yii::app()->clientScript->registerScript('hidden-picker',"$('#domReturnDateDatePicker').addClass('picker--hidden');", CClientScript::POS_LOAD);?>
+<?php Yii::app()->clientScript->registerScript('hidden-picker',"
+    $('#domReturnDateDatePicker').addClass('picker--hidden');
+    $('#nonDomReturnDateDatePicker').addClass('picker--hidden');
+", CClientScript::POS_LOAD);?>

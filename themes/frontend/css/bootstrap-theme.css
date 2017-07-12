@@ -1747,6 +1747,7 @@ td, th{
     font-size: 12px;
 }
 .package-item img{
+    max-height:25px;
     margin-left: 10px;
     display: inline-block;
     vertical-align: middle;
@@ -1814,6 +1815,7 @@ td, th{
     text-align: center;
     font-weight: bold;
     font-size: 14px;
+    vertical-align: middle;
 }
 .flight-information .table td,
 .flight-information .table th{

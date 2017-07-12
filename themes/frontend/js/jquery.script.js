@@ -431,11 +431,23 @@ function getHoursAndMinutes(minute) {
     return {hour: hours, minute: minutes};
 }
 
-function getTimeFromString(str){
-    var matches = str.match(/(\d{2}:){2}/);
-    return matches[0].substr(0, matches[0].length-1);
+function getTimeFromString(str, domestic) {
+    var matches;
+    if (str) {
+        if (domestic) {
+            matches = str.match(/\d{2}:\d{2}/);
+            return matches[0];
+        } else {
+            matches = str.match(/(\d{2}:){2}/);
+            return matches[0].substr(0, matches[0].length - 1);
+        }
+    } else
+        return '';
 }
-function getDateFromString(str){
-    var matches = str.match(/\d{4}-\d{2}-\d{2}/);
-    return matches[0].replace('-', '/').replace('-', '/');
+function getDateFromString(str) {
+    if (str) {
+        var matches = str.match(/\d{4}-\d{2}-\d{2}/);
+        return matches[0].replace('-', '/').replace('-', '/');
+    } else
+        return '';
 }

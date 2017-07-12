@@ -98,6 +98,11 @@ class HotelsController extends Controller
                     'price' => $this->getFixedPrice($price / 10)['price'],
                 ));
             }
+
+            usort($hotels, function($a, $b) {
+                return $a['price'] > $b['price'] ? 1 : -1;
+            });
+
             $this->render('search', array(
                 'hotelsDataProvider' => new CArrayDataProvider($hotels, array('keyField' => 'traviaID', 'pagination' => false)),
                 'country' => $result['country'],
@@ -336,7 +341,7 @@ class HotelsController extends Controller
         if ($order->price != $details['price'])
             Order::model()->updateByPk($id, array('price' => $details['price']));
 
-        $Amount = doubleval($this->getFixedPrice($details['price']))['price'];
+        $Amount = doubleval($this->getFixedPrice($details['price'])['price']);
         $CallbackURL = Yii::app()->getBaseUrl(true) . '/reservation/hotels/verify';
         $result = Yii::app()->mellat->PayRequest($Amount, $order->id, $CallbackURL);
         //$result = Yii::app()->mellat->PayRequest(1000, $order->id, $CallbackURL);
