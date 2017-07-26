@@ -27,6 +27,11 @@ class PassengersFlight extends CActiveRecord
 		'INF'=>'نوزاد',
 	];
 
+	public $genderLabels=array(
+		'male'=>'مرد',
+		'female'=>'زن',
+	);
+
 	/**
 	 * @return string the associated database table name
 	 */

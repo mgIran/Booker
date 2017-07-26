@@ -34,7 +34,8 @@ class DashboardController extends Controller
 
     public function actionIndex()
     {
-        $bookings = Bookings::model()->search();
+        $hotelBookings = Bookings::model()->search();
+        $flightBookings = BookingsFlight::model()->search();
 
         $criteria = new CDbCriteria();
         $criteria->addCondition('status = :status');
@@ -53,7 +54,8 @@ class DashboardController extends Controller
 
         $this->render('index', array(
             'cancellationRequests' => $cancellationRequests,
-            'bookings' => $bookings,
+            'hotelBookings' => $hotelBookings,
+            'flightBookings' => $flightBookings,
             'sumTransactions' => $sumTransactions,
             'commissionPercent' => $commissionPercent,
         ));

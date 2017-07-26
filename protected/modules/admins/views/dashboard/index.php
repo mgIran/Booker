@@ -1,7 +1,8 @@
 <?php
 /* @var $this DashboardController*/
 /* @var $cancellationRequests CActiveDataProvider*/
-/* @var $bookings CActiveDataProvider*/
+/* @var $hotelBookings CActiveDataProvider*/
+/* @var $flightBookings CActiveDataProvider*/
 /* @var $sumTransactions Transactions*/
 /* @var $commissionPercent string*/
 ?>
@@ -31,16 +32,15 @@
     <div class="panel-heading">آمار مالی</div>
     <div class="panel-body">
         <label>مجموع تراکنش ها:</label><?php echo number_format($sumTransactions->amount/10).' تومان';?><br />
-        <label>مجموع کمیسیون سایت:</label><?php echo number_format((($sumTransactions->amount/10)*$commissionPercent)/100).' تومان';?><br />
     </div>
 </div>
 <div class="clearfix"></div>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    <div class="panel-heading">رزروهای انجام شده</div>
+    <div class="panel-heading">هتل</div>
     <div class="panel-body">
         <?php $this->widget('zii.widgets.grid.CGridView', array(
-            'id'=>'bookings-grid',
-            'dataProvider'=>$bookings,
+            'id'=>'hotel-bookings-grid',
+            'dataProvider'=>$hotelBookings,
             'columns'=>array(
                 array(
                     'header'=>'درخواست کننده',
@@ -64,6 +64,68 @@
                     'buttons'=>array(
                         'view'=>array(
                             'url'=>'Yii::app()->createUrl("/reservation/hotels/viewBooking", array("id"=>$data->id))',
+                        ),
+                    )
+                ),
+            ),
+        )); ?>
+    </div>
+</div>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="panel-heading">بلیط هواپیما</div>
+    <div class="panel-body">
+        <?php $this->widget('zii.widgets.grid.CGridView', array(
+            'id'=>'flight-bookings-grid',
+            'dataProvider'=>$flightBookings,
+            'columns'=>array(
+                array(
+                    'header'=>'درخواست کننده',
+                    'value'=>'$data->order->fullName'
+                ),
+                array(
+                    'header'=>'موبایل',
+                    'value'=>'$data->order->buyer_mobile'
+                ),
+                array(
+                    'header'=>'مبدا',
+                    'value'=>function($data){
+                        Yii::import('airports.models.*');
+                        /* @var BookingsFlight $data */
+                        $flights = CJSON::decode($data->flights);
+                        return Airports::getFieldByIATA($flights['oneWay']['legs'][0]['origin'],'city_fa');
+                    }
+                ),
+                array(
+                    'header'=>'مقصد',
+                    'value'=>function($data){
+                        Yii::import('airports.models.*');
+                        /* @var BookingsFlight $data */
+                        $flights = CJSON::decode($data->flights);
+                        return Airports::getFieldByIATA($flights['oneWay']['legs'][0]['destination'],'city_fa');
+                    }
+                ),
+                array(
+                    'header'=>'تاریخ و ساعت حرکت',
+                    'value'=>function($data){
+                        /* @var BookingsFlight $data */
+                        $flights = CJSON::decode($data->flights);
+                        return JalaliDate::date("Y/m/d - H:i", strtotime($flights['oneWay']['legs'][0]['departureTime']));
+                    }
+                ),
+                array(
+                    'header'=>'نوع سفر',
+                    'value'=>function($data){
+                        /* @var BookingsFlight $data */
+                        $flights = CJSON::decode($data->flights);
+                        return isset($flights['return'])?'رفت و برگشت':'یکطرفه';
+                    }
+                ),
+                array(
+                    'class'=>'CButtonColumn',
+                    'template'=>'{view}',
+                    'buttons'=>array(
+                        'view'=>array(
+                            'url'=>'Yii::app()->createUrl("/reservation/flights/viewBooking", array("id"=>$data->id))',
                         ),
                     )
                 ),

@@ -113,6 +113,7 @@ class BookingsFlight extends CActiveRecord
 		$criteria->compare('flights',$this->flights,true);
 		$criteria->compare('orderId',$this->orderId,true);
 		$criteria->compare('order_id',$this->order_id,true);
+		$criteria->order = 'id DESC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

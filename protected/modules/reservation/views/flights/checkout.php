@@ -208,10 +208,12 @@ if(isset($details['flights']['return']))
                                     <?php echo CHtml::textField('Passengers[adult]['.$j.'][family_en]', '', array('id'=>'Passengers_adult_'.$j.'_family_en','maxlength'=>50)); ?>
                                     <?php echo CHtml::label('نام خانوادگی انگلیسی','Passengers_adult_'.$j.'_family_en'); ?>
                                 </div>
-<!--                                <div class="input-field col-md-3">-->
-<!--                                    --><?php //echo CHtml::textField('Passengers[adult]['.$j.'][passport_num]', '', array('id'=>'Passengers_adult_'.$j.'_passport_num','maxlength'=>50)); ?>
-<!--                                    --><?php //echo CHtml::label('شماره گذرنامه','Passengers_adult_'.$j.'_passport_num'); ?>
-<!--                                </div>-->
+                                <?php if(!Yii::app()->session['domestic']):?>
+                                    <div class="input-field col-md-3">
+                                        <?php echo CHtml::textField('Passengers[adult]['.$j.'][passport_num]', '', array('id'=>'Passengers_adult_'.$j.'_passport_num','maxlength'=>50)); ?>
+                                        <?php echo CHtml::label('شماره گذرنامه','Passengers_adult_'.$j.'_passport_num'); ?>
+                                    </div>
+                                <?php endif;?>
                                 <div class="input-field col-md-3">
                                     <?php echo CHtml::textField('Passengers[adult]['.$j.'][national_id]', '', array('id'=>'Passengers_adult_'.$j.'_national_id','maxlength'=>50)); ?>
                                     <?php echo CHtml::label('کد ملی','Passengers_adult_'.$j.'_national_id'); ?>
@@ -269,30 +271,32 @@ if(isset($details['flights']['return']))
                                         <?php echo CHtml::textField('Passengers[child]['.$j.'][family_en]', '', array('id'=>'Passengers_child_'.$j.'_family_en','maxlength'=>50)); ?>
                                         <?php echo CHtml::label('نام خانوادگی انگلیسی','Passengers_child_'.$j.'_family_en'); ?>
                                     </div>
-                                    <div class="input-field col-md-3">
-                                        <?php echo CHtml::textField('Passengers[child]['.$j.'][passport_num]', '', array('id'=>'Passengers_child_'.$j.'_passport_num','maxlength'=>50)); ?>
-                                        <?php echo CHtml::label('شماره گذرنامه','Passengers_child_'.$j.'_passport_num'); ?>
-                                    </div>
+                                    <?php if(!Yii::app()->session['domestic']):?>
+                                        <div class="input-field col-md-3">
+                                            <?php echo CHtml::textField('Passengers[child]['.$j.'][passport_num]', '', array('id'=>'Passengers_child_'.$j.'_passport_num','maxlength'=>50)); ?>
+                                            <?php echo CHtml::label('شماره گذرنامه','Passengers_child_'.$j.'_passport_num'); ?>
+                                        </div>
+                                    <?php endif;?>
                                     <div class="input-field col-md-3">
                                         <?php echo CHtml::textField('Passengers[child]['.$j.'][national_id]', '', array('id'=>'Passengers_child_'.$j.'_national_id','maxlength'=>50)); ?>
                                         <?php echo CHtml::label('کد ملی','Passengers_child_'.$j.'_national_id'); ?>
                                     </div>
-                                    <div class="input-field col-md-3">
-                                        <?php $this->widget('application.extensions.PDatePicker.PDatePicker', array(
-                                            'id'=>'Passengers_child_'.$j.'_birth_date',
-                                            'type'=>'source',
-                                            'options'=>array(
-                                                'altFieldName'=>'Passengers[child]['.$j.'][birth_day]',
-                                                'autoClose'=>true,
-                                                'format'=>'DD MMMM YYYY',
-                                                'today'=>'js:new Date('.date('Y').', '.date('m').' - 1, '.date('d').').valueOf()',
-                                            ),
-                                            'htmlOptions'=>array(
-                                                'readonly'=>'1'
-                                            )
-                                        ));?>
-                                        <?php echo CHtml::label('تاریخ تولد', 'Passengers_child_'.$j.'_birth_date');?>
-                                    </div>
+<!--                                    <div class="input-field col-md-3">-->
+<!--                                        --><?php //$this->widget('application.extensions.PDatePicker.PDatePicker', array(
+//                                            'id'=>'Passengers_child_'.$j.'_birth_date',
+//                                            'type'=>'source',
+//                                            'options'=>array(
+//                                                'altFieldName'=>'Passengers[child]['.$j.'][birth_day]',
+//                                                'autoClose'=>true,
+//                                                'format'=>'DD MMMM YYYY',
+//                                                'today'=>'js:new Date('.date('Y').', '.date('m').' - 1, '.date('d').').valueOf()',
+//                                            ),
+//                                            'htmlOptions'=>array(
+//                                                'readonly'=>'1'
+//                                            )
+//                                        ));?>
+<!--                                        --><?php //echo CHtml::label('تاریخ تولد', 'Passengers_child_'.$j.'_birth_date');?>
+<!--                                    </div>-->
                                     <div class="col-md-3">
                                         <?php echo CHtml::label('جنسیت','',array('class'=>'gender-label')); ?>
 
@@ -331,30 +335,32 @@ if(isset($details['flights']['return']))
                                         <?php echo CHtml::textField('Passengers[infant]['.$j.'][family_en]', '', array('id'=>'Passengers_infant_'.$j.'_family_en','maxlength'=>50)); ?>
                                         <?php echo CHtml::label('نام خانوادگی انگلیسی','Passengers_infant_'.$j.'_family_en'); ?>
                                     </div>
-                                    <div class="input-field col-md-3">
-                                        <?php echo CHtml::textField('Passengers[infant]['.$j.'][passport_num]', '', array('id'=>'Passengers_infant_'.$j.'_passport_num','maxlength'=>50)); ?>
-                                        <?php echo CHtml::label('شماره گذرنامه','Passengers_infant_'.$j.'_passport_num'); ?>
-                                    </div>
+                                    <?php if(!Yii::app()->session['domestic']):?>
+                                        <div class="input-field col-md-3">
+                                            <?php echo CHtml::textField('Passengers[infant]['.$j.'][passport_num]', '', array('id'=>'Passengers_infant_'.$j.'_passport_num','maxlength'=>50)); ?>
+                                            <?php echo CHtml::label('شماره گذرنامه','Passengers_infant_'.$j.'_passport_num'); ?>
+                                        </div>
+                                    <?php endif;?>
                                     <div class="input-field col-md-3">
                                         <?php echo CHtml::textField('Passengers[infant]['.$j.'][national_id]', '', array('id'=>'Passengers_infant_'.$j.'_national_id','maxlength'=>50)); ?>
                                         <?php echo CHtml::label('کد ملی','Passengers_infant_'.$j.'_national_id'); ?>
                                     </div>
-                                    <div class="input-field col-md-3">
-                                        <?php $this->widget('application.extensions.PDatePicker.PDatePicker', array(
-                                            'id'=>'Passengers_infant_'.$j.'_birth_date',
-                                            'type'=>'source',
-                                            'options'=>array(
-                                                'altFieldName'=>'Passengers[infant]['.$j.'][birth_day]',
-                                                'autoClose'=>true,
-                                                'format'=>'DD MMMM YYYY',
-                                                'today'=>'js:new Date('.date('Y').', '.date('m').' - 1, '.date('d').').valueOf()',
-                                            ),
-                                            'htmlOptions'=>array(
-                                                'readonly'=>'1'
-                                            )
-                                        ));?>
-                                        <?php echo CHtml::label('تاریخ تولد', 'Passengers_infant_'.$j.'_birth_date');?>
-                                    </div>
+<!--                                    <div class="input-field col-md-3">-->
+<!--                                        --><?php //$this->widget('application.extensions.PDatePicker.PDatePicker', array(
+//                                            'id'=>'Passengers_infant_'.$j.'_birth_date',
+//                                            'type'=>'source',
+//                                            'options'=>array(
+//                                                'altFieldName'=>'Passengers[infant]['.$j.'][birth_day]',
+//                                                'autoClose'=>true,
+//                                                'format'=>'DD MMMM YYYY',
+//                                                'today'=>'js:new Date('.date('Y').', '.date('m').' - 1, '.date('d').').valueOf()',
+//                                            ),
+//                                            'htmlOptions'=>array(
+//                                                'readonly'=>'1'
+//                                            )
+//                                        ));?>
+<!--                                        --><?php //echo CHtml::label('تاریخ تولد', 'Passengers_infant_'.$j.'_birth_date');?>
+<!--                                    </div>-->
                                     <div class="col-md-3">
                                         <?php echo CHtml::label('جنسیت','',array('class'=>'gender-label')); ?>
 

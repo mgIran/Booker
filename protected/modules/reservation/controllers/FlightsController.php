@@ -20,7 +20,7 @@ class FlightsController extends Controller
     {
         return array(
             array('allow',
-                'actions' => array('autoComplete', 'search', 'checkout', 'bill', 'pay', 'verify', 'mail', 'loadMore', 'ticket', 'cancellation', 'domesticAirports', 'booking'),
+                'actions' => array('masoud','autoComplete', 'search', 'checkout', 'bill', 'pay', 'verify', 'mail', 'loadMore', 'ticket', 'cancellation', 'domesticAirports', 'booking'),
                 'users' => array('*'),
             ),
             array('allow',
@@ -633,9 +633,17 @@ class FlightsController extends Controller
     {
         /* @var HTML2PDF $html2pdf */
         /* @var OrderFlight $order */
+        /* @var BookingsFlight $booking */
         Yii::app()->getModule('airports');
-        $order = OrderFlight::model()->findByPk($_POST['order_id']);
-        $booking = BookingsFlight::model()->findByPk($_POST['booking_id']);
+        if(isset($_POST['order_id']) and isset($_POST['booking_id'])){
+            $orderID = $_POST['order_id'];
+            $bookingID = $_POST['booking_id'];
+        }else{
+            $orderID = $_GET['order_id'];
+            $bookingID = $_GET['booking_id'];
+        }
+        $order = OrderFlight::model()->findByPk($orderID);
+        $booking = BookingsFlight::model()->findByPk($bookingID);
 
         // Render PDF file
         $html2pdf = Yii::app()->ePdf->HTML2PDF();
@@ -646,11 +654,14 @@ class FlightsController extends Controller
         $lg['w_page'] = 'page';
         $html2pdf->pdf->setLanguageArray($lg);
         $html2pdf->pdf->SetMargins(5, 5, 5);
+        $pdfFileName = 'fa_pdf';
+        if(Yii::app()->session['domestic'])
+            $pdfFileName = 'en_pdf';
         foreach (CJSON::decode($booking->passengers) as $key => $passenger) {
             $html2pdf->pdf->AddPage();
             $html2pdf->pdf->SetFont('zarbold', '', 11);
             $html2pdf->pdf->SetTextColor(0, 0, 0);
-            $html2pdf->pdf->WriteHTML($this->renderPartial('pdf', array(
+            $html2pdf->pdf->WriteHTML($this->renderPartial($pdfFileName, array(
                 'booking' => $booking,
                 'html2pdf' => $html2pdf,
                 'passenger' => $passenger,
@@ -714,11 +725,14 @@ class FlightsController extends Controller
         $lg['w_page'] = 'page';
         $html2pdf->pdf->setLanguageArray($lg);
         $html2pdf->pdf->SetMargins(5, 5, 5);
+        $pdfFileName = 'fa_pdf';
+        if(Yii::app()->session['domestic'])
+            $pdfFileName = 'en_pdf';
         foreach (CJSON::decode($booking->passengers) as $key => $passenger) {
             $html2pdf->pdf->AddPage();
             $html2pdf->pdf->SetFont('zarbold', '', 11);
             $html2pdf->pdf->SetTextColor(0, 0, 0);
-            $html2pdf->pdf->WriteHTML($this->renderPartial('pdf', array(
+            $html2pdf->pdf->WriteHTML($this->renderPartial($pdfFileName, array(
                 'booking' => $booking,
                 'html2pdf' => $html2pdf,
                 'passenger' => $passenger,
@@ -776,10 +790,15 @@ class FlightsController extends Controller
         Yii::app()->theme = 'abound';
         $this->layout = '//layouts/column2';
 
-        $model = Bookings::model()->findByPk($id);
+        $model = BookingsFlight::model()->findByPk($id);
+        $transaction = Transactions::model()->findAll('order_model = :model AND order_id = :id', [
+            ':model'=>'OrderFlight',
+            ':id'=>$model->order_id
+        ]);
 
         $this->render('view-booking', array(
             'model' => $model,
+            'transaction' => $transaction,
             'id' => $id,
         ));
     }
@@ -801,7 +820,7 @@ class FlightsController extends Controller
                 $cancelRequest->booking->status = 'canceled';
                 if ($cancelRequest->booking->save()) {
                     // Send mail to user
-                    $message = '<p style="text-align: right;">با سلام<br>کاربر گرامی، درخواست انصراف شما توسط تیم مدیریت مورد تایید قرار گرفت و سفارش شما با کد رهگیری B24-' . $cancelRequest->orderId . ' کنسل گردید.</p>';
+                    $message = '<p style="text-align: right;">با سلام<br>کاربر گرامی، درخواست انصراف شما توسط تیم مدیریت مورد تایید قرار گرفت و سفارش شما با کد رهگیری B24F-' . $cancelRequest->orderId . ' کنسل گردید.</p>';
                     Mailer::mail($cancelRequest->booking->order->buyer_email, 'درخواست انصراف', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP']);
                     Yii::app()->user->setFlash('success', 'درخواست مورد نظر کنسل گردید. مبلغ کسر شده از حساب ' . $result['chargeAmount'] . ' تومان می باشد.');
                 } else
@@ -823,7 +842,7 @@ class FlightsController extends Controller
         $cancelRequest->status = 'refused';
         if ($cancelRequest->save()) {
             // Send mail to user
-            $message = '<p style="text-align: right;">با سلام<br>کاربر گرامی، با عرض پوزش درخواست شما جهت انصراف از سفارش با کد رهگیری B24-' . $cancelRequest->orderId . ' مورد تایید تیم مدیریت قرار نگرفت.</p>';
+            $message = '<p style="text-align: right;">با سلام<br>کاربر گرامی، با عرض پوزش درخواست شما جهت انصراف از سفارش با کد رهگیری B24F-' . $cancelRequest->orderId . ' مورد تایید تیم مدیریت قرار نگرفت.</p>';
             Mailer::mail($cancelRequest->booking->order->buyer_email, 'درخواست انصراف', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP']);
             Yii::app()->user->setFlash('success', 'اطلاعات با موفقیت ثبت شد. درخواست مورد نظر رد شد.');
         } else

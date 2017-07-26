@@ -138,4 +138,9 @@ class OrderFlight extends CActiveRecord
     {
         return parent::model($className);
     }
+
+    public function getFullName()
+    {
+        return $this->buyer_name . ' ' . $this->buyer_family;
+    }
 }

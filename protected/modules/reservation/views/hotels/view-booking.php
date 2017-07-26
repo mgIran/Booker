@@ -116,7 +116,7 @@
         ),
         array(
             'name'=>'کد رهگیری رزرو',
-            'value'=>'B24-'.$model->orderId,
+            'value'=>'B24H-'.$model->orderId,
         )
     ),
 )); ?>

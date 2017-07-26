@@ -949,7 +949,7 @@ class HotelsController extends Controller
                 $cancelRequest->booking->status = 'canceled';
                 if ($cancelRequest->booking->save()) {
                     // Send mail to user
-                    $message = '<p style="text-align: right;">با سلام<br>کاربر گرامی، درخواست انصراف شما توسط تیم مدیریت مورد تایید قرار گرفت و سفارش شما با کد رهگیری B24-' . $cancelRequest->orderId . ' کنسل گردید.</p>';
+                    $message = '<p style="text-align: right;">با سلام<br>کاربر گرامی، درخواست انصراف شما توسط تیم مدیریت مورد تایید قرار گرفت و سفارش شما با کد رهگیری B24H-' . $cancelRequest->orderId . ' کنسل گردید.</p>';
                     Mailer::mail($cancelRequest->booking->order->buyer_email, 'درخواست انصراف', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP']);
                     Yii::app()->user->setFlash('success', 'درخواست مورد نظر کنسل گردید. مبلغ کسر شده از حساب ' . $result['chargeAmount'] . ' تومان می باشد.');
                 } else
@@ -971,7 +971,7 @@ class HotelsController extends Controller
         $cancelRequest->status = 'refused';
         if ($cancelRequest->save()) {
             // Send mail to user
-            $message = '<p style="text-align: right;">با سلام<br>کاربر گرامی، با عرض پوزش درخواست شما جهت انصراف از سفارش با کد رهگیری B24-' . $cancelRequest->orderId . ' مورد تایید تیم مدیریت قرار نگرفت.</p>';
+            $message = '<p style="text-align: right;">با سلام<br>کاربر گرامی، با عرض پوزش درخواست شما جهت انصراف از سفارش با کد رهگیری B24H-' . $cancelRequest->orderId . ' مورد تایید تیم مدیریت قرار نگرفت.</p>';
             Mailer::mail($cancelRequest->booking->order->buyer_email, 'درخواست انصراف', $message, Yii::app()->params['noReplyEmail'], Yii::app()->params['SMTP']);
             Yii::app()->user->setFlash('success', 'اطلاعات با موفقیت ثبت شد. درخواست مورد نظر رد شد.');
         } else

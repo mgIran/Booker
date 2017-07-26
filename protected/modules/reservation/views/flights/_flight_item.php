@@ -1,4 +1,5 @@
 <?php
+/* @var $this FlightsController */
 /* @var $data array */
 /* @var $origin string */
 /* @var $destination string */
@@ -58,7 +59,7 @@ if(Yii::app()->session['domestic']) {
                 <?php else:?>
                     <td><?php echo (count($oneWay['legs'])-1)==0?'بدون توقف':'دارد <small>('.(count($oneWay['legs'])-1).' توقف)</small>';?></td>
                 <?php endif;?>
-                <td><?php echo number_format($oneWay['totalPrice']/10);?> تومان</td>
+                <td><?php echo number_format($this->getFixedPrice($oneWay['totalPrice']/10, true, $oneWay['type'])['price']);?> تومان</td>
                 <td><?php echo JalaliDate::date('Y/m/d - H:i', strtotime($oneWay['legs'][0]['departureTime']), false);?></td>
                 <td class="text-left">
                     <?php echo CHtml::hiddenField('flight_details', json_encode($oneWay), array('class'=>'flight-details'));?>
@@ -91,7 +92,7 @@ if(Yii::app()->session['domestic']) {
                     <?php else:?>
                         <td><?php echo (count($return['legs'])-1)==0?'بدون توقف':'دارد <small>('.(count($return['legs'])-1).' توقف)</small>';?></td>
                     <?php endif;?>
-                    <td><?php echo number_format($return['totalPrice']/10);?> تومان</td>
+                    <td><?php echo number_format($this->getFixedPrice($return['totalPrice']/10, true, $return['type'])['price']);?> تومان</td>
                     <td><?php echo JalaliDate::date('Y/m/d - H:i', strtotime($return['legs'][0]['departureTime']), false);?></td>
                     <td class="text-left">
                         <?php echo CHtml::hiddenField('flight_details', json_encode($return), array('class'=>'flight-details'));?>
