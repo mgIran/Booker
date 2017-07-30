@@ -2,9 +2,6 @@
 /* @var $this HotelsController */
 /* @var $order Order */
 /* @var $transaction Transactions */
-/* @var $bookingResult boolean */
-/* @var $bookingID integer */
-/* @var $booking Bookings */
 ?>
 <?php Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl.'/css/bootstrap-nav-wizard.css');?>
 <div class="container">
@@ -51,38 +48,61 @@
 
             </div>
 
-            <?php if($bookingResult):?>
-                <div class="alert alert-warning"><h6>عملیات رزور هتل با موفقیت به پایان رسید. کد رهگیری عملیات رزرو B24-<?php echo $booking->orderId?> می باشد.<small class="red-text lighten-1" style="display: block;margin-top: 15px;">لطفا این کد را جهت سایر عملیات ها نزد خود نگهداری کنید.</small></h6></div>
-                <div class="overflow-fix" style="padding: 15px;">
-                    <a href="<?php echo $this->createUrl('/site');?>" class="btn waves-effect waves-light green lighten-1 col-md-2 pull-left">صفحه اصلی</a>
-                    <a href="<?php echo $this->createUrl('/reservation/hotels/voucher', array('booking_id'=>$bookingID));?>" style="margin-left: 10px;" target="_blank" class="btn waves-effect waves-light amber darken-2 pull-left">دانلود فرم تاییدیه رزرو</a>
-                    <?php echo CHtml::ajaxLink('ایمیل تاییدیه رزرو را دریافت نکردم', $this->createUrl('/reservation/hotels/mail', array('order_id'=>$order->id,'booking_id'=>$bookingID)), array(
-                        'dataType'=>'JSON',
-                        'beforeSend'=>'js:function(){
-                            $("#email-loading").removeClass("hidden");
-                            $("#email-sending").addClass("hidden");
-                        }',
-                        'success'=>'js:function(data){
-                            if(data.status)
-                                alert("ایمیل تاییدیه رزرو هتل ارسال شد.");
-                            else
-                                alert("در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید.");
+            <div class="card card-panel final-steps">
+                <span>لطفا تا انجام مراحل زیر صبر کنید:</span>
+                <ul>
+                    <li class="doing">1. رزرو واچر<i>لطفا صبر کنید...</i></li>
+                    <li class="queue">2. صدور و ارسال آنی واچر<i></i></li>
+                </ul>
+            </div>
 
-                            $("#email-loading").addClass("hidden");
-                            $("#email-sending").removeClass("hidden");
-                        }',
-                    ),array(
-                        'id'=>'email-sending',
-                        'class'=>'btn btn-sm waves-effect waves-light red lighten-1 pull-left',
-                        'style'=>'margin-left: 10px;'
-                    ))?>
-                    <a id="email-loading" style="margin-left: 10px;" href="#" class="btn btn-sm waves-effect waves-light red lighten-1 pull-left hidden">در حال ارسال ایمیل...</a>
-                </div>
-            <?php else:?>
-                <div class="alert alert-danger"><h5 class="text-center">عملیات رزور هتل با خطا مواجه شد. لطفا با بخش پشتیبانی تماس حاصل فرمایید.</h5></div>
-            <?php endif;?>
+            <div id="result"></div>
 
         </div>
 
     </div>
 </div>
+
+<?php Yii::app()->clientScript->registerScript('reserve', "
+    $.ajax({
+        url: '".$this->createUrl('booking')."',
+        type: 'POST',
+        dataType: 'JSON',
+        data: {order_id: '".$order->id."', transaction_id: '".$transaction->id."'},
+        success:function(data){
+            if(data.status == 'success'){
+                $('.final-steps li.doing').addClass('done').removeClass('doing').find('i').text('');
+                $('.final-steps li.queue').addClass('doing').removeClass('queue').find('i').text('لطفا صبر کنید...');
+                $.ajax({
+                    url: '".$this->createUrl('mail')."',
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: {order_id: '".$order->id."', booking_id: data.bookingID},
+                    success:function(data){
+                        $('.final-steps li.doing').addClass('done').removeClass('doing').find('i').text('');
+                        if(data.status == 'success'){
+                            $('#result').append('<div class=\"alert alert-success\">عملیات رزرو با موفقیت انجام شد.</div>');
+                            $('#result').append(data.html);
+                        }else{
+                            $('#result').append('<div class=\"alert alert-danger\">در انجام عملیات خطایی رخ داده است، لطفا با بخش پشتیبانی تماس بگیرید.</div>');
+                            $('#result .alert').append(' می توانید از طریق <a href=\"".Yii::app()->createUrl('contactUs')."\" target=\"_blank\">این صفحه</a> با بخش پشتیبانی در تماس باشید.');
+                        }
+                    },
+                    error:function(){
+                        $('.final-steps li.doing').addClass('error').removeClass('doing').find('i').text('');
+                        $('#result').append('<div class=\"alert alert-danger\">در انجام عملیات خطایی رخ داده است، لطفا با بخش پشتیبانی تماس بگیرید.</div>');
+                        $('#result .alert').append(' می توانید از طریق <a href=\"".Yii::app()->createUrl('contactUs')."\" target=\"_blank\">این صفحه</a> با بخش پشتیبانی در تماس باشید.');
+                    }
+                });
+            }else{
+                $('.final-steps li.doing').addClass('error').removeClass('doing').find('i').text('');
+                $('#result').append('<div class=\"alert alert-danger\">'+data.message+'</div>');
+            }
+        },
+        error:function(){
+            $('.final-steps li.doing').addClass('error').removeClass('doing').find('i').text('');
+            $('#result').append('<div class=\"alert alert-danger\">در انجام عملیات خطایی رخ داده است، لطفا با بخش پشتیبانی تماس بگیرید.</div>');
+            $('#result .alert').append(' می توانید از طریق <a href=\"".Yii::app()->createUrl('contactUs')."\" target=\"_blank\">این صفحه</a> با بخش پشتیبانی در تماس باشید.');
+        }
+    });
+", CClientScript::POS_LOAD);?>

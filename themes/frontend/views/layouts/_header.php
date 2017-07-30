@@ -15,7 +15,7 @@
         <div class="collapse navbar-collapse" id="navbar-collapse">
             <ul class="nav navbar-nav">
                 <li><a href="<?php echo $this->createUrl('/site');?>">صفحه اصلی</a></li>
-                <li<?php echo (Yii::app()->createUrl('/reservation/hotels/cancellation')==Yii::app()->request->requestUri)?' class="active"':''; ?>><a href="<?php echo $this->createUrl('/reservation/hotels/cancellation');?>">درخواست انصراف</a></li>
+                <li<?php echo (Yii::app()->createUrl('/cancellation')==Yii::app()->request->requestUri)?' class="active"':''; ?>><a href="<?php echo $this->createUrl('/cancellation');?>">درخواست انصراف</a></li>
                 <li<?php echo (Yii::app()->createUrl('/terms')==Yii::app()->request->requestUri)?' class="active"':''; ?>><a href="<?php echo $this->createUrl('/terms');?>">قوانین و مقررات</a></li>
                 <li<?php echo (Yii::app()->createUrl('/help')==Yii::app()->request->requestUri)?' class="active"':''; ?>><a href="<?php echo $this->createUrl('/help');?>">راهنما</a></li>
                 <li<?php echo (Yii::app()->createUrl('/about')==Yii::app()->request->requestUri)?' class="active"':''; ?>><a href="<?php echo $this->createUrl('/about');?>">درباره ما</a></li>

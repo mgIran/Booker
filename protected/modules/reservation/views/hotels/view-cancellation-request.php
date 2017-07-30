@@ -103,7 +103,7 @@ elseif ($model->status == 'refused')
         ),
         array(
             'name'=>'کد رهگیری رزرو',
-            'value'=>'B24-'.$model->booking->orderId,
+            'value'=>'B24H-'.$model->booking->orderId,
         ),
         array(
             'name'=>'وضعیت درخواست',

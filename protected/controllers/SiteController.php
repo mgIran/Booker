@@ -205,4 +205,40 @@ class SiteController extends Controller
         $model = Pages::model()->findByPk(5);
         $this->render('//site/pages/page',array('model' => $model));
     }
+
+    public function actionCancellation()
+    {
+        Yii::app()->theme = 'frontend';
+        $this->layout = '//layouts/inner';
+        $this->pageName = 'signup';
+
+        $model = new CancellationRequests();
+
+        $this->performAjaxValidation($model);
+
+        if (isset($_POST['CancellationRequests'])) {
+            $model->orderId = $_POST['CancellationRequests']['orderId'];
+            if ($model->save()) {
+                Yii::app()->user->setFlash('success', 'درخواست شما با موفقیت ثبت شد. بعد از تایید توسط تیم پشتیبانی، رزرو شما کنسل خواهد شد.');
+                $this->refresh();
+            } else
+                Yii::app()->user->setFlash('failed', 'متاسفانه در انجام عملیات خطایی رخ داده است!');
+        }
+
+        $this->render('cancellation', array(
+            'model' => $model,
+        ));
+    }
+
+    /**
+     * Performs the AJAX validation.
+     * @param $model
+     */
+    protected function performAjaxValidation($model)
+    {
+        if (isset($_POST['ajax'])) {
+            echo CActiveForm::validate($model);
+            Yii::app()->end();
+        }
+    }
 }

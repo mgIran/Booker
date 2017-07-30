@@ -18,7 +18,7 @@ $cancelRules=CJSON::decode($booking->cancelRules);
                     <td>
                         <h4 style="margin: 0 0 5px;"><?php echo CHtml::encode($booking->hotel);?>
                             <span>
-                                <?php for($i=1;$i<=3;$i++):?>
+                                <?php for($i=1;$i<=$booking->star;$i++):?>
                                     <img src="<?php echo Yii::app()->createAbsoluteUrl('/').'/themes/frontend/images/star.png'?>" style="width: 10px;">
                                 <?php endfor;?>
                             </span>

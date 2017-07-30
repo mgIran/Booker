@@ -1,6 +1,7 @@
 <?php
 /* @var $this HotelsController */
 /* @var $model Bookings */
+/* @var $transaction Transactions[] */
 /* @var $id integer */
 ?>
 
@@ -159,7 +160,7 @@
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(
     'id'=>'transactions-grid',
-    'dataProvider'=>new CArrayDataProvider($model->order->transactions),
+    'dataProvider'=>new CArrayDataProvider($transaction),
     'columns'=>array(
         array(
             'header'=>'کد رهگیری',

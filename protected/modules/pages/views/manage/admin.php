@@ -30,10 +30,10 @@ $this->widget('zii.widgets.grid.CGridView', array(
 	'filter'=>$model,
 	'columns'=>array(
 		'title',
-		array(
-            'name' => 'summary',
-            'value' => 'substr($data->summary,0,300)'
-        ),
+//		array(
+//            'name' => 'summary',
+//            'value' => 'substr($data->summary,0,300)'
+//        ),
 		array(
 			'class'=>'CButtonColumn',
             'template' => $template

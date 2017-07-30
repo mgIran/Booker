@@ -330,7 +330,7 @@
         </div>
         <div class="search-box-footer">
             <ul class="nav navbar-nav nav-footer">
-                <li role="presentation"><a href="<?php echo $this->createUrl('/reservation/hotels/cancellation');?>">درخواست انصراف</a></li>
+                <li role="presentation"><a href="<?php echo $this->createUrl('/cancellation');?>">درخواست انصراف</a></li>
                 <li role="presentation"><a href="<?php echo $this->createUrl('/terms');?>">قوانین و مقررات</a></li>
                 <li role="presentation"><a href="<?php echo $this->createUrl('/help');?>">راهنما</a></li>
                 <li role="presentation"><a href="<?php echo $this->createUrl('/about');?>">درباره ما</a></li>

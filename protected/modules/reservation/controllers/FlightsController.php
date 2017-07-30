@@ -778,9 +778,14 @@ class FlightsController extends Controller
         $this->layout = '//layouts/column2';
 
         $model = CancellationRequests::model()->findByPk($id);
+        $transaction = Transactions::model()->findAll('order_model = :model AND order_id = :id', [
+            ':model'=>'OrderFlight',
+            ':id'=>$model->booking->order_id
+        ]);
 
         $this->render('view-cancellation-request', array(
             'model' => $model,
+            'transaction' => $transaction,
             'id' => $id,
         ));
     }
@@ -808,7 +813,7 @@ class FlightsController extends Controller
         /* @var $cancelRequest CancellationRequests */
         $cancelRequest = CancellationRequests::model()->findByPk($id);
 
-        $postman = new Postman();
+        $postman = new FlightPostman();
         $result = $postman->cancel($cancelRequest->booking->orderId, $cancelRequest->booking->order->travia_id);
 
         if ($result) {
@@ -829,7 +834,7 @@ class FlightsController extends Controller
                 Yii::app()->user->setFlash('failed', 'در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید.');
         }
 
-        $this->redirect(array('/reservation/hotels/viewCancellationRequest/' . $cancelRequest->id));
+        $this->redirect(array('/reservation/flights/viewCancellationRequest/' . $cancelRequest->id));
     }
 
     public function actionRefuseCancel($id)
@@ -848,7 +853,7 @@ class FlightsController extends Controller
         } else
             Yii::app()->user->setFlash('failed', 'در انجام عملیات خطایی رخ داده است لطفا مجددا تلاش کنید.');
 
-        $this->redirect(array('/reservation/hotels/viewCancellationRequest/' . $cancelRequest->id));
+        $this->redirect(array('/reservation/flights/viewCancellationRequest/' . $cancelRequest->id));
     }
 
     public function actionDomesticAirports()

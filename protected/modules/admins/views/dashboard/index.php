@@ -149,12 +149,8 @@
                     'value'=>'$data->booking->order->buyer_mobile'
                 ),
                 array(
-                    'header'=>'نام هتل',
-                    'value'=>'$data->booking->hotel'
-                ),
-                array(
-                    'header'=>'شهر',
-                    'value'=>'$data->booking->city.", ".$data->booking->country'
+                    'name'=>'model',
+                    'value'=>'$data->model=="Hotels"?"هتل":"پرواز"'
                 ),
                 array(
                     'name'=>'created_date',
@@ -165,7 +161,12 @@
                     'template'=>'{view}',
                     'buttons'=>array(
                         'view'=>array(
-                            'url'=>'Yii::app()->createUrl("/reservation/hotels/viewCancellationRequest", array("id"=>$data->id))',
+                            'url'=>function($data){
+                                if($data->model == 'Hotels')
+                                    return Yii::app()->createUrl("/reservation/hotels/viewCancellationRequest", array("id"=>$data->id));
+                                elseif($data->model == 'Flights')
+                                    return Yii::app()->createUrl("/reservation/flights/viewCancellationRequest", array("id"=>$data->id));
+                            },
                         ),
                     )
                 ),

@@ -1,11 +1,12 @@
 <?php
-/* @var $this HotelsController */
+/* @var $this FlightsController */
 /* @var $model CancellationRequests */
+/* @var $transaction Transactions[] */
 /* @var $id integer */
 
 $this->menu=array(
-    array('label'=>'کنسل شود', 'url'=>array('/reservation/hotels/cancel', 'id'=>$id)),
-    array('label'=>'امکان کنسل کردن وجود ندارد', 'url'=>array('/reservation/hotels/refuseCancel', 'id'=>$id)),
+    array('label'=>'کنسل شود', 'url'=>array('/reservation/flights/cancel', 'id'=>$id)),
+    array('label'=>'امکان کنسل کردن وجود ندارد', 'url'=>array('/reservation/flights/refuseCancel', 'id'=>$id)),
 );
 
 $labelClass = 'warning';
@@ -13,6 +14,9 @@ if ($model->status == 'canceled')
     $labelClass = 'success';
 elseif ($model->status == 'refused')
     $labelClass = 'danger';
+
+$flights = CJSON::decode($model->booking->flights);
+Yii::import('airports.models.*');
 ?>
 
 <h1>اطلاعات رزرو</h1>
@@ -35,24 +39,23 @@ elseif ($model->status == 'refused')
             'value'=>$model->booking->order->buyer_email,
         ),
         array(
-            'name'=>'هتل',
-            'value'=>$model->booking->hotel,
+            'name'=>'مبدا',
+            'value'=>Airports::getFieldByIATA($flights['oneWay']['legs'][0]['origin'],'city_fa'),
         ),
         array(
-            'name'=>'شهر',
-            'value'=>$model->booking->city.', '.$model->booking->country,
+            'name'=>'مقصد',
+            'value'=>Airports::getFieldByIATA($flights['oneWay']['legs'][0]['destination'],'city_fa'),
         ),
         array(
-            'name'=>'تاریخ و ساعت ورود',
-            'value'=>$model->booking->checkIn.' - '.$model->booking->checkinFrom,
-        ),
-        array(
-            'name'=>'تاریخ و ساعت خروج',
-            'value'=>$model->booking->checkOut.' - '.$model->booking->checkoutTo,
-        ),
-        array(
-            'name'=>'تعداد مسافر',
-            'value'=>$model->booking->passenger,
+            'name'=>'شرایط کنسلی پرواز رفت',
+            'value'=>function($model){
+                $flights = CJSON::decode($model->booking->flights);
+                $rules = '';
+                foreach($flights['oneWay']['cancelRules'] as $key=>$value)
+                    $rules .= '- '.CancellationRequests::$flightCancelRules[strtolower($key)].'<br>';
+                return $rules;
+            },
+            'type'=>'raw'
         ),
         array(
             'name'=>'تاریخ ثبت در سایت',
@@ -63,35 +66,8 @@ elseif ($model->status == 'refused')
             'value'=>JalaliDate::date('d F Y - H:i', strtotime($model->booking->createdAt)),
         ),
         array(
-            'name'=>'پذیرایی',
-            'value'=>$model->booking->meal,
-        ),
-        array(
             'name'=>'قیمت (همراه با کمیسیون)',
-            'value'=>number_format($this->getFixedPrice($model->booking->price/10), 0).' تومان',
-        ),
-        array(
-            'name'=>'قابل استرداد',
-            'value'=>($model->booking->nonrefundable == 0)?'هست':'نیست',
-        ),
-        array(
-            'name'=>'شرایط کنسلی',
-            'value'=>implode('<br>',$model->booking->getCancelRulesAsString()),
-            'type'=>'raw'
-        ),
-        array(
-            'name'=>'Booking ID',
-            'value'=>$model->booking->getConfirmationDetails('confirmNumber'),
-        ),
-        array(
-            'name'=>'مسافرین',
-            'value'=>implode('<br>', $model->booking->getConfirmationDetails('name')),
-            'type'=>'raw'
-        ),
-        array(
-            'name'=>'اتاق',
-            'value'=>implode('<br>', $model->booking->getRooms()),
-            'type'=>'raw'
+            'value'=>number_format($this->getFixedPrice($model->booking->totalPrice/10)['price']).' تومان',
         ),
         array(
             'name'=>'Order ID (مربوط به تراویا)',
@@ -103,7 +79,7 @@ elseif ($model->status == 'refused')
         ),
         array(
             'name'=>'کد رهگیری رزرو',
-            'value'=>'B24-'.$model->booking->orderId,
+            'value'=>'B24F-'.$model->booking->orderId,
         ),
         array(
             'name'=>'وضعیت درخواست',
@@ -112,3 +88,53 @@ elseif ($model->status == 'refused')
         ),
     ),
 )); ?>
+
+<h1>اطلاعات مسافرین</h1>
+
+<?php $this->widget('zii.widgets.grid.CGridView', array(
+    'id'=>'passengers-grid',
+    'dataProvider'=>new CArrayDataProvider($model->booking->order->passengers),
+    'columns'=>array(
+        array(
+            'name'=>'name',
+            'header'=>'نام و نام خانوادگی',
+            'value'=>'$data->name_fa." ".$data->family_fa." (".strtoupper($data->name_en." ".$data->family_en).")"'
+        ),
+        array(
+            'name'=>'gender',
+            'header'=>'جنسیت',
+            'value'=>'$data->genderLabels[$data->gender]'
+        ),
+        array(
+            'name'=>'passport_num',
+            'header'=>'شماره پاسپورت',
+            'value'=>'$data->passport_num'
+        ),
+        array(
+            'name'=>'type',
+            'header'=>'نوع',
+            'value'=>'$data::$typeLabels[$data->type]'
+        ),
+    ),
+)); ?>
+
+<h1>اطلاعات تراکنش</h1>
+
+<?php $this->widget('zii.widgets.grid.CGridView', array(
+    'id'=>'transactions-grid',
+    'dataProvider'=>new CArrayDataProvider($transaction),
+    'columns'=>array(
+        array(
+            'header'=>'کد رهگیری',
+            'value'=>'$data->tracking_code',
+        ),
+        array(
+            'header'=>'مبلغ',
+            'value'=>'number_format($data->amount/10)." تومان"',
+        ),
+        array(
+            'header'=>'تاریخ و ساعت',
+            'value'=>'JalaliDate::date("d F Y - H:i", $data->date)',
+        )
+    ),
+));?>
