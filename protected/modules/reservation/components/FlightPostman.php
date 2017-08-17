@@ -4,10 +4,7 @@ class FlightPostman
 {
     protected function getData($method, $data)
     {
-        if(Yii::app()->session['domestic'])
-            $url = 'http://api.travia.global/v1/flight/' . $method;
-        else
-            $url = 'http://api.travia.info/v1/flight/' . $method;
+        $url = 'http://api.travia.info/v1/flight/' . $method;
         $key = 'WPtYSK9PJGOI23';
 
         $curl = curl_init();

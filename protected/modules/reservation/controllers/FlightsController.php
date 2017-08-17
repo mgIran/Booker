@@ -140,54 +140,6 @@ class FlightsController extends Controller
             $this->redirect('/');
     }
 
-    public function actionLoadMore()
-    {
-        $postman = new Postman();
-        $result = $postman->loadMore($_POST['key']);
-
-        $nextPage = null;
-        if (isset($result['nextPage']))
-            $nextPage = $result['nextPage'];
-
-        $hotels = array();
-        foreach ($result['results'] as $hotel) {
-            $price = null;
-            $traviaID = '';
-            foreach ($hotel['services'] as $service) {
-                if (is_null($price)) {
-                    $price = $service['price'];
-                    $traviaID = $service['traviaId'];
-                } elseif ($service['price'] < $price)
-                    $price = $service['price'];
-            }
-            array_push($hotels, array(
-                'name' => $hotel['name'],
-                'star' => $hotel['star'],
-                'rooms' => $hotel['services'],
-                'traviaID' => $traviaID,
-                'image' => array(
-                    'tag' => $hotel['images'][0]['tag'],
-                    'src' => $hotel['images'][0]['original'],
-                ),
-                'price' => $this->getFixedPrice($price / 10)['price'],
-            ));
-        }
-        $this->beginClip('hotels');
-        $this->renderPartial('load-more', array(
-            'hotelsDataProvider' => new CArrayDataProvider($hotels, array('keyField' => 'traviaID', 'pagination' => false)),
-            'country' => $result['country'],
-            'searchID' => $result['searchId'],
-            'nextPage' => $nextPage,
-            //'city' => $result['city'],
-        ));
-        $this->endClip();
-
-        echo CJSON::encode(array(
-            'hotels' => $this->clips['hotels'],
-            'loadMore' => $nextPage
-        ));
-    }
-
     public function actionCheckout()
     {
         $oneWayID = Yii::app()->getRequest()->getQuery('oid');
@@ -226,7 +178,7 @@ class FlightsController extends Controller
                 $totalPrice = $totalCommission = 0;
                 $totalPrice += $this->getFixedPrice($oneWayPrice/10, true, $details['flights']['oneWay']['type'])['price'];
                 $totalCommission += $this->getFixedPrice($oneWayPrice/10, true, $details['flights']['oneWay']['type'])['commission'];
-                if(isset($details['flights']['return'])) {
+                if(isset($details['flights']['return']) and !$details['isTotalPrice']) {
                     $totalPrice += $this->getFixedPrice($returnPrice / 10, true, $details['flights']['return']['type'])['price'];
                     $totalCommission += $this->getFixedPrice($returnPrice/10, true, $details['flights']['return']['type'])['commission'];
                 }
@@ -335,7 +287,7 @@ class FlightsController extends Controller
 
             $totalPrice = 0;
             $totalPrice += $this->getFixedPrice($oneWayPrice/10, true, $details['flights']['oneWay']['type'])['price'];
-            if(isset($details['flights']['return']))
+            if(isset($details['flights']['return']) and !$details['isTotalPrice'])
                 $totalPrice += $this->getFixedPrice($returnPrice / 10, true, $details['flights']['return']['type'])['price'];
             if ($order->price != $totalPrice)
                 OrderFlight::model()->updateByPk(Yii::app()->session['orderID'], array('price' => $totalPrice));
@@ -373,7 +325,7 @@ class FlightsController extends Controller
 
         $totalPrice = 0;
         $totalPrice += $this->getFixedPrice($oneWayPrice/10, true, $details['flights']['oneWay']['type'])['price'];
-        if(isset($details['flights']['return']))
+        if(isset($details['flights']['return']) and !$details['isTotalPrice'])
             $totalPrice += $this->getFixedPrice($returnPrice / 10, true, $details['flights']['return']['type'])['price'];
 
         if ($order->price != $totalPrice)

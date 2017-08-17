@@ -202,7 +202,10 @@ class Controller extends CController
         $commission = null;
         if ($isFlight) {
             $type = $flightType == 'charter' ? 'charter' : 'system';
-            $commission = SiteSetting::model()->findByAttributes(array('name' => 'flight_' . $type . '_commission'));
+            if ($type == 'system' and Yii::app()->session['domestic'])
+                $commission = 0;
+            else
+                $commission = SiteSetting::model()->findByAttributes(array('name' => 'flight_' . $type . '_commission'));
         } else
             $commission = SiteSetting::model()->findByAttributes(array('name' => 'commission'));
         $commission = $commission->value;

@@ -6,7 +6,7 @@
 /* @var $returnPrice double */
 $totalPrice = 0;
 $totalPrice += $this->getFixedPrice($oneWayPrice/10, true, $details['flights']['oneWay']['type'])['price'];
-if(isset($details['flights']['return']))
+if(isset($details['flights']['return']) and !$details['isTotalPrice'])
     $totalPrice += $this->getFixedPrice($returnPrice/10, true, $details['flights']['return']['type'])['price'];
 ?>
 <?php Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl.'/css/bootstrap-nav-wizard.css');?>
